@@ -38,10 +38,21 @@ export default function InventoryTab({ profile, onRefresh }: InventoryTabProps) 
     }
 
     const GRID_SIZE = 30
+    const getRarity = (item: any) => {
+        if (item.rarity && RARITY_COLORS[item.rarity]) return item.rarity
+        // Fallback baseado no preço caso não venha no item ou seja inválido
+        if (item.price > 2000) return 'legendary'
+        if (item.price > 1000) return 'epic'
+        if (item.price > 500) return 'rare'
+        if (item.price > 100) return 'uncommon'
+        return 'common'
+    }
+
     const itemsWithDetails = invItems.map(invEntry => {
         const spec = CATALOG_ITEMS.find(it => it.id === invEntry.item_id)
+        if (!spec) return null // Item não encontrado no catálogo local
         return { ...invEntry, ...spec }
-    })
+    }).filter(Boolean) as any[]
 
     const grid = Array(GRID_SIZE).fill(null).map((_, i) => itemsWithDetails[i] || null)
     const equipped = itemsWithDetails.filter(i => i.is_equipped)
@@ -53,8 +64,8 @@ export default function InventoryTab({ profile, onRefresh }: InventoryTabProps) 
             {/* Zona de Equipados */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {equipped.map(item => {
-                    const rarity = item.price > 2000 ? 'legendary' : item.price > 1000 ? 'epic' : item.price > 500 ? 'rare' : item.price > 100 ? 'uncommon' : 'common'
-                    const rc = RARITY_COLORS[rarity]
+                    const rarity = getRarity(item)
+                    const rc = RARITY_COLORS[rarity] || RARITY_COLORS.common
                     return (
                         <div
                             key={item.id}
@@ -87,14 +98,20 @@ export default function InventoryTab({ profile, onRefresh }: InventoryTabProps) 
                         </div>
                     )
                 })}
+                {equipped.length === 0 && (
+                    <div className="col-span-full py-8 text-center text-gray-600 italic text-xs border border-dashed border-[#2a2a2a]">
+                        Nenhum item equipado. Visite a Loja para se preparar.
+                    </div>
+                )}
             </div>
 
-            <div className="ornament-divider text-[10px]">Inventário ({invItems.length}/{GRID_SIZE} slots)</div>
+            <div className="ornament-divider text-[10px]">Inventário ({itemsWithDetails.length}/{GRID_SIZE} slots)</div>
 
             {/* Grade de Inventário */}
             <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
                 {grid.map((item, i) => {
-                    const rc = item ? RARITY_COLORS[item.rarity] : RARITY_COLORS.common
+                    const rarity = item ? getRarity(item) : 'common'
+                    const rc = RARITY_COLORS[rarity] || RARITY_COLORS.common
                     return (
                         <div
                             key={i}
@@ -131,7 +148,7 @@ export default function InventoryTab({ profile, onRefresh }: InventoryTabProps) 
                                     </div>
                                 </>
                             ) : (
-                                <span className="text-[8px] text-gray-700 font-mono">{i + i}</span>
+                                <span className="text-[8px] text-gray-700 font-mono">{i + 1}</span>
                             )}
                         </div>
                     )
