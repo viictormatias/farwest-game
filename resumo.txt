@@ -1,0 +1,41 @@
+# RESUMO DO DESENVOLVIMENTO - CINZAS E COROAS
+
+## 📅 Data: 04 de Março de 2026
+
+Hoje transformamos o "Medieval RPG Game" básico em uma experiência imersiva de Storytelling Narrativo com mecânicas sólidas de RPG clássico.
+
+### 🚀 Principais Implementações
+
+#### 1. Sistema de Builds e Progressão (Fase 1)
+- **Atributos**: Adição da coluna `vigor` e `stat_points_available` na tabela `profiles`.
+- **Mecânica de Vigor**: Agora, investir pontos em Vigor aumenta permanentemente o HP máximo do jogador (+10 por ponto).
+- **Level Up Automático**: Criamos uma lógica de banco de dados (Trigger/Function Postgres) que detecta quando o jogador atinge o limite de XP (`level * 100`), sobe o nível automaticamente e concede +3 pontos de status.
+- **Distribuição de Pontos**: Server Action `distributeStats` permite que o jogador personalize sua build em Força, Agilidade, Precisão e Vigor.
+
+#### 2. Motor Narrativo de Combate (Fase 2)
+- **Engine Literária**: Refatoramos o combate para não ser apenas "números na tela". Agora o backend gera frases viscerais e variadas baseadas no RNG e nas armas utilizadas.
+- **Templates Dinâmicos**: Sistema de interpolação que injeta nomes de armas, heróis, monstros e partes do corpo (Cabeça, Peito, Membros) nas descrições.
+- **Acertos Críticos**: Eventos raros e brutais que geram descrições únicas e multiplicadores de dano elevados.
+
+#### 3. Experiência Visual e "Suspense" (Fase 3)
+- **Efeito de Leitura**: O log de combate agora revela a história da luta turno a turno com um delay de 2.5 segundos, mantendo o suspense sobre o resultado.
+- **Feedback Sensorial**:
+    - **Shake de Tela**: Tremores sutis para acertos normais e "Arena Shake" intenso para críticos.
+    - **Estilização**: Texto esmaecido para erros, dourado para heróis e vermelho pulsante/brilhante para críticos.
+    - **Auto-scroll**: O log acompanha a narrativa automaticamente conforme ela se desenrola.
+
+### 🛠️ Tecnologias Utilizadas
+- **Core**: Next.js 14 (App Router) + React.
+- **Linguagem**: TypeScript (Tipagem rigorosa para combate e perfis).
+- **Banco de Dados/Auth**: Supabase (PostgreSQL para dados persistentes e RLS para segurança).
+- **Estilização**: Tailwind CSS v4 para o design medieval premium.
+- **Tipografia**: Google Fonts (Newsreader para imersão e MedievalSharp para títulos).
+- **Animações**: CSS Keyframes personalizadas (glow-pulse, shakes, floating particles).
+
+### ⚔️ Próximos Passos (Planejados)
+- Implementação da Loja de Itens (ShopTab).
+- Sistema de escolha de classes iniciais (Cavaleiro, Nobre, Errante).
+- Persistência real de Inventário no banco de dados.
+
+---
+**Projeto pronto para estudo e expansão!**
