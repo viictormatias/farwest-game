@@ -74,10 +74,28 @@ export default function Dashboard() {
   // ===== TELA DE LOADING =====
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen"
-        style={{ background: 'radial-gradient(ellipse at center, #1a1208 0%, #0d0d0d 70%)' }}
+      <div className="flex items-center justify-center min-h-screen relative overflow-hidden"
+        style={{ background: '#0d0d0d' }}
       >
+        {/* Imagem de fundo com overlay */}
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 scale-105 animate-pulse-slow"
+          style={{
+            backgroundImage: 'url("/loadingscreen.jpeg")',
+            filter: 'grayscale(0.2) contrast(1.1)'
+          }}
+        />
+
+        {/* Overlay Noir Gradiente */}
+        <div
+          className="absolute inset-0 z-1"
+          style={{
+            background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%)'
+          }}
+        />
+
         <ParticleBackground count={20} />
+
         <div className="relative z-10 flex flex-col items-center gap-6">
           {/* Brasão animado */}
           <div className="relative">
@@ -91,7 +109,6 @@ export default function Dashboard() {
             >
               👑
             </div>
-            {/* Anel giratório */}
             <div
               className="absolute -inset-3 rounded-full border-t-2 border-r-2 border-transparent"
               style={{
@@ -102,16 +119,16 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="flex flex-col items-center gap-2">
-            <h1 className="text-2xl font-black text-gold title-medieval tracking-widest">
+          <div className="flex flex-col items-center gap-2 bg-black/40 backdrop-blur-sm p-4 rounded-lg border border-gold/10">
+            <h1 className="text-3xl font-black text-gold title-medieval tracking-[0.2em] drop-shadow-lg">
               Cinzas e Coroas
             </h1>
             <div className="flex items-center gap-2">
-              <div className="w-1 h-1 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-              <div className="w-1 h-1 bg-gold rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-              <div className="w-1 h-1 bg-gold rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              <div className="w-1.5 h-1.5 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+              <div className="w-1.5 h-1.5 bg-gold rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+              <div className="w-1.5 h-1.5 bg-gold rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
             </div>
-            <span className="text-[10px] uppercase tracking-[0.4em] text-gray-600">Forjando o destino...</span>
+            <span className="text-[10px] uppercase tracking-[0.4em] text-gray-400 font-bold">Resurrecting the Kingdom...</span>
           </div>
         </div>
       </div>
