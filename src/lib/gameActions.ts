@@ -41,6 +41,11 @@ export interface Enemy {
     precision: number
 }
 
+export type InitialStatKey = 'strength' | 'defense' | 'agility' | 'accuracy' | 'vigor'
+export type InitialStatAllocation = Partial<Record<InitialStatKey, number>>
+export const ONBOARDING_STAT_POINTS = 8
+export const ONBOARDING_MAX_PER_STAT = 4
+
 /**
  * Tenta buscar o perfil do usuário logado (anônimo ou credencial).
  */
@@ -68,12 +73,50 @@ export async function ensureProfile(): Promise<Profile | null> {
     return profile
 }
 
-export async function createCharacter(userId: string, username: string, classType: ClassType): Promise<Profile | null> {
+export async function createCharacter(
+    userId: string,
+    username: string,
+    classType: ClassType,
+    allocation: InitialStatAllocation = {}
+): Promise<Profile | null> {
     const classStats = {
         'Cavaleiro': { hp_max: 120, strength: 10, defense: 10, agility: 5, accuracy: 5, vigor: 10, gold: 50 },
         'Nobre': { hp_max: 100, strength: 5, defense: 5, agility: 10, accuracy: 10, vigor: 5, gold: 200 },
         'Errante': { hp_max: 100, strength: 7, defense: 7, agility: 7, accuracy: 7, vigor: 7, gold: 100 }
     }[classType]
+
+    const keys: InitialStatKey[] = ['strength', 'defense', 'agility', 'accuracy', 'vigor']
+    const normalizedAllocation: Record<InitialStatKey, number> = {
+        strength: 0,
+        defense: 0,
+        agility: 0,
+        accuracy: 0,
+        vigor: 0
+    }
+
+    for (const key of keys) {
+        const raw = Number(allocation[key] || 0)
+        if (!Number.isInteger(raw) || raw < 0 || raw > ONBOARDING_MAX_PER_STAT) {
+            console.error('Distribuicao inicial invalida:', key, raw)
+            return null
+        }
+        normalizedAllocation[key] = raw
+    }
+
+    const totalAllocated = Object.values(normalizedAllocation).reduce((sum, value) => sum + value, 0)
+    if (totalAllocated !== ONBOARDING_STAT_POINTS) {
+        console.error('Distribuicao inicial invalida: total deve ser', ONBOARDING_STAT_POINTS, 'recebido', totalAllocated)
+        return null
+    }
+
+    const finalStats = {
+        strength: classStats.strength + normalizedAllocation.strength,
+        defense: classStats.defense + normalizedAllocation.defense,
+        agility: classStats.agility + normalizedAllocation.agility,
+        accuracy: classStats.accuracy + normalizedAllocation.accuracy,
+        vigor: classStats.vigor + normalizedAllocation.vigor,
+    }
+    const finalHpMax = classStats.hp_max + (normalizedAllocation.vigor * 10)
 
     const { data: profile, error } = await supabase
         .from('profiles')
@@ -81,8 +124,10 @@ export async function createCharacter(userId: string, username: string, classTyp
             id: userId,
             username,
             class: classType,
-            ...classStats,
-            hp_current: classStats.hp_max,
+            gold: classStats.gold,
+            ...finalStats,
+            hp_max: finalHpMax,
+            hp_current: finalHpMax,
             energy: 100,
             level: 1,
             xp: 0,

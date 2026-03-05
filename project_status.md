@@ -1,35 +1,83 @@
 # Project Status - Velmora
 
-## 1. **Estado Atual**: Projeto com UI premium e persistente! Implementada continuidade visual com `loadingscreen.jpeg` em todas as telas de pré-jogo (Loading, Login, Erro, Seleção) e efeito glassmorphism nos cards.
- O "motor lógico" já maduro foi vestido com uma UI verdadeiramente "Dark Medieval" premium, que inclui animações elegantes (CSS keyframes), uma tela de loading personalizada, e partículas dinâmicas (Canvas API). Todos os componentes visuais de personagens e monstros agora usam a estrutura flexível de `CharacterPortrait`, que está totalmente preparada (com slots, bordas e glows temáticos) para receber imagens ilustrativas oficiais e renderizar Fallback Emojis enquanto aguarda estes assets. O build Next.js foi consertado e otimizado (Exit code 0 no build estático).
+## 1. Estado Atual
+Projeto em fase avancada com UI dark medieval e mecanicas centrais no estilo Souls-like ja integradas.
 
-### 2. Funcionalidades Implementadas
-- **Seleção de Classe**: Fluxo de primeiro login para escolha entre Cavaleiro, Nobre ou Errante com status iniciais balanceados.
-- **Loja (ShopTab)**: Catálogo real de itens (Armas/Armaduras) compráveis com Gold, cada um com bônus de status.
-- **Inventário Paperdoll**: Sistema visual de "boneco de papel" implementado. Jogadores agora arrastam (Drag-and-Drop) itens do inventário geral para os slots de Armadura, Arma Principal e Secundária (Escudos). Bônus totais são somados dinamicamente na UI.
-- **Novos Itens**: Introduzidos "Escudos" (Wooden Shield, Iron Shield, Knight Shield) para uso no slot secundário.
-- **Integração Google AI (Nano Banana)**: Chave de API configurada no `.env.local` para geração futura de imagens e conteúdos via Gemini 3 / Nano Banana.
-- **Inventário Persistente**: Tabela `inventory` no Supabase para salvar itens e estados de equipamento (Real-time).
-- **Builds e Atributos**: Distribuição de pontos ao subir de nível, incluindo **Vigor** (HP Máximo).
-- **Combate Narrativo**: Log rítmico (2.5s) com textos viscerais e bônus de equipamentos aplicados dinamicamente nos cálculos de dano e acerto.
-- **GitHub**: Repositório criado e código enviado com sucesso. Arquivo `resumo.txt` gerado para estudo.
-- **Componentes Base**: 
-  - `CharacterPortrait`: Preparado para props `src` (img URL), com variações de borda (Gold/Red/Blue) integradas.
-  - `StatBar`: Barras animadas e reutilizáveis para HP, Energia, Gold e XP, substituindo lógicas duplicadas.
-  - `ParticleBackground`: Efeito ambiente canvas nativo leve.
-- **Telas Renascentes**:
-  - `ArenaTab`: Turnos ocorrem agora com tempo rítmico (2.5s de delay por log). As vidas reagem turno-a-turno visualmente e os alvos atingidos reproduzem animação *shake* (hits normais) ou *arena-shake* muito mais intenso (Hits Críticos). O Log de combate foi expandido com textos mais sombrios e imersivos para misses, hits e críticos, e contém realce visual vermelho e brilhante para críticos. 
-  - `CampTab`: Profissões com ícones associativos contextuais.
-  - `InventoryTab`: Evoluído para um formato drag-and-drop Paperdoll com cálculo dinâmico dos Atributos Adicionais e layout dark medieval premium.
-  - `Header`: Títulos associados à progressão (Mago/Lendário/Recruta) conforme base do Level e adição sensível de uma Barra de Experiência persistente e unificada.
+O game agora combina:
+- onboarding com planejamento de build
+- sistema de equipamentos multi-slot
+- combate com calculos de carga, requisitos e escalonamento
+- base pronta para retratos de classe gerados por IA
 
-## 4. Erros ou Bloqueios Conhecidos
-- ~~**Bug de Equipar & Chaves Duplicadas**~~: Bug resolvido em que o `InventoryTab` sobrepunha o ID único do banco de dados pelo ID estático de catálogo (ex: `rusty_dagger`), o que impedia a ação de equipar e gerava erros de React `key` na interface ao se possuir múltiplos itens iguais.
-- **Nenhum erro de compilação**: O servidor Next.JS continua buildando e rodando sem conflitos no dev server.
-- **Pendência de Configuração**: O usuário deve configurar `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` no painel do Vercel para que as funcionalidades de banco de dados operem em produção.
-- **AVISO (Persistência)**: Não houve ainda conexão do backend da tabela do banco `inventory` (atualmente o repositório consome dados mockados localmente neste tab). 
+## 2. Funcionalidades Implementadas
 
-## 5. Próximos Passos Sugeridos
-1. **Conexão de Banco de Origem para Loja / Inventário**: Alguns itens continuam baseados num arquivo `items.ts` de catálogo estático ou inventário mockado se a tabela real do Supabase falhar. Criar tabela de `items_catalog` no DB global.
-2. **Sistema de Level UP**: Criar pop-up de distribuição visual de pontos ao preencher e esvaziar a barra de XP nova implementada no `Header`.
-3. **Imagens Oficiais**: Substituir emojis fallbacks por assets reais ilustrativos em `<CharacterPortrait />` e ícones de inventário.
+### Core Souls-like
+- Motor de calculo em `src/lib/soulslike.ts` com:
+  - `equip load` maximo e atual
+  - tiers de mobilidade (`light`, `medium`, `heavy`, `overloaded`)
+  - bonus de esquiva e penalidade de stamina por tier
+  - `attack rating` por scaling de arma
+  - penalidade por requisito nao atendido
+
+### Combate
+- `ArenaTab` atualizado para consumir estatisticas derivadas do sistema Souls-like.
+- Painel de combate agora exibe estado da carga e alertas de requisito faltando.
+
+### Inventario e Equipamentos
+- Paperdoll ampliado para:
+  - arma
+  - escudo
+  - capacete
+  - peitoral
+  - luvas
+  - calcas
+  - botas
+- Equipar respeita tipo de slot e requisitos do item.
+
+### Itens e Loja
+- Catalogo de itens expandido com:
+  - `weight`
+  - `requirements`
+  - `scaling`
+  - novos tipos de item
+- Loja com filtros por todos os slots e informacoes detalhadas de build.
+- Itens adicionados:
+  - 5 `helmet`
+  - 5 `gloves`
+  - 5 `legs`
+  - 5 `boots`
+  - peitorais existentes convertidos para tipo `chest`
+
+### Onboarding de Personagem
+- Criacao de personagem com distribuicao inicial de status.
+- Regras:
+  - 8 pontos totais obrigatorios
+  - maximo 4 por atributo
+  - validacao dupla (frontend/backend)
+- Presets competitivos:
+  - Balanceada
+  - Forca
+  - Destreza
+  - Tanque
+
+### Google AI / Nano Banana
+- API key validada e modelos disponiveis consultados.
+- Script de geracao de retratos criado (`scripts/generate-class-images.mjs`).
+- Integracao visual pronta na tela de classes (`/classes/*.png`).
+- Fallback de imagem implementado em `CharacterPortrait`.
+
+## 3. Bloqueios Conhecidos
+- Geracao de imagem via Gemini/Nano Banana bloqueada por quota:
+  - `HTTP 429 RESOURCE_EXHAUSTED`
+  - limite free tier atual em `0` para modelos de imagem
+- Para desbloquear: habilitar billing/quota no Google AI Studio/Cloud.
+
+## 4. Qualidade Tecnica
+- `npx tsc --noEmit` passando para as alteracoes recentes.
+- Existem warnings/erros de lint preexistentes no projeto em arquivos antigos.
+
+## 5. Proximos Passos Sugeridos
+1. Ativar quota de imagem no Google AI e rodar `node scripts/generate-class-images.mjs`.
+2. Balancear curva de progressao por classe (soft caps e custo por level).
+3. Persistir no banco metricas de build derivadas (ex.: attack rating e equip tier) para analytics.
+4. Revisar lint legacy para reduzir ruido tecnico nas proximas sprints.

@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+
 interface CharacterPortraitProps {
     src?: string | null
     fallbackEmoji: string
@@ -29,6 +31,12 @@ export default function CharacterPortrait({
     name,
     isHit = false,
 }: CharacterPortraitProps) {
+    const [showImage, setShowImage] = useState(Boolean(src))
+
+    useEffect(() => {
+        setShowImage(Boolean(src))
+    }, [src])
+
     const sz = SIZE_MAP[size]
     const border = BORDER_MAP[borderColor]
 
@@ -59,11 +67,12 @@ export default function CharacterPortrait({
                         background: 'linear-gradient(135deg, #1a1a1a, #0d0d0d)',
                     }}
                 >
-                    {src ? (
+                    {src && showImage ? (
                         <img
                             src={src}
                             alt={name || 'Personagem'}
                             className="w-full h-full object-cover rounded-md"
+                            onError={() => setShowImage(false)}
                         />
                     ) : (
                         <span className={`${sz.emoji} select-none`} style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.3))' }}>

@@ -1,41 +1,71 @@
 # RESUMO DO DESENVOLVIMENTO - VELMORA
 
-## 📅 Data: 04 de Março de 2026
+## Data: 05 de Marco de 2026
 
-Hoje transformamos o "Medieval RPG Game" básico em uma experiência imersiva de Storytelling Narrativo com mecânicas sólidas de RPG clássico.
+O projeto evoluiu de um RPG classico para uma base Souls-like com foco em build, equipamentos por slot, requisitos e escalonamento de arma.
 
-### 🚀 Principais Implementações
+### Principais Implementacoes
 
-#### 1. Sistema de Builds e Progressão (Fase 1)
-- **Atributos**: Adição da coluna `vigor` e `stat_points_available` na tabela `profiles`.
-- **Mecânica de Vigor**: Agora, investir pontos em Vigor aumenta permanentemente o HP máximo do jogador (+10 por ponto).
-- **Level Up Automático**: Criamos uma lógica de banco de dados (Trigger/Function Postgres) que detecta quando o jogador atinge o limite de XP (`level * 100`), sobe o nível automaticamente e concede +3 pontos de status.
-- **Distribuição de Pontos**: Server Action `distributeStats` permite que o jogador personalize sua build em Força, Agilidade, Precisão e Vigor.
+#### 1. Sistema Souls-like de Atributos e Equipamentos
+- Criado `src/lib/soulslike.ts` para centralizar:
+  - `equip load` (carga de equipamento)
+  - tiers de mobilidade: `light`, `medium`, `heavy`, `overloaded`
+  - bonus/penalidade de combate por carga
+  - `attack rating` com scaling por atributos
+  - penalidade por nao cumprir requisitos de item
+- `ArenaTab` passou a usar calculo Souls-like no combate.
+- `StatusTab` e `InventoryTab` mostram resumo de build e carga.
 
-#### 2. Motor Narrativo de Combate (Fase 2)
-- **Engine Literária**: Refatoramos o combate para não ser apenas "números na tela". Agora o backend gera frases viscerais e variadas baseadas no RNG e nas armas utilizadas.
-- **Templates Dinâmicos**: Sistema de interpolação que injeta nomes de armas, heróis, monstros e partes do corpo (Cabeça, Peito, Membros) nas descrições.
-- **Acertos Críticos**: Eventos raros e brutais que geram descrições únicas e multiplicadores de dano elevados.
+#### 2. Itens, Slots e Build Competitiva
+- `items.ts` foi expandido com:
+  - `weight`
+  - `requirements`
+  - `scaling`
+  - novos tipos de slot
+- Slots ativos no personagem:
+  - Arma, Escudo, Capacete, Peitoral, Luvas, Calcas, Botas
+- Itens novos adicionados para:
+  - `helmet` (5)
+  - `gloves` (5)
+  - `legs` (5)
+  - `boots` (5)
+- Os peitorais existentes foram mantidos e mapeados como `chest`.
 
-#### 3. Experiência Visual e "Suspense" (Fase 3)
-- **Efeito de Leitura**: O log de combate agora revela a história da luta turno a turno com um delay de 2.5 segundos, mantendo o suspense sobre o resultado.
-- **Feedback Sensorial**:
-    - **Shake de Tela**: Tremores sutis para acertos normais e "Arena Shake" intenso para críticos.
-    - **Estilização**: Texto esmaecido para erros, dourado para heróis e vermelho pulsante/brilhante para críticos.
-    - **Auto-scroll**: O log acompanha a narrativa automaticamente conforme ela se desenrola.
+#### 3. Loja e Inventario Evoluidos
+- `ShopTab` agora filtra por todos os tipos de equipamento.
+- Cada item exibe:
+  - peso
+  - requisitos
+  - scaling (quando aplicavel)
+- `InventoryTab` com paperdoll ampliado para os novos slots.
+- Itens sem requisito atendido sao destacados e bloqueados para equipar.
 
-### 🛠️ Tecnologias Utilizadas
-- **Core**: Next.js 14 (App Router) + React.
-- **Linguagem**: TypeScript (Tipagem rigorosa para combate e perfis).
-- **Banco de Dados/Auth**: Supabase (PostgreSQL para dados persistentes e RLS para segurança).
-- **Estilização**: Tailwind CSS v4 para o design medieval premium.
-- **Tipografia**: Google Fonts (Newsreader para imersão e MedievalSharp para títulos).
-- **Animações**: CSS Keyframes personalizadas (glow-pulse, shakes, floating particles).
+#### 4. Onboarding de Personagem (Build Inicial)
+- A criacao de personagem agora inclui distribuicao inicial de atributos.
+- Regras de equilibrio:
+  - 8 pontos obrigatorios no onboarding
+  - maximo 4 pontos por atributo
+  - validacao no frontend e backend
+- Presets adicionados:
+  - Balanceada, Forca, Destreza, Tanque
+- Previa de status final antes de confirmar personagem.
 
-### ⚔️ Próximos Passos (Planejados)
-- Implementação da Loja de Itens (ShopTab).
-- Sistema de escolha de classes iniciais (Cavaleiro, Nobre, Errante).
-- Persistência real de Inventário no banco de dados.
+#### 5. Integracao Google AI / Nano Banana
+- A chave da API foi validada e os modelos disponiveis foram listados com sucesso.
+- Script criado: `scripts/generate-class-images.mjs`
+  - gera retratos de classes em `public/classes`
+- Conexao na tela de classe pronta (`imageSrc` por classe).
+- Falha atual:
+  - geracao de imagem bloqueada por quota (`HTTP 429 RESOURCE_EXHAUSTED`).
+- `CharacterPortrait` agora tem fallback robusto para emoji quando a imagem nao existe.
+
+### Validacao Tecnica
+- `npx tsc --noEmit` passando nas alteracoes recentes.
+- Lint do projeto segue com erros preexistentes em varios arquivos antigos (nao iniciado nesta etapa).
+
+### Estado Atual
+- Base pronta para expansao de RPG Souls-like com onboarding competitivo.
+- Falta apenas liberar quota/billing no Google AI para gerar automaticamente os retratos das classes.
 
 ---
-**Projeto pronto para estudo e expansão!**
+Projeto pronto para continuidade e balanceamento fino de progressao.
