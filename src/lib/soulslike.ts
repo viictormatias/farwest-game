@@ -51,7 +51,11 @@ export function checkItemRequirements(
     }
     return {
         meets: unmet.length === 0,
-        unmetLabels: unmet.map(([attr, needed]) => `${ATTRIBUTE_LABELS[attr] || attr.toUpperCase()} ${needed}`)
+        unmetLabels: unmet.map(([attr, needed]) => {
+            const current = (profile as any)[attr] || 0
+            const missing = Number(needed) - current
+            return `${ATTRIBUTE_LABELS[attr] || attr.toUpperCase()} ${missing}`
+        })
     }
 }
 

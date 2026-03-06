@@ -31,7 +31,7 @@ export interface Item {
 
 export const ITEMS: Item[] = [
     // Weapons
-    { id: 'rusty_dagger', name: 'Faca de Saloon', type: 'weapon', price: 50, rarity: 'common', description: 'Lâmina gasta para briga de bar.', requirements: { agility: 5 }, scaling: { agility: 'C', strength: 'E' }, stats: { strength: 3, agility: 2 }, min_damage: 5, max_damage: 10, image_url: '/images/rusty_dagger.png', icon: '🔪' },
+    { id: 'rusty_dagger', name: 'Faca de Saloon', type: 'weapon', price: 50, rarity: 'common', description: 'Lâmina gasta para briga de bar.', scaling: { agility: 'C', strength: 'E' }, stats: { strength: 3, agility: 2 }, min_damage: 5, max_damage: 10, image_url: '/images/rusty_dagger.png', icon: '🔪' },
     { id: 'short_revolver', name: 'Revólver de Cano Curto', type: 'weapon', price: 250, rarity: 'uncommon', description: 'Confiável para duelos no meio da rua.', requirements: { strength: 8, agility: 6 }, scaling: { accuracy: 'D', agility: 'D' }, stats: { strength: 8, accuracy: 6 }, min_damage: 15, max_damage: 25, image_url: '/images/arma2.jpeg', icon: '🔫' },
     { id: 'sawed_off', name: 'Espingarda de Cano Serrado', type: 'weapon', price: 600, rarity: 'rare', description: 'Brutal de perto e intimidadora.', requirements: { strength: 16, agility: 4 }, scaling: { strength: 'C' }, stats: { strength: 18, agility: -4 }, min_damage: 45, max_damage: 65, image_url: '/images/sawed_off.png', icon: '💥' },
     { id: 'duelist_revolver', name: 'Revólver de Duelista', type: 'weapon', price: 1200, rarity: 'epic', description: 'Saque veloz e tiro preciso.', requirements: { agility: 16, accuracy: 10 }, scaling: { agility: 'B', accuracy: 'D' }, stats: { agility: 10, accuracy: 18, strength: 6 }, min_damage: 28, max_damage: 38, image_url: '/images/arma1.jpeg', icon: '✨' },
@@ -69,7 +69,7 @@ export const ITEMS: Item[] = [
     { id: 'raven_boots', name: 'Botas do Corvo', type: 'boots', price: 2200, rarity: 'legendary', description: 'Mobilidade extrema para emboscadas.', requirements: { agility: 18, accuracy: 12 }, stats: { agility: 7, accuracy: 5 }, icon: '🐦‍⬛' },
 
     // Offhand (shield slot)
-    { id: 'simple_bandolier', name: 'Bandoleira Simples', type: 'shield', price: 150, rarity: 'common', description: 'Peitoral lateral para segurar suprimentos e impacto.', requirements: { strength: 6 }, stats: { defense: 8, agility: -1 }, icon: '🛡️' },
+    { id: 'simple_bandolier', name: 'Bandoleira Simples', type: 'shield', price: 150, rarity: 'common', description: 'Peitoral lateral para segurar suprimentos e impacto.', stats: { defense: 8, agility: -1 }, icon: '🛡️' },
     { id: 'reinforced_bandolier', name: 'Bandoleira Reforçada', type: 'shield', price: 600, rarity: 'rare', description: 'Proteção extra para trocas de tiro longas.', requirements: { strength: 12 }, stats: { defense: 20, agility: -4 }, icon: '🛡️' },
     { id: 'sheriff_arm_shield', name: 'Braçadeira Reforçada do Xerife', type: 'shield', price: 1500, rarity: 'epic', description: 'Protetor de braço pesado para aguentar disparos.', requirements: { strength: 20, vigor: 8 }, stats: { defense: 38, agility: -8, vigor: 9 }, icon: '🛡️' },
 
