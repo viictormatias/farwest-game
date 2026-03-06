@@ -189,7 +189,7 @@ export default function Header({ profile, onRefresh }: { profile: Profile; onRef
                                         <span className="text-xs font-mono font-black text-gold flex items-center gap-1.5">
                                             <span className="animate-pulse text-[10px]">⌛</span> {Math.floor(timeLeft / 60)}m
                                         </span>
-                                    ) : (
+                                    ) : profile.job_finish_at && new Date(profile.job_finish_at).getTime() <= Date.now() ? (
                                         <button
                                             onClick={handleClaim}
                                             disabled={isClaiming}
@@ -197,7 +197,7 @@ export default function Header({ profile, onRefresh }: { profile: Profile; onRef
                                         >
                                             {isClaiming ? '...' : 'COLETAR'}
                                         </button>
-                                    )}
+                                    ) : null}
                                 </div>
                                 <div className="absolute bottom-0 left-0 h-[1px] bg-gold/20 w-full" />
                             </div>

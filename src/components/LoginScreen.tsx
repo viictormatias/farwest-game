@@ -9,6 +9,7 @@ export default function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => 
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [errorMsg, setErrorMsg] = useState('')
+    const [regSuccess, setRegSuccess] = useState(false)
 
     const handleAuth = async (isLogin: boolean) => {
         setLoading(true)
@@ -18,8 +19,13 @@ export default function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => 
                 ? await loginWithEmail(email, password)
                 : await signUpWithEmail(email, password)
 
-            if (error) setErrorMsg(error.message)
-            else onLoginSuccess()
+            if (error) {
+                setErrorMsg(error.message)
+            } else if (!isLogin) {
+                setRegSuccess(true)
+            } else {
+                onLoginSuccess()
+            }
         } catch (err: any) {
             setErrorMsg(err.message || 'Erro inesperado')
         } finally {
@@ -47,6 +53,15 @@ export default function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => 
                     <img src="/images/logo-grande.jpeg" alt="Far West Logo" className="w-72 h-auto drop-shadow-[0_0_20px_rgba(242,185,13,0.4)] animate-fade-in rounded-sm" />
                 </div>
                 <p className="text-base text-gray-400 italic mb-8 uppercase tracking-[0.2em] font-black">Viva rápido, mire melhor</p>
+
+                {regSuccess && (
+                    <div className="w-full p-4 mb-6 rounded-sm text-sm font-bold uppercase tracking-widest animate-pulse"
+                        style={{ border: '2px solid rgba(34,197,94,0.4)', background: 'rgba(20,40,20,0.8)', color: '#4ade80' }}
+                    >
+                        <div className="text-lg mb-1">✉️ SUCESSO!</div>
+                        Verifique seu e-mail para confirmar o cadastro antes de entrar.
+                    </div>
+                )}
 
                 {errorMsg && (
                     <div className="w-full p-3 mb-4 rounded-sm text-xs font-bold uppercase tracking-wider"

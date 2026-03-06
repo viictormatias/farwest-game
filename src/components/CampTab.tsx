@@ -182,7 +182,7 @@ export default function CampTab({ profile, onRefresh }: { profile: Profile; onRe
                                             <span className="text-green-400 animate-pulse">✅ Missão concluída!</span>
                                         )}
                                     </div>
-                                    {timeLeft === 0 && (
+                                    {timeLeft === 0 && profile.job_finish_at && new Date(profile.job_finish_at).getTime() <= Date.now() && (
                                         <button
                                             onClick={handleClaim}
                                             disabled={isClaiming}

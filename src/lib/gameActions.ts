@@ -415,6 +415,19 @@ export async function claimJobAction(profile: Profile, job: Job) {
 
     if (getError || !latestProfile) return false
 
+    // Segurança: Verificar se o tempo de conclusão realmente passou
+    if (!latestProfile.job_finish_at) return false
+    const finishTime = new Date(latestProfile.job_finish_at).getTime()
+    const now = Date.now()
+
+    if (now < finishTime) {
+        console.error('[DEBUG-JOB] Tentativa de coleta prematura detectada:', {
+            now: new Date(now).toISOString(),
+            finish: latestProfile.job_finish_at
+        });
+        return false
+    }
+
     const normalizedProfile = await syncVitals(latestProfile)
 
     const levelUpData = calculateLevelUp(
