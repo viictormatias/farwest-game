@@ -2,7 +2,7 @@ import { supabase } from './supabase'
 import { Item, ITEMS, ItemRarity } from './items'
 
 const MAX_ENERGY = 100
-const ENERGY_REGEN_PER_TICK = 1
+const ENERGY_REGEN_PER_TICK = 10
 const ENERGY_REGEN_INTERVAL_SECONDS = 60
 
 export interface Profile {
