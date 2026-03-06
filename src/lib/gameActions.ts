@@ -65,7 +65,7 @@ export type InitialStatKey = 'strength' | 'defense' | 'agility' | 'accuracy' | '
 export type InitialStatAllocation = Partial<Record<InitialStatKey, number>>
 export const ONBOARDING_STAT_POINTS = 5
 export const ONBOARDING_MAX_PER_STAT = 8
-export const COMBAT_ENERGY_COST = 12
+export const COMBAT_ENERGY_COST = 0
 
 function parseTimestampMs(value?: string | null): number | null {
     if (!value) return null

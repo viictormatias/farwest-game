@@ -12,6 +12,7 @@ O projeto está estável, com deploy funcional no Vercel (Next.js 15.5.7). A int
 8. **Lightbox Funcional:** Corrigido conflito no Header e simplificada lógica de exibição para itens e retratos. Agora permite visualizar itens mesmo sem requisitos de status.
 9. **Correção de Flicker em Missões:** O botão de recompensa não aparece mais incorretamente ao iniciar uma nova tarefa.
 10. **Sincronização de Regeneração:** O fôlego (energia) agora regenera na mesma velocidade da vida (100% em 10 minutos).
+11. **Duelos Gratuitos:** O custo de energia para duelos na arena foi removido (0 E).
 
 ### Pendências Imediatas
 1. Monitorar o deploy automático no Vercel para garantir que as novas mudanças de layout (card maior) não causem scroll indesejado em telas menores.

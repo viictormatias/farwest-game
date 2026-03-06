@@ -425,7 +425,7 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
                     <span className="text-gold font-black uppercase tracking-[0.2em] border-b border-gold/20 pb-0.5">Espólios do Duelo:</span>
                     <span className="text-green-400 font-black">+{combatSummary.xpGain} XP</span>
                     <span className="text-yellow-400 font-black">+{combatSummary.goldGain} O</span>
-                    <span className="text-blue-400 font-black">-{combatSummary.energyCost} E</span>
+                    {combatSummary.energyCost > 0 && <span className="text-blue-400 font-black">-{combatSummary.energyCost} E</span>}
                     {combatSummary.consumableDrop && <span className="text-purple-400 font-black">📦 {combatSummary.consumableDrop.name}</span>}
                     {combatSummary.equipmentDrop && (
                         <span style={{ color: RARITY_COLORS[combatSummary.equipmentDrop.rarity]?.textColor }} className="font-black border-l border-white/10 pl-3 ml-2">⚔️ {combatSummary.equipmentDrop.name}</span>
