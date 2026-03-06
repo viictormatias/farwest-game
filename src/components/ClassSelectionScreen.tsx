@@ -214,10 +214,10 @@ export default function ClassSelectionScreen({ userId, onCreated }: ClassSelecti
             />
             <div className="absolute inset-0 z-1" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%)' }} />
 
-            <div className="max-w-6xl w-full western-border p-6 md:p-8 bg-black/60 relative z-10 backdrop-blur-md"
+            <div className="max-w-6xl w-full western-border p-4 md:p-6 bg-black/60 relative z-10 backdrop-blur-md"
                 style={{ border: '1px solid rgba(242,185,13,0.2)', boxShadow: '0 0 60px rgba(0,0,0,0.9), 0 0 30px rgba(242,185,13,0.1)' }}
             >
-                <h1 className="text-3xl md:text-5xl font-black text-gold title-western text-center mb-6 md:mb-10 uppercase tracking-widest leading-tight">
+                <h1 className="text-2xl md:text-3xl font-black text-gold title-western text-center mb-4 md:mb-6 uppercase tracking-widest leading-tight">
                     Monte Seu Pistoleiro
                 </h1>
 
@@ -239,10 +239,10 @@ export default function ClassSelectionScreen({ userId, onCreated }: ClassSelecti
                         </button>
 
                         {/* Large Character Card */}
-                        <div className="relative group transition-all duration-500 transform hover:scale-[1.02] w-full max-w-[280px] md:max-w-sm">
+                        <div className="relative group transition-all duration-500 transform hover:scale-[1.02] w-full max-w-[240px] md:max-w-xs">
                             <div className={`absolute -inset-1 rounded-sm blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200`}
                                 style={{ backgroundColor: classData.color }} />
-                            <div className="relative western-border p-1.5 md:p-2 bg-black overflow-hidden aspect-[3/4]">
+                            <div className="relative western-border p-1 bg-black overflow-hidden aspect-[3/4]">
                                 <img
                                     src={classData.imageSrc}
                                     alt={classData.name}
@@ -250,25 +250,29 @@ export default function ClassSelectionScreen({ userId, onCreated }: ClassSelecti
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
 
-                                <div className="absolute bottom-4 md:bottom-6 left-4 md:left-6 right-4 md:right-6">
-                                    <div className="flex flex-col md:flex-row md:justify-between md:items-end mb-2">
-                                        <h2 className="text-4xl md:text-6xl font-black title-western uppercase tracking-tighter leading-none" style={{ color: classData.color }}>
+                                <div className="absolute bottom-2 md:bottom-4 left-3 md:left-4 right-3 md:right-4 z-10">
+                                    <div className="flex flex-col mb-1">
+                                        <h2 className="text-2xl md:text-3xl font-black title-western uppercase tracking-tighter leading-tight" style={{ color: classData.color }}>
                                             {classData.name}
                                         </h2>
-                                        <span className="text-white/60 text-[10px] md:text-sm uppercase font-black mt-1 md:mb-3">{classData.suggestedName}, {classData.age} anos</span>
+                                        <span className="text-white/80 text-[10px] md:text-xs uppercase font-bold tracking-wider">
+                                            {classData.suggestedName}, {classData.age} anos
+                                        </span>
                                     </div>
-                                    <p className="text-sm md:text-base text-gray-200 italic mt-2 md:mt-4 leading-relaxed border-l-2 border-white/20 pl-4 font-medium line-clamp-3 md:line-clamp-none">"{classData.flavor}"</p>
+                                    <p className="text-xs md:text-sm text-gray-200 italic mt-1 leading-relaxed border-l-2 border-white/20 pl-3 font-medium line-clamp-2">
+                                        "{classData.flavor}"
+                                    </p>
                                 </div>
                             </div>
                         </div>
 
 
                         {/* Breadcrumbs/Dots */}
-                        <div className="flex gap-2 mt-6">
+                        <div className="flex gap-2 mt-4">
                             {CLASSES.map((c, i) => (
                                 <div
                                     key={c.id}
-                                    className={`w-2 h-2 rounded-full transition-all duration-300 ${selectedClass === c.id ? 'w-6 bg-gold' : 'bg-gray-700'}`}
+                                    className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer ${selectedClass === c.id ? 'w-4 bg-gold' : 'bg-gray-700 hover:bg-gray-500'}`}
                                     onClick={() => setSelectedClass(c.id)}
                                 />
                             ))}
@@ -277,81 +281,81 @@ export default function ClassSelectionScreen({ userId, onCreated }: ClassSelecti
 
                     {/* Stats & Customization Side */}
                     <div className="lg:w-[400px] flex flex-col gap-4">
-                        <div className="western-border p-6 bg-black/40 space-y-6 flex-1">
+                        <div className="western-border p-4 bg-black/40 space-y-4 flex-1">
                             <div>
-                                <h3 className="text-gold uppercase text-sm tracking-[0.3em] font-black mb-8 border-b border-gold/20 pb-2">Atributos de Cartaz</h3>
-                                <div className="grid grid-cols-2 gap-x-10 gap-y-6">
-                                    <div className="flex justify-between border-b border-white/5 pb-3 text-base">
+                                <h3 className="text-gold uppercase text-[10px] tracking-[0.3em] font-black mb-4 border-b border-gold/20 pb-1">Atributos de Cartaz</h3>
+                                <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+                                    <div className="flex justify-between border-b border-white/5 pb-1 text-xs">
                                         <span className="text-gray-500 uppercase font-black">Vida Max</span>
-                                        <span className="text-red-400 font-black text-lg">{projected.hp}</span>
+                                        <span className="text-red-400 font-black text-sm">{projected.hp}</span>
                                     </div>
-                                    <div className="flex justify-between border-b border-white/5 pb-3 text-base">
+                                    <div className="flex justify-between border-b border-white/5 pb-1 text-xs">
                                         <span className="text-gray-500 uppercase font-black">Força</span>
-                                        <span className="text-gold font-black text-lg">{projected.strength}</span>
+                                        <span className="text-gold font-black text-sm">{projected.strength}</span>
                                     </div>
-                                    <div className="flex justify-between border-b border-white/5 pb-3 text-base">
+                                    <div className="flex justify-between border-b border-white/5 pb-1 text-xs">
                                         <span className="text-gray-500 uppercase font-black">Defesa</span>
-                                        <span className="text-gold font-black text-lg">{projected.defense}</span>
+                                        <span className="text-gold font-black text-sm">{projected.defense}</span>
                                     </div>
-                                    <div className="flex justify-between border-b border-white/5 pb-3 text-base">
+                                    <div className="flex justify-between border-b border-white/5 pb-1 text-xs">
                                         <span className="text-gray-500 uppercase font-black">Agilidade</span>
-                                        <span className="text-gold font-black text-lg">{projected.agility}</span>
+                                        <span className="text-gold font-black text-sm">{projected.agility}</span>
                                     </div>
-                                    <div className="flex justify-between border-b border-white/5 pb-3 text-base">
+                                    <div className="flex justify-between border-b border-white/5 pb-1 text-xs">
                                         <span className="text-gray-500 uppercase font-black">Pontaria</span>
-                                        <span className="text-gold font-black text-lg">{projected.accuracy}</span>
+                                        <span className="text-gold font-black text-sm">{projected.accuracy}</span>
                                     </div>
-                                    <div className="flex justify-between border-b border-white/5 pb-3 text-base">
+                                    <div className="flex justify-between border-b border-white/5 pb-1 text-xs">
                                         <span className="text-gray-500 uppercase font-black">Vigor</span>
-                                        <span className="text-gold font-black text-lg">{projected.vigor}</span>
+                                        <span className="text-gold font-black text-sm">{projected.vigor}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="pt-4 border-t border-white/10">
-                                <div className="flex justify-between items-center mb-6">
-                                    <h3 className="text-gold uppercase text-sm tracking-[0.3em] font-black">Recursos Iniciais</h3>
-                                    <span className={`text-sm font-black px-4 py-1.5 rounded-sm border-2 ${pointsLeft === 0 ? 'bg-green-900/40 border-green-400/50 text-green-400' : 'bg-gold/10 border-gold/30 text-gold'}`}>
+                            <div className="pt-2 border-t border-white/10">
+                                <div className="flex justify-between items-center mb-3">
+                                    <h3 className="text-gold uppercase text-[10px] tracking-[0.3em] font-black">Recursos Iniciais</h3>
+                                    <span className={`text-[10px] font-black px-3 py-1 rounded-sm border-2 ${pointsLeft === 0 ? 'bg-green-900/40 border-green-400/50 text-green-400' : 'bg-gold/10 border-gold/30 text-gold'}`}>
                                         {pointsLeft} PTS RESTANTES
                                     </span>
                                 </div>
 
-                                <div className="grid grid-cols-1 gap-3">
+                                <div className="grid grid-cols-1 gap-2">
                                     {STAT_KEYS.map((key) => (
-                                        <div key={key} className="bg-white/5 px-4 py-3 flex items-center justify-between group hover:bg-white/10 transition-all">
-                                            <span className="text-base text-gray-200 uppercase font-black tracking-widest">
+                                        <div key={key} className="bg-white/5 px-3 py-2 flex items-center justify-between group hover:bg-white/10 transition-all">
+                                            <span className="text-xs text-gray-200 uppercase font-black tracking-widest">
                                                 {key === 'strength' ? 'Força' : key === 'defense' ? 'Defesa' : key === 'agility' ? 'Agilidade' : key === 'accuracy' ? 'Pontaria' : 'Vigor'}
                                             </span>
-                                            <div className="flex items-center gap-4">
-                                                <button onClick={() => adjust(key, -1)} className="w-10 h-10 flex items-center justify-center border border-white/20 text-gray-400 hover:text-white hover:border-white transition-all text-xl bg-white/5">-</button>
-                                                <span className="w-6 text-center text-lg font-black text-white">{alloc[key]}</span>
-                                                <button onClick={() => adjust(key, 1)} className="w-10 h-10 flex items-center justify-center border border-white/20 text-gray-400 hover:text-white hover:border-white transition-all text-xl bg-white/5">+</button>
+                                            <div className="flex items-center gap-3">
+                                                <button onClick={() => adjust(key, -1)} className="w-8 h-8 flex items-center justify-center border border-white/20 text-gray-400 hover:text-white hover:border-white transition-all text-lg bg-white/5">-</button>
+                                                <span className="w-4 text-center text-sm font-black text-white">{alloc[key]}</span>
+                                                <button onClick={() => adjust(key, 1)} className="w-8 h-8 flex items-center justify-center border border-white/20 text-gray-400 hover:text-white hover:border-white transition-all text-lg bg-white/5">+</button>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
-                                <div className="flex flex-wrap gap-2 mt-4">
+                                <div className="flex flex-wrap gap-1.5 mt-2">
                                     {PRESETS.map(p => (
-                                        <button key={p.id} onClick={() => applyPreset(p.id)} className="px-3 py-1.5 text-[10px] border-2 border-white/10 text-gray-400 hover:text-gold hover:border-gold uppercase transition-all font-black">
+                                        <button key={p.id} onClick={() => applyPreset(p.id)} className="px-2 py-1 text-[9px] border border-white/10 text-gray-400 hover:text-gold hover:border-gold uppercase transition-all font-black">
                                             {p.label}
                                         </button>
                                     ))}
                                 </div>
                             </div>
 
-                            <div className="space-y-3 pt-4 border-t border-white/10">
+                            <div className="space-y-2 pt-2 border-t border-white/10">
                                 <input
                                     type="text"
                                     placeholder="NOME DO PISTOLEIRO"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
-                                    className="w-full bg-black/60 border border-white/10 text-white p-4 text-lg text-center outline-none focus:border-gold transition-all font-black tracking-widest placeholder:text-gray-700"
+                                    className="w-full bg-black/60 border border-white/10 text-white p-3 text-base text-center outline-none focus:border-gold transition-all font-black tracking-widest placeholder:text-gray-700"
                                     maxLength={20}
                                 />
                                 <button
                                     onClick={handleCreate}
                                     disabled={isCreating || !username.trim() || pointsLeft !== 0}
-                                    className="btn-western w-full py-6 text-lg font-black tracking-[0.2em] flex items-center justify-center gap-2 disabled:opacity-30 disabled:grayscale transition-all"
+                                    className="btn-western w-full py-4 text-base font-black tracking-[0.2em] flex items-center justify-center gap-2 disabled:opacity-30 disabled:grayscale transition-all"
                                 >
                                     {isCreating ? 'PROCESSANDO...' : 'INICIAR JORNADA'}
                                 </button>
