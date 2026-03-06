@@ -201,8 +201,8 @@ export default function Dashboard() {
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-1000"
         style={{
           backgroundImage: `url("${tabBackgrounds[activeTab]}")`,
-          filter: 'grayscale(0.4) brightness(0.2) contrast(1.2)',
-          opacity: 0.4
+          filter: 'grayscale(0.2) brightness(0.4) contrast(1.1)',
+          opacity: 0.8
         }}
       />
 
@@ -267,7 +267,7 @@ export default function Dashboard() {
           <div
             className="relative rounded-b-lg rounded-tr-lg overflow-hidden"
             style={{
-              background: 'rgba(20, 13, 7, 0.7)', // Semi-transparent to let global BG through
+              background: 'rgba(20, 13, 7, 0.5)', // Mais transparente para a imagem aparecer mais
               border: '2px solid #d4af37', // Gold border
               boxShadow: '0 8px 32px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.6)',
               minHeight: '400px', // Reduced from 520px for better mobile fit
