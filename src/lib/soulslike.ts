@@ -3,7 +3,6 @@ import type { Profile } from './gameActions'
 
 type CoreStat = 'strength' | 'defense' | 'agility' | 'accuracy' | 'vigor'
 type StatWithReq = 'strength' | 'agility' | 'accuracy' | 'vigor'
-export type EquipLoadTier = 'light' | 'medium' | 'heavy' | 'overloaded'
 
 export interface EquippedItemEntry {
     is_equipped?: boolean
@@ -12,18 +11,15 @@ export interface EquippedItemEntry {
     type?: Item['type']
     requirements?: Partial<Record<StatWithReq, number>>
     scaling?: Partial<Record<StatWithReq, ScalingGrade>>
-    weight?: number
+    min_damage?: number
+    max_damage?: number
 }
 
 export interface SoulsDerivedStats {
     bonuses: Record<CoreStat, number>
-    equipLoadMax: number
-    equipLoadCurrent: number
-    equipLoadPct: number
-    equipTier: EquipLoadTier
-    dodgeBonus: number
-    staminaRegenPenalty: number
     attackRating: number
+    minDamage: number
+    maxDamage: number
     requirementPenalty: number
     unmetRequirements: string[]
 }
@@ -37,20 +33,6 @@ const SCALING_FACTOR: Record<ScalingGrade, number> = {
     S: 1.05
 }
 
-export function getEquipLoadTier(pct: number): EquipLoadTier {
-    if (pct < 30) return 'light'
-    if (pct < 70) return 'medium'
-    if (pct < 100) return 'heavy'
-    return 'overloaded'
-}
-
-function tierCombatModifiers(tier: EquipLoadTier) {
-    if (tier === 'light') return { dodgeBonus: 8, staminaRegenPenalty: 0 }
-    if (tier === 'medium') return { dodgeBonus: 0, staminaRegenPenalty: 8 }
-    if (tier === 'heavy') return { dodgeBonus: -12, staminaRegenPenalty: 22 }
-    return { dodgeBonus: -30, staminaRegenPenalty: 45 }
-}
-
 export function checkItemRequirements(
     profile: Profile,
     item: Pick<Item, 'requirements' | 'name'>
@@ -60,9 +42,16 @@ export function checkItemRequirements(
         const current = (profile as any)[attr] || 0
         return current < Number(needed)
     })
+    const ATTRIBUTE_LABELS: Record<string, string> = {
+        strength: 'FORÇA',
+        agility: 'AGILIDADE',
+        accuracy: 'PONTARIA',
+        vigor: 'VIGOR',
+        defense: 'DEFESA'
+    }
     return {
         meets: unmet.length === 0,
-        unmetLabels: unmet.map(([attr, needed]) => `${attr.toUpperCase()} ${needed}`)
+        unmetLabels: unmet.map(([attr, needed]) => `${ATTRIBUTE_LABELS[attr] || attr.toUpperCase()} ${needed}`)
     }
 }
 
@@ -93,7 +82,6 @@ export function deriveSoulsStats(profile: Profile, equippedItems: EquippedItemEn
         vigor: 0
     }
 
-    let totalWeight = 0
     const unmetRequirements: string[] = []
     const equippedWeapon = equippedItems.find(i => i.type === 'weapon')
 
@@ -104,35 +92,30 @@ export function deriveSoulsStats(profile: Profile, equippedItems: EquippedItemEn
             }
         })
 
-        totalWeight += Number(item.weight || 0)
-
         if (item.requirements) {
             const r = checkItemRequirements(profile, { requirements: item.requirements, name: 'item' })
             unmetRequirements.push(...r.unmetLabels)
         }
     })
 
-    const equipLoadMax = Math.max(20, 40 + profile.vigor * 2 + profile.strength * 0.8)
-    const equipLoadPct = (totalWeight / equipLoadMax) * 100
-    const equipTier = getEquipLoadTier(equipLoadPct)
-    const { dodgeBonus, staminaRegenPenalty } = tierCombatModifiers(equipTier)
-
     const scalingBonus = getWeaponScalingBonus(profile, equippedWeapon as any)
-    const requirementPenalty = unmetRequirements.length > 0 ? 0.6 : 1
-    const attackRating = Math.max(
-        1,
-        Math.floor((profile.strength + bonuses.strength + scalingBonus) * requirementPenalty)
-    )
+    const requirementPenalty = unmetRequirements.length > 0 ? 0.5 : 1
+
+    const minBase = equippedWeapon?.min_damage || 1
+    const maxBase = equippedWeapon?.max_damage || 5
+
+    // Scale damage by strength (30% efficiency)
+    const strBonus = (profile.strength + bonuses.strength) * 0.3
+
+    const minDamage = Math.floor((minBase + scalingBonus + strBonus) * requirementPenalty)
+    const maxDamage = Math.floor((maxBase + scalingBonus + strBonus) * requirementPenalty)
+    const attackRating = Math.floor((minDamage + maxDamage) / 2)
 
     return {
         bonuses,
-        equipLoadMax,
-        equipLoadCurrent: totalWeight,
-        equipLoadPct,
-        equipTier,
-        dodgeBonus,
-        staminaRegenPenalty,
         attackRating,
+        minDamage,
+        maxDamage,
         requirementPenalty,
         unmetRequirements: Array.from(new Set(unmetRequirements))
     }

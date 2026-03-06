@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase"
 // Para evitar erro de build, re-exportamos o supabase client.
 const createClient = () => supabase
 import { revalidatePath } from "next/cache"
+import { syncEnergyAction } from "./energy"
 
 // Interfaces baseadas nas tabelas de RPG (profiles, actions, etc)
 interface ActionResponse {
@@ -26,6 +27,9 @@ export async function startJob(jobId: string): Promise<ActionResponse> {
 
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) return { error: "Jogador não autenticado." }
+
+    // Antes de qualquer ação, sincroniza a energia do banco (regeneration)
+    await syncEnergyAction()
 
     // Obtém dados do jogador
     const { data: profile, error: profileError } = await supabase
@@ -64,6 +68,8 @@ export async function startJob(jobId: string): Promise<ActionResponse> {
     const { error: updateError } = await supabase
         .from("profiles")
         .update({
+            energy: profile.energy - job.energy_cost,
+            energy_last_regen_at: new Date().toISOString(), // Reset regen anchor on spend
             job_finish_at: finishAt.toISOString(),
             current_job_id: job.id
         })
@@ -94,6 +100,9 @@ export async function claimJob(): Promise<ActionResponse> {
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) return { error: "Jogador não autenticado." }
 
+    // Antes de coletar, sincroniza a energia
+    await syncEnergyAction()
+
     const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("energy, xp, gold, job_finish_at, current_job_id")
@@ -121,11 +130,6 @@ export async function claimJob(): Promise<ActionResponse> {
 
     if (jobError || !job) return { error: "Dados do trabalho concluído inválidos." }
 
-    // Valida energia (como o desconto ocorre apenas agora, validar mais uma vez se puder ir a zero)
-    // Caso de borda: O que acontece se a energia foi gasta em outro lugar enquanto esperava e não tem o suficiente?
-    // Impede de reclamar ou joga para zero? Deixaremos que pelo menos esvazie.
-    const energyRemaining = Math.max(0, profile.energy - job.energy_cost)
-
     // Adiciona recompensas e reseta status de trabalho
     const newXp = profile.xp + job.xp_reward
     const newGold = profile.gold + job.gold_reward
@@ -133,7 +137,6 @@ export async function claimJob(): Promise<ActionResponse> {
     const { error: claimError } = await supabase
         .from("profiles")
         .update({
-            energy: energyRemaining,
             xp: newXp,
             gold: newGold,
             job_finish_at: null,
@@ -149,7 +152,7 @@ export async function claimJob(): Promise<ActionResponse> {
     revalidatePath('/tavern')
     return {
         success: true,
-        message: `Trabalho concluído! Você recebeu ${job.xp_reward} XP e ${job.gold_reward} Ouro. Sua energia foi reduzida.`,
-        data: { xp: newXp, gold: newGold, energy: energyRemaining }
+        message: `Trabalho concluído! Você recebeu ${job.xp_reward} XP e ${job.gold_reward} Ouro.`,
+        data: { xp: newXp, gold: newGold, energy: profile.energy }
     }
 }

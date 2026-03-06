@@ -1,13 +1,14 @@
-// combat.ts — Fase 2: Motor Narrativo de Storytelling
+﻿// combat.ts - Motor narrativo de duelo no faroeste
 
 export interface Fighter {
     name: string;
     hp: number;
-    stamina: number;
     strength: number;
     defense: number;
     agility: number;
     accuracy: number;
+    minDamage: number;
+    maxDamage: number;
     weaponName?: string;
 }
 
@@ -29,40 +30,73 @@ export interface CombatResult {
 }
 
 const TARGETS = [
-    { name: 'Cabeça', chance: 0.08, multiplier: 5.0 },
-    { name: 'Peito', chance: 0.55, multiplier: 1.8 },
-    { name: 'Barriga', chance: 0.22, multiplier: 1.3 },
-    { name: 'Membros', chance: 0.15, multiplier: 0.8 },
+    { name: 'Cabeça', chance: 0.05, multiplier: 3.5, gender: 'f', plural: false },
+    { name: 'Peito', chance: 0.45, multiplier: 1.4, gender: 'm', plural: false },
+    { name: 'Barriga', chance: 0.10, multiplier: 1.1, gender: 'f', plural: false },
+    { name: 'Braços', chance: 0.20, multiplier: 0.8, gender: 'm', plural: true },
+    { name: 'Pernas', chance: 0.20, multiplier: 0.7, gender: 'f', plural: true },
 ];
 
-const STAMINA_COST_ATTACK = 18;
 const MAX_TURNS = 60;
 
 const NARRATIVE_TEMPLATES = {
-    miss: [
-        "{attacker} desfere um golpe lateral pesado, mas {defender} salta para trás no último segundo. A {weapon} corta apenas o vento gélido da arena.",
-        "{attacker} avança bruscamente, porém seus passos são previsíveis. {defender} esquiva e observa a lâmina passar a centímetros de seu rosto.",
-        "Um estrondo de aço! A {weapon} de {attacker} raspa contra a armadura de {defender}, soltando um feixe de faíscas, contudo não encontra carne.",
-        "Com a poeira subindo sob seus pés, {attacker} ataca com fúria. {defender} antecipa o movimento e desvia agilmente para o flanco cego.",
-        "A lâmina traidora de {attacker} assobia pelo ar, mas o puro instinto de {defender} evita que a investida machuque."
+    firearm_miss: [
+        "{attacker} dispara, mas a bala raspa o vento.",
+        "{defender} mergulha na terra e escapa do tiro.",
+        "O tiro de {weapon} acerta apenas a poeira.",
+        "{attacker} erra o alvo; {defender} mantém a calma."
     ],
-    hit: [
-        "{attacker} avança em uma investida rápida e perfura o {bodyPart} de {defender}. Um filete de sangue escuro logo mancha a cota de malha (-{damage} HP).",
-        "O som do metal cortando a carne ecoa! A {weapon} rasga levemente o {bodyPart} de {defender}, arrancando um grito rouco (-{damage} HP).",
-        "{attacker} encontra uma brecha na defesa vacilante de {defender} e golpeia sem piedade o {bodyPart} (-{damage} HP).",
-        "O impacto faz {defender} cambalear grosseiramente para trás. A {weapon} deixou um feio rastro de dor e sangue em seu {bodyPart} (-{damage} HP)."
+    melee_miss: [
+        "{attacker} golpeia com {weapon}, mas erra por pouco.",
+        "{defender} recua e a lâmina corta o ar.",
+        "{attacker} avança, mas {defender} esquiva no tempo certo.",
+        "O golpe de {weapon} passa no vazio."
     ],
-    critical: [
-        "UM GOLPE DEVASTADOR! A {weapon} de {attacker} esmaga implacavelmente contra o {bodyPart} de {defender} com um estalo brutal. A arena inteira prende a respiração! (-{damage} HP CRÍTICO!)",
-        "CARNIFICINA ABSOLUTA! {attacker} atinge com maestria letal o {bodyPart} de {defender}. Um jorro carmesim escurece a terra batida e a dor é inimaginável! (-{damage} HP CRÍTICO!)",
-        "PERFEIÇÃO E MORTE! O golpe fende o ar e rasga o {bodyPart} de {defender}, ignorando qualquer armadura e quebrando ossos. Um ataque para os pergaminhos! (-{damage} HP CRÍTICO!)"
+    beast_miss: [
+        "{attacker} salta, mas {defender} rola para o lado.",
+        "O bote de {attacker} encontra apenas o ar.",
+        "{attacker} avança soltando um rosnado, mas erra o alvo.",
+        "{defender} se esquiva das garras de {attacker}."
     ],
-    rest: [
-        "Apoiando o peso de seu corpo num dos joelhos, {attacker} respira pesadamente, limpando o suor e o sangue que escorrem de sua testa.",
-        "O peito de {attacker} sobe e desce rápido; uma pausa tática é tomada. O vento frio beija a arena enquanto o fôlego é recuperado.",
-        "Cada músculo queimando, {attacker} engole em seco e afasta o peso do cansaço, adotando uma guarda conservadora."
+    firearm_hit: [
+        "{attacker} acerta {art_def} {bodyPart} com {weapon}.",
+        "Tiro certeiro {art_prep} {bodyPart} de {defender}.",
+        "{weapon} encontra {art_def} {bodyPart} de {defender}.",
+        "{attacker} perfura {art_def} {bodyPart} com chumbo."
+    ],
+    melee_hit: [
+        "Corte seco! {attacker} atinge {art_def} {bodyPart} com {weapon}.",
+        "{attacker} rasga {art_def} {bodyPart} de {defender}.",
+        "{weapon} corta {art_def} {bodyPart} de {defender}.",
+        "{attacker} conecta um golpe {art_prep} {bodyPart}."
+    ],
+    beast_hit: [
+        "{attacker} crava as presas {art_prep} {bodyPart} de {defender}!",
+        "{attacker} dilacera {art_def} {bodyPart} de {defender} com as garras.",
+        "O bote atinge {art_def} {bodyPart}! {attacker} morde com força.",
+        "{attacker} atinge {art_def} {bodyPart} em um salto furioso."
+    ],
+    firearm_crit: [
+        "NO OLHO! {attacker} acerta {art_def} {bodyPart} com precisão fatal!",
+        "TIRO MORTAL! {weapon} explode {art_def} {bodyPart}!",
+        "{attacker} finaliza com chumbo {art_prep} {bodyPart}!"
+    ],
+    melee_crit: [
+        "GOLPE LETAL! {attacker} crava {weapon} {art_prep} {bodyPart}!",
+        "VIOLÊNCIA PURA! O corte {art_prep} {bodyPart} é profundo!",
+        "{attacker} dilacera {art_def} {bodyPart} de {defender}!"
+    ],
+    beast_crit: [
+        "ATAQUE VISCERAL! {attacker} estraçalha {art_def} {bodyPart}!",
+        "MORDIDA FATAL! {attacker} trava a mandíbula {art_prep} {bodyPart}!",
+        "{attacker} derruba {defender} e ataca {art_def} {bodyPart} com fúria!"
     ]
 };
+
+function capitalize(str: string) {
+    if (!str) return str;
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 function interpolate(template: string, vars: any) {
     return template.replace(/{(\w+)}/g, (match, key) => vars[key] || match);
@@ -78,14 +112,32 @@ function getRandomTarget() {
     return TARGETS[TARGETS.length - 1];
 }
 
-function getRandomTemplate(type: keyof typeof NARRATIVE_TEMPLATES) {
-    const templates = NARRATIVE_TEMPLATES[type];
-    return templates[Math.floor(Math.random() * templates.length)];
+function isFirearm(weaponName: string): boolean {
+    const meleeKeywords = ['faca', 'punhal', 'canivete', 'punho', 'machado', 'lâmina', 'baioneta', 'cutelo', 'adaga', 'falcão', 'espada', 'garras', 'mordida', 'presas'];
+    const name = weaponName.toLowerCase();
+    return !meleeKeywords.some(kw => name.includes(kw));
+}
+
+function isBeast(name: string): boolean {
+    const beasts = ['coiote', 'lobo', 'urso', 'serpente', 'puma', 'jacaré', 'cão'];
+    const lower = name.toLowerCase();
+    return beasts.some(b => lower.includes(b));
 }
 
 export function simulateCombat(fighter1: Fighter, fighter2: Fighter): CombatResult {
-    const f1 = { ...fighter1, stamina: 100, weaponName: fighter1.weaponName || 'lâmina' };
-    const f2 = { ...fighter2, stamina: 90, weaponName: fighter2.weaponName || 'arma' };
+    const f1IsBeast = isBeast(fighter1.name);
+    const f2IsBeast = isBeast(fighter2.name);
+
+    const f1 = {
+        ...fighter1,
+        name: capitalize(fighter1.name),
+        weaponName: f1IsBeast ? 'garras e presas' : (fighter1.weaponName || 'revólver')
+    };
+    const f2 = {
+        ...fighter2,
+        name: capitalize(fighter2.name),
+        weaponName: f2IsBeast ? 'garras e presas' : (fighter2.weaponName || 'faca')
+    };
 
     let attacker = f1.agility >= f2.agility ? f1 : f2;
     let defender = attacker === f1 ? f2 : f1;
@@ -98,39 +150,110 @@ export function simulateCombat(fighter1: Fighter, fighter2: Fighter): CombatResu
         let isCritical = false;
         let narrative = "";
 
-        if (attacker.stamina < 20) {
-            attacker.stamina += 40;
-            narrative = interpolate(getRandomTemplate('rest'), { attacker: attacker.name });
+        const attackerIsBeast = isBeast(attacker.name);
+
+        let hitChance = 55 + (attacker.accuracy - defender.agility);
+        hitChance = Math.max(20, Math.min(95, hitChance));
+
+        const target = getRandomTarget();
+        const hasGun = !attackerIsBeast && isFirearm(attacker.weaponName || '');
+
+        // Gramática
+        const artDef = target.gender === 'f' ? (target.plural ? 'as' : 'a') : (target.plural ? 'os' : 'o');
+        const artPrep = target.gender === 'f' ? (target.plural ? 'nas' : 'na') : (target.plural ? 'nos' : 'no');
+
+        const isNarrativeAction = Math.random() < 0.12;
+
+        if (isNarrativeAction) {
+            let actions;
+            if (attackerIsBeast) {
+                actions = [
+                    "{attacker} rosna baixo, mostrando as presas.",
+                    "{attacker} circula {defender}, procurando uma abertura.",
+                    "{attacker} solta um uivo curto e agressivo.",
+                    "{attacker} arranha o chão, preparando o bote."
+                ];
+            } else {
+                actions = hasGun ? [
+                    "{attacker} gira o tambor do revólver.",
+                    "{attacker} ajusta o chapéu e foca em {defender}.",
+                    "{attacker} mantém a mão firme no coldre.",
+                    "{attacker} cospe de lado e encara o alvo."
+                ] : [
+                    "{attacker} testa o fio da lâmina.",
+                    "{attacker} gira {weapon} na mão.",
+                    "{attacker} respira fundo, medindo o bote.",
+                    "{attacker} encara {defender} com sangue nos olhos."
+                ];
+            }
+            const action = actions[Math.floor(Math.random() * actions.length)];
+            narrative = interpolate(action, { attacker: attacker.name, defender: defender.name, weapon: attacker.weaponName });
+        } else if (Math.random() * 100 > hitChance) {
+            isMiss = true;
+            let templates;
+            if (attackerIsBeast) {
+                templates = NARRATIVE_TEMPLATES.beast_miss;
+            } else {
+                templates = hasGun ? NARRATIVE_TEMPLATES.firearm_miss : NARRATIVE_TEMPLATES.melee_miss;
+            }
+
+            narrative = interpolate(templates[Math.floor(Math.random() * templates.length)], {
+                attacker: attacker.name,
+                defender: defender.name,
+                weapon: attacker.weaponName,
+                bodyPart: target.name.toLowerCase(),
+                art_def: artDef,
+                art_prep: artPrep
+            });
         } else {
-            let hitChance = 55 + (attacker.accuracy - defender.agility);
-            hitChance = Math.max(20, Math.min(95, hitChance));
+            const rawBase = attacker.minDamage + Math.random() * (attacker.maxDamage - attacker.minDamage);
+            const defenderDefense = defender.defense * 0.15;
+            let finalDamage = Math.max(5, rawBase - defenderDefense);
 
-            attacker.stamina -= STAMINA_COST_ATTACK;
-            const target = getRandomTarget();
+            const isGraze = Math.random() < 0.18;
+            if (isGraze) {
+                finalDamage = Math.floor(finalDamage * 0.5);
+                damage = finalDamage;
+                let grazeMsg;
+                if (attackerIsBeast) {
+                    grazeMsg = "{attacker} arranha {art_def} {bodyPart} de raspão.";
+                } else {
+                    grazeMsg = hasGun ? "TIRO DE RASPÃO! Pegou {art_prep} {bodyPart}." : "CORTE SUPERFICIAL! Atingiu {art_def} {bodyPart}.";
+                }
 
-            if (Math.random() * 100 > hitChance) {
-                isMiss = true;
-                narrative = interpolate(getRandomTemplate('miss'), {
+                narrative = interpolate(grazeMsg, {
                     attacker: attacker.name,
                     defender: defender.name,
-                    weapon: attacker.weaponName,
-                    bodyPart: target.name.toLowerCase()
+                    bodyPart: target.name.toLowerCase(),
+                    damage: finalDamage,
+                    art_def: artDef,
+                    art_prep: artPrep
                 });
+                defender.hp = Math.max(0, defender.hp - damage);
             } else {
-                const rawBase = attacker.strength * 2.2 - defender.defense * 1.1;
-                const baseDamage = Math.max(5, rawBase + (Math.random() * 6 - 3));
-                damage = Math.floor(baseDamage * target.multiplier);
+                damage = Math.floor(finalDamage * target.multiplier);
                 isCritical = target.name === 'Cabeça';
-
                 defender.hp = Math.max(0, defender.hp - damage);
 
-                const templateType = isCritical ? 'critical' : 'hit';
-                narrative = interpolate(getRandomTemplate(templateType), {
+                let templates;
+                if (attackerIsBeast) {
+                    templates = isCritical ? NARRATIVE_TEMPLATES.beast_crit : NARRATIVE_TEMPLATES.beast_hit;
+                } else {
+                    if (isCritical) {
+                        templates = hasGun ? NARRATIVE_TEMPLATES.firearm_crit : NARRATIVE_TEMPLATES.melee_crit;
+                    } else {
+                        templates = hasGun ? NARRATIVE_TEMPLATES.firearm_hit : NARRATIVE_TEMPLATES.melee_hit;
+                    }
+                }
+
+                narrative = interpolate(templates[Math.floor(Math.random() * templates.length)], {
                     attacker: attacker.name,
                     defender: defender.name,
                     weapon: attacker.weaponName,
                     bodyPart: target.name.toLowerCase(),
-                    damage: damage
+                    damage: damage,
+                    art_def: artDef,
+                    art_prep: artPrep
                 });
             }
         }
@@ -139,7 +262,7 @@ export function simulateCombat(fighter1: Fighter, fighter2: Fighter): CombatResu
             turn,
             attacker: attacker.name,
             defender: defender.name,
-            action: narrative, // backward compatibility
+            action: narrative,
             narrative,
             damage,
             resultHp: defender.hp,
@@ -148,7 +271,6 @@ export function simulateCombat(fighter1: Fighter, fighter2: Fighter): CombatResu
         });
 
         if (defender.hp <= 0) break;
-
         [attacker, defender] = [defender, attacker];
         turn++;
     }

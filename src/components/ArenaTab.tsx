@@ -1,27 +1,62 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
-import { Profile, Enemy, getEnemies, getUserInventory } from '@/lib/gameActions'
+import { Profile, Enemy, COMBAT_ENERGY_COST, getEnemies, getUserInventory, resolveArenaCombat } from '@/lib/gameActions'
 import { simulateCombat, Fighter, NarrativeTurn } from '@/combat'
 import { ITEMS as CATALOG_ITEMS } from '@/lib/items'
 import { deriveSoulsStats, SoulsDerivedStats } from '@/lib/soulslike'
 import CharacterPortrait from './CharacterPortrait'
 import StatBar from './StatBar'
+import { ItemRarity } from '@/lib/items'
+
+const RARITY_COLORS: Record<string, { border: string; glow: string; label: string; textColor: string }> = {
+    common: { border: '#3a3a3a', glow: 'transparent', label: 'Comum', textColor: '#9ca3af' },
+    uncommon: { border: '#22c55e', glow: 'rgba(34,197,94,0.3)', label: 'Incomum', textColor: '#4ade80' },
+    rare: { border: '#3b82f6', glow: 'rgba(59,130,246,0.3)', label: 'Raro', textColor: '#60a5fa' },
+    epic: { border: '#a855f7', glow: 'rgba(168,85,247,0.4)', label: 'Épico', textColor: '#c084fc' },
+    legendary: { border: '#f2b90d', glow: 'rgba(242,185,13,0.4)', label: 'Lendário', textColor: '#f2b90d' },
+}
+
+const CLASS_PORTRAITS: Record<string, string> = {
+    'Xerife': '/images/xerife.jpeg',
+    'Pistoleiro': '/images/pistoleiro.jpeg',
+    'Forasteiro': '/images/forasteiro.jpeg',
+    'Pregador': '/images/pregador.jpeg',
+    'Nativo': '/images/nativo.jpeg',
+    'Vendedor': '/images/mercador.jpeg',
+    'CacadorDeRecompensas': '/images/cacador-de-recompensas.jpeg'
+}
 
 type CombatLogEntry = NarrativeTurn & { isNew?: boolean }
 
-export default function ArenaTab({ profile }: { profile: Profile }) {
+export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onRefresh: () => void }) {
     const [enemies, setEnemies] = useState<Enemy[]>([])
     const [selectedEnemy, setSelectedEnemy] = useState<Enemy | null>(null)
     const [combatLog, setCombatLog] = useState<CombatLogEntry[]>([])
     const [isFighting, setIsFighting] = useState(false)
     const [winner, setWinner] = useState<string | null>(null)
+    const [showCollectButton, setShowCollectButton] = useState(false)
+    const [isResolving, setIsResolving] = useState(false)
+    const [combatSummary, setCombatSummary] = useState<{
+        xpGain: number;
+        goldGain: number;
+        energyCost: number;
+        leveledUp?: boolean;
+        consumableDrop?: { name: string; icon: string };
+        equipmentDrop?: { name: string; icon: string; rarity: ItemRarity };
+    } | null>(null)
     const [playerHp, setPlayerHp] = useState(profile.hp_current)
     const [enemyHp, setEnemyHp] = useState<number>(0)
     const [playerHit, setPlayerHit] = useState<'normal' | 'critical' | false>(false)
     const [enemyHit, setEnemyHit] = useState<'normal' | 'critical' | false>(false)
     const [soulsSnapshot, setSoulsSnapshot] = useState<SoulsDerivedStats | null>(null)
     const logEndRef = useRef<HTMLDivElement>(null)
+
+    const [finalCombatResult, setFinalCombatResult] = useState<{
+        winnerName: string;
+        finalPlayerHp: number;
+        enemy: Enemy;
+    } | null>(null);
 
     const loadSoulsSnapshot = async () => {
         const inventory = await getUserInventory(profile.id)
@@ -43,9 +78,6 @@ export default function ArenaTab({ profile }: { profile: Profile }) {
         loadSoulsSnapshot()
     }, [profile.id])
 
-    useEffect(() => {
-        logEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, [combatLog])
 
     const handleEnemyChange = (id: string) => {
         const en = enemies.find(e => e.id === id) || null
@@ -66,9 +98,15 @@ export default function ArenaTab({ profile }: { profile: Profile }) {
 
     const handleFight = async () => {
         if (!selectedEnemy) return
+        if (profile.energy < COMBAT_ENERGY_COST) {
+            alert(`Energia insuficiente. Necessário: ${COMBAT_ENERGY_COST}.`)
+            return
+        }
         setIsFighting(true)
+        setShowCollectButton(false)
         setCombatLog([])
         setWinner(null)
+        setCombatSummary(null)
         setPlayerHp(profile.hp_current)
         setEnemyHp(selectedEnemy.hp_max)
 
@@ -78,7 +116,7 @@ export default function ArenaTab({ profile }: { profile: Profile }) {
             .map((inv: any) => CATALOG_ITEMS.find(it => it.id === inv.item_id))
             .filter(Boolean)
 
-        let weaponName = 'as maos'
+        let weaponName = 'punhos'
         equippedItems.forEach((item: any) => {
             if (item.type === 'weapon') weaponName = item.name
         })
@@ -91,10 +129,11 @@ export default function ArenaTab({ profile }: { profile: Profile }) {
             hp: profile.hp_current,
             strength: souls.attackRating,
             defense: profile.defense + souls.bonuses.defense,
-            agility: profile.agility + souls.bonuses.agility + souls.dodgeBonus,
+            agility: profile.agility + souls.bonuses.agility,
             accuracy: Math.floor((profile.accuracy + souls.bonuses.accuracy) * souls.requirementPenalty),
-            stamina: 100,
-            weaponName
+            minDamage: souls.minDamage,
+            maxDamage: souls.maxDamage,
+            weaponName: weaponName
         }
 
         const enemyFighter: Fighter = {
@@ -104,17 +143,28 @@ export default function ArenaTab({ profile }: { profile: Profile }) {
             defense: 5,
             agility: selectedEnemy.agility,
             accuracy: selectedEnemy.precision,
-            stamina: 100,
-            weaponName: 'garras'
+            minDamage: Math.floor(selectedEnemy.strength * 0.8),
+            maxDamage: Math.floor(selectedEnemy.strength * 1.2),
+            weaponName: 'Arma de Inimigo'
         }
 
         const result = simulateCombat(playerFighter, enemyFighter)
+        let finalPlayerHpVal = profile.hp_current
+        for (const turn of result.history) {
+            const defenderWasPlayer = turn.defender.toLowerCase() === profile.username.toLowerCase()
+            if (defenderWasPlayer) {
+                finalPlayerHpVal = turn.resultHp
+            }
+        }
 
         for (const turn of result.history) {
-            await new Promise(resolve => setTimeout(resolve, 2500))
+            await new Promise(resolve => setTimeout(resolve, 3200))
+
+            const attackerName = turn.attacker.toLowerCase()
+            const playerName = profile.username.toLowerCase()
 
             if (turn.damage > 0) {
-                if (turn.attacker === profile.username) {
+                if (attackerName === playerName) {
                     setEnemyHp(turn.resultHp)
                     triggerShake('enemy', turn.isCritical)
                 } else {
@@ -127,211 +177,229 @@ export default function ArenaTab({ profile }: { profile: Profile }) {
         }
 
         setWinner(result.winner)
+        setFinalCombatResult({
+            winnerName: result.winner,
+            finalPlayerHp: finalPlayerHpVal,
+            enemy: selectedEnemy
+        })
+        setShowCollectButton(true)
         setIsFighting(false)
     }
 
+    const handleCollectReward = async () => {
+        if (!finalCombatResult || isResolving) return
+        setIsResolving(true)
+
+        const resolution = await resolveArenaCombat(
+            profile.id,
+            finalCombatResult.enemy,
+            finalCombatResult.winnerName.toLowerCase() === profile.username.toLowerCase(),
+            finalCombatResult.finalPlayerHp
+        )
+
+        if (resolution.success) {
+            setCombatSummary({
+                xpGain: resolution.xpGain,
+                goldGain: resolution.goldGain,
+                energyCost: resolution.energyCost,
+                leveledUp: resolution.leveledUp,
+                consumableDrop: resolution.consumableDrop,
+                equipmentDrop: resolution.equipmentDrop
+            })
+            await onRefresh()
+        }
+
+        setShowCollectButton(false)
+        setIsResolving(false)
+    }
+
     const getLogStyle = (log: NarrativeTurn): React.CSSProperties => {
-        if (log.isMiss) return { color: '#6b7280', fontWeight: 'normal', background: 'transparent' }
+        const playerName = profile.username.toLowerCase()
+        const attackerName = log.attacker.toLowerCase()
+        const isPlayer = attackerName === playerName
+
+        if (log.isMiss) return { color: '#6b7280', fontWeight: 'normal' }
         if (log.isCritical) {
             return {
-                color: '#ef4444',
-                fontWeight: 'bold',
-                background: 'rgba(239,68,68,0.1)',
-                textShadow: '0 0 10px rgba(220, 38, 38, 0.8)'
+                color: '#ff0000',
+                fontWeight: '900',
+                background: 'rgba(255,0,0,0.2)',
+                textShadow: '0 0 15px rgba(255, 0, 0, 0.9)',
+                borderLeft: '6px solid #ff0000',
+                fontSize: '18px',
+                letterSpacing: '0.05em'
             }
         }
-        if (log.attacker === profile.username) return { color: '#fbbf24', fontWeight: 'normal', background: 'transparent' }
-        return { color: '#f97316', fontWeight: 'normal', background: 'transparent' }
+
+        // Player: Bright Blue (matches HP bar)
+        if (isPlayer) return { color: '#60a5fa', fontWeight: 'bold' }
+        // Enemy: Vibrant Red (matches HP bar)
+        return { color: '#ef4444', fontWeight: 'bold' }
     }
 
     const enemyHpMax = selectedEnemy?.hp_max || 1
-    const playerIsWinner = winner === profile.username
+    const playerIsWinner = winner?.toLowerCase() === profile.username.toLowerCase()
+
+    const playerHpPct = Math.max(0, (playerHp / profile.hp_max) * 100)
+    const enemyHpPct = Math.max(0, (enemyHp / enemyHpMax) * 100)
 
     return (
-        <div className="flex flex-col gap-6">
-            <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center">
-                <div className="medieval-border p-5 flex flex-col items-center gap-3 text-center transition-all">
-                    <CharacterPortrait
-                        src={null}
-                        fallbackEmoji="🛡️"
-                        borderColor="blue"
-                        size="lg"
-                        name={profile.username}
-                        isHit={playerHit}
+        <div className="flex flex-col gap-3">
+            {/* STACK ON MOBILE, LADO A LADO ON DESKTOP: ARENA + LOG */}
+            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 h-auto lg:h-[380px]">
+
+                {/* Cinematic Duel Arena */}
+                <div className="relative w-full h-[220px] md:h-[260px] lg:h-full rounded-sm overflow-hidden border border-[#3a2a1a] shadow-2xl">
+                    <img
+                        src={selectedEnemy?.name === 'Coiote Sarnento' ? '/images/coiote.jpeg' : '/images/duelo1.jpeg'}
+                        alt="Duelo no Oeste"
+                        className="w-full h-full object-cover transition-opacity duration-1000"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
 
-                    <div className="w-full space-y-1">
-                        <div className="text-[9px] uppercase text-gray-500 tracking-widest mb-1">HP</div>
-                        <StatBar value={playerHp} max={profile.hp_max} type="hp" label="HP" showValues compact />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-0.5 w-full mt-1">
-                        <div className="flex justify-between text-[9px] border-b border-[#2a2a2a] py-0.5">
-                            <span className="text-gray-500 uppercase">AR</span>
-                            <span className="text-gold font-bold font-mono">{soulsSnapshot?.attackRating ?? profile.strength}</span>
-                        </div>
-                        <div className="flex justify-between text-[9px] border-b border-[#2a2a2a] py-0.5">
-                            <span className="text-gray-500 uppercase">DEF</span>
-                            <span className="text-gold font-bold font-mono">{profile.defense + (soulsSnapshot?.bonuses.defense || 0)}</span>
-                        </div>
-                        <div className="flex justify-between text-[9px] border-b border-[#2a2a2a] py-0.5">
-                            <span className="text-gray-500 uppercase">AGI</span>
-                            <span className="text-gold font-bold font-mono">
-                                {profile.agility + (soulsSnapshot?.bonuses.agility || 0) + (soulsSnapshot?.dodgeBonus || 0)}
-                            </span>
-                        </div>
-                        <div className="flex justify-between text-[9px] border-b border-[#2a2a2a] py-0.5">
-                            <span className="text-gray-500 uppercase">PRE</span>
-                            <span className="text-gold font-bold font-mono">
-                                {Math.floor((profile.accuracy + (soulsSnapshot?.bonuses.accuracy || 0)) * (soulsSnapshot?.requirementPenalty || 1))}
-                            </span>
-                        </div>
-                    </div>
-
-                    {soulsSnapshot && (
-                        <div className="w-full mt-2 text-[9px] uppercase tracking-wider text-gray-500 border-t border-[#2a2a2a] pt-2 space-y-1">
-                            <div className="flex justify-between">
-                                <span>Carga</span>
-                                <span className="text-gold">{soulsSnapshot.equipTier} ({soulsSnapshot.equipLoadPct.toFixed(1)}%)</span>
+                    {/* TOP BARS: VISUAL HEALTH BARS - ADJUSTED FOR MOBILE */}
+                    <div className="absolute top-2 md:top-4 inset-x-2 md:inset-x-4 flex gap-3 md:gap-8 z-20">
+                        {/* Player HP Bar */}
+                        <div className="flex-1">
+                            <div className="flex justify-between items-end mb-0.5 md:mb-1">
+                                <span className="text-[8px] md:text-[10px] font-black text-blue-400 uppercase tracking-widest truncate max-w-[60px] md:max-w-none">{profile.username}</span>
+                                <span className="text-[8px] md:text-[10px] text-blue-200/50 font-mono">{playerHp}/{profile.hp_max}</span>
                             </div>
-                            {soulsSnapshot.unmetRequirements.length > 0 && (
-                                <div className="text-red-400">Requisitos faltando: {soulsSnapshot.unmetRequirements.join(', ')}</div>
-                            )}
+                            <div className="h-1.5 md:h-2.5 bg-black/60 border border-blue-900/30 rounded-full overflow-hidden">
+                                <div
+                                    className="h-full bg-gradient-to-r from-blue-700 to-blue-400 transition-all duration-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+                                    style={{ width: `${playerHpPct}%` }}
+                                />
+                            </div>
                         </div>
-                    )}
+
+                        {/* Enemy HP Bar */}
+                        <div className="flex-1">
+                            <div className="flex justify-between items-end mb-0.5 md:mb-1 flex-row-reverse">
+                                <span className="text-[8px] md:text-[10px] font-black text-red-500 uppercase tracking-widest truncate max-w-[60px] md:max-w-none">{selectedEnemy?.name || '???'}</span>
+                                <span className="text-[8px] md:text-[10px] text-red-300/50 font-mono">{enemyHp}/{enemyHpMax}</span>
+                            </div>
+                            <div className="h-1.5 md:h-2.5 bg-black/60 border border-red-900/30 rounded-full overflow-hidden">
+                                <div
+                                    className="h-full bg-gradient-to-l from-red-700 to-red-500 transition-all duration-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]"
+                                    style={{ width: `${enemyHpPct}%`, marginLeft: 'auto' }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Character Portraits in Arena - SMALLER ON MOBILE */}
+                    <div className="absolute inset-x-2 md:inset-x-4 bottom-2 md:bottom-4 flex justify-between items-end">
+                        <CharacterPortrait
+                            src={CLASS_PORTRAITS[profile.class] || null}
+                            fallbackEmoji="🤠"
+                            borderColor="blue"
+                            size="xs"
+                            className="md:!w-16 md:!h-16"
+                            isHit={playerHit}
+                        />
+                        <CharacterPortrait
+                            src={null}
+                            fallbackEmoji="💀"
+                            borderColor="red"
+                            size="xs"
+                            className="md:!w-16 md:!h-16"
+                            isHit={enemyHit}
+                        />
+                    </div>
+
+                    {/* VS Overlay */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-center">
+                        <div className="text-3xl md:text-4xl lg:text-5xl font-black text-[#a52a2a] italic tracking-tighter drop-shadow-2xl animate-pulse">VS</div>
+                        {isFighting && (
+                            <div className="text-[8px] md:text-[9px] text-gold font-bold uppercase tracking-[0.2em] mt-1">
+                                Trocando Tiros
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                <div className="flex flex-col items-center gap-1 px-2">
-                    <div className="vs-indicator text-3xl font-black text-gold">VS</div>
-                    {isFighting && (
-                        <div className="text-[9px] text-gray-500 uppercase tracking-widest animate-pulse">Em combate</div>
-                    )}
-                </div>
-
-                <div className="medieval-border p-5 flex flex-col items-center gap-3 text-center">
-                    <CharacterPortrait
-                        src={null}
-                        fallbackEmoji="👹"
-                        borderColor="red"
-                        size="lg"
-                        name={selectedEnemy?.name || '???'}
-                        isHit={enemyHit}
-                    />
-
-                    <div className="w-full space-y-1">
-                        <div className="text-[9px] uppercase text-gray-500 tracking-widest mb-1">HP</div>
-                        <StatBar value={enemyHp} max={enemyHpMax} type="hp" label="HP" showValues compact />
+                {/* Combat Log Panel */}
+                <div className="western-border bg-black/50 rounded-sm overflow-hidden flex flex-col h-[200px] md:h-[300px] lg:h-full">
+                    <div className="flex items-center justify-between px-3 md:px-4 py-1.5 md:py-2 border-b border-[#2a2a2a] bg-black/40">
+                        <span className="text-[10px] md:text-xs font-black text-gold uppercase tracking-[0.2em]">Crônica do Duelo</span>
+                        {combatLog.length > 0 && <span className="text-[8px] md:text-[10px] text-gray-600 font-mono uppercase">T{combatLog.length}</span>}
                     </div>
 
-                    {selectedEnemy && (
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-0.5 w-full mt-1">
-                            <div className="flex justify-between text-[9px] border-b border-[#2a2a2a] py-0.5">
-                                <span className="text-gray-500 uppercase">FOR</span>
-                                <span className="text-red-400 font-bold font-mono">{selectedEnemy.strength}</span>
+                    <div className="flex-1 overflow-y-auto p-2 md:p-3 font-serif text-[12px] md:text-[14px] space-y-1.5 md:space-y-2 scroll-smooth bg-[#0a0a0a]/30">
+                        {combatLog.length === 0 && !winner && (
+                            <div className="text-gray-600 text-center italic mt-12 text-[10px] md:text-[11px] tracking-widest uppercase opacity-40">
+                                Sangue na poeira...
                             </div>
-                            <div className="flex justify-between text-[9px] border-b border-[#2a2a2a] py-0.5">
-                                <span className="text-gray-500 uppercase">DEF</span>
-                                <span className="text-red-400 font-bold font-mono">5</span>
-                            </div>
-                            <div className="flex justify-between text-[9px] border-b border-[#2a2a2a] py-0.5">
-                                <span className="text-gray-500 uppercase">AGI</span>
-                                <span className="text-red-400 font-bold font-mono">{selectedEnemy.agility}</span>
-                            </div>
-                            <div className="flex justify-between text-[9px] border-b border-[#2a2a2a] py-0.5">
-                                <span className="text-gray-500 uppercase">PRE</span>
-                                <span className="text-red-400 font-bold font-mono">{selectedEnemy.precision}</span>
-                            </div>
-                        </div>
-                    )}
+                        )}
 
-                    <div className="w-full mt-2 ornament-divider text-[9px]">INIMIGO</div>
-                    <select
-                        className="w-full bg-[#111] border border-[#3a3a3a] text-white text-xs p-2 outline-none focus:border-red-600 transition-colors rounded-sm"
-                        onChange={(e) => handleEnemyChange(e.target.value)}
-                        disabled={isFighting}
-                    >
-                        {enemies.map(en => (
-                            <option key={en.id} value={en.id}>{en.name} - Nvl {en.level} (HP: {en.hp_max})</option>
+                        {combatLog.map((log, i) => (
+                            <div key={i} className={`flex items-start gap-2 md:gap-3 px-2 md:px-3 py-1.5 md:py-2 rounded-sm border-l-2 ${log.isCritical ? 'border-red-600 bg-red-950/20' : 'border-transparent'}`} style={getLogStyle(log)}>
+                                <span className="flex-1 leading-relaxed text-base">{log.narrative}</span>
+                                {log.damage > 0 && <span className="text-[10px] md:text-xs font-black min-w-[30px] md:w-[40px] text-right">-{log.damage}</span>}
+                            </div>
                         ))}
-                    </select>
+
+                        {winner && (
+                            <div className={`mt-2 md:mt-3 p-2 md:p-3 text-center rounded-sm border-2 animate-in fade-in zoom-in duration-500 ${playerIsWinner ? 'bg-gold/10 border-gold/30' : 'bg-red-900/10 border-red-900/30'}`}>
+                                <div className="text-lg md:text-xl mb-1">{playerIsWinner ? '🏆' : '💀'}</div>
+                                <div className={`text-sm md:text-base font-black uppercase tracking-[0.1em] title-western ${playerIsWinner ? 'text-gold' : 'text-red-500'}`}>
+                                    {playerIsWinner ? 'Vitória!' : 'Derrota!'}
+                                </div>
+                            </div>
+                        )}
+                        <div ref={logEndRef} />
+                    </div>
                 </div>
             </div>
 
-            <div className="flex justify-center">
-                <button
-                    onClick={handleFight}
-                    disabled={isFighting || !selectedEnemy}
-                    className="btn-medieval px-16 py-4 text-xl"
-                    style={!isFighting ? { boxShadow: '0 0 24px rgba(242,185,13,0.25), 0 4px 16px rgba(0,0,0,0.6)' } : {}}
+
+            {/* CONTROLS AREA - COMPACTED */}
+            <div className="flex flex-col sm:flex-row gap-3 items-center justify-center mt-1 w-full">
+                <select
+                    className="w-full sm:w-80 bg-[#111] border-2 border-[#3a3a3a] text-white text-base p-3 outline-none focus:border-red-600 transition-colors rounded-sm western-select font-black"
+                    onChange={(e) => handleEnemyChange(e.target.value)}
+                    disabled={isFighting || showCollectButton}
+                    value={selectedEnemy?.id || ''}
                 >
-                    {isFighting ? (
-                        <span className="flex items-center gap-2">
-                            <span className="inline-block w-4 h-4 border-2 border-gold border-t-transparent rounded-full animate-spin" />
-                            Combatendo...
-                        </span>
-                    ) : '⚔️ DESAFIAR INIMIGO'}
-                </button>
+                    <option value="" className="bg-[#111]">-- SELECIONAR ALVO --</option>
+                    {enemies.map(en => (
+                        <option key={en.id} value={en.id} className="bg-[#111]">{en.name} (Nvl {en.level})</option>
+                    ))}
+                </select>
+
+                {!showCollectButton ? (
+                    <button
+                        onClick={handleFight}
+                        disabled={isFighting || !selectedEnemy || profile.energy < COMBAT_ENERGY_COST}
+                        className="btn-western py-4 px-8 text-base font-black min-w-[200px]"
+                    >
+                        {isFighting ? '🔫 DUELANDO...' : '⚔️ INICIAR DUELO'}
+                    </button>
+                ) : (
+                    <button
+                        onClick={handleCollectReward}
+                        disabled={isResolving}
+                        className="py-4 px-10 text-base font-black uppercase tracking-[0.1em] bg-gold text-black border-2 border-black hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(212,175,55,0.5)] animate-bounce min-w-[240px]"
+                    >
+                        {isResolving ? 'COLETANDO...' : '💰 COLETAR RECOMPENSA'}
+                    </button>
+                )}
             </div>
 
-            <div className="medieval-border bg-black/50 rounded-sm overflow-hidden" style={{ boxShadow: 'inset 0 0 20px rgba(0,0,0,0.6)' }}>
-                <div className="flex items-center justify-between px-4 py-2 border-b border-[#2a2a2a]" style={{ background: 'linear-gradient(90deg, rgba(242,185,13,0.05), transparent)' }}>
-                    <span className="text-[11px] font-bold text-gold uppercase tracking-[0.3em]">Cronica do Combate</span>
-                    {combatLog.length > 0 && <span className="text-[9px] text-gray-600 font-mono">{combatLog.length} turnos</span>}
-                </div>
-
-                <div className="h-56 overflow-y-auto p-3 font-mono text-xs space-y-0.5 scroll-smooth">
-                    {combatLog.length === 0 && !winner && (
-                        <div className="text-gray-600 text-center italic mt-8 text-[11px]">
-                            O campo de batalha aguarda sua coragem...
-                        </div>
+            {/* REWARDS SUMMARY - DISCRETE */}
+            {combatSummary && (
+                <div className="flex flex-wrap gap-4 justify-center items-center p-4 bg-[#140d07] border border-gold/40 rounded-sm text-sm animate-in zoom-in duration-300 shadow-2xl">
+                    <span className="text-gold font-black uppercase tracking-[0.2em] border-b border-gold/20 pb-0.5">Espólios do Duelo:</span>
+                    <span className="text-green-400 font-black">+{combatSummary.xpGain} XP</span>
+                    <span className="text-yellow-400 font-black">+{combatSummary.goldGain} O</span>
+                    <span className="text-blue-400 font-black">-{combatSummary.energyCost} E</span>
+                    {combatSummary.consumableDrop && <span className="text-purple-400 font-black">📦 {combatSummary.consumableDrop.name}</span>}
+                    {combatSummary.equipmentDrop && (
+                        <span style={{ color: RARITY_COLORS[combatSummary.equipmentDrop.rarity]?.textColor }} className="font-black border-l border-white/10 pl-3 ml-2">⚔️ {combatSummary.equipmentDrop.name}</span>
                     )}
-
-                    {combatLog.map((log, i) => {
-                        const s = getLogStyle(log)
-                        return (
-                            <div
-                                key={i}
-                                className={`combat-log-entry flex items-start gap-2 px-2 py-2 rounded-sm border-l-2 ${log.isCritical ? 'border-red-600 my-1' : 'border-transparent'}`}
-                                style={s}
-                            >
-                                <span className={`text-[9px] flex-shrink-0 mt-0.5 ${log.isCritical ? 'text-red-400 font-black' : 'text-gray-700 font-bold'}`}>
-                                    Turno {log.turn}
-                                </span>
-                                <span className="flex-1 leading-relaxed text-[13px]">{log.narrative}</span>
-                                {log.damage > 0 && (
-                                    <span className="text-[9px] flex-shrink-0 opacity-60 mt-0.5 whitespace-nowrap">
-                                        -{log.damage} HP
-                                    </span>
-                                )}
-                            </div>
-                        )
-                    })}
-
-                    {winner && (
-                        <div
-                            className="mt-4 py-4 text-center rounded-sm fade-in-up"
-                            style={{
-                                background: playerIsWinner
-                                    ? 'linear-gradient(135deg, rgba(234,179,8,0.1), rgba(242,185,13,0.05))'
-                                    : 'linear-gradient(135deg, rgba(178,34,34,0.1), rgba(220,38,38,0.05))',
-                                border: `1px solid ${playerIsWinner ? '#f2b90d44' : '#dc262644'}`,
-                            }}
-                        >
-                            <div className="text-2xl mb-1">{playerIsWinner ? '🏆' : '💀'}</div>
-                            <div
-                                className="text-base font-black uppercase tracking-widest title-medieval"
-                                style={{ color: playerIsWinner ? '#f2b90d' : '#ef4444' }}
-                            >
-                                {playerIsWinner ? 'Vitoria!' : 'Derrota!'}
-                            </div>
-                            <div className="text-[10px] text-gray-500 mt-1 uppercase tracking-widest">
-                                {winner} prevalece
-                            </div>
-                        </div>
-                    )}
-                    <div ref={logEndRef} />
                 </div>
-            </div>
+            )}
         </div>
     )
 }

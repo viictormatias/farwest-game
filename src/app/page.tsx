@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react'
 import { ensureProfile, Profile } from '@/lib/gameActions'
@@ -21,147 +21,104 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null)
 
   const refreshProfile = async () => {
-    try {
-      if (!isConfigValid) {
-        let missing = []
-        if (!hasUrl) missing.push('URL (NEXT_PUBLIC_SUPABASE_URL)')
-        if (!hasKey) missing.push('Chave (NEXT_PUBLIC_SUPABASE_ANON_KEY)')
-        throw new Error(`Incompleto: ${missing.join(' e ')}. Verifique o painel do Vercel.`)
-      }
+    console.log('[DEBUG-RELOAD] refreshProfile started');
 
-      const { data: { session: s } } = await supabase.auth.getSession()
-      setSession(s)
-      const data = await ensureProfile()
-      setProfile(data)
+    if (!supabase || !isConfigValid) {
+      console.warn('[DEBUG-RELOAD] Supabase invalid or null');
+      setError('Configuração do Supabase incompleta ou inválida no .env.local');
+      setLoading(false);
+      return;
+    }
+
+    // Safety timeout to prevent infinite loading loop (10 seconds)
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => {
+        console.warn('[DEBUG-RELOAD] timeout triggered');
+        reject(new Error('SERVIDOR DEMOROU A RESPONDER. VERIFIQUE SUA CONEXÃO OU CONFIGURAÇÃO.'));
+      }, 10000)
+    )
+
+    try {
+      if (profile) console.log('[SYNC] Background refresh started...');
+
+      await Promise.race([
+        (async () => {
+          const { data: { session: s }, error: authErr } = await supabase.auth.getSession();
+          if (authErr) throw authErr;
+
+          setSession(s)
+          if (s) {
+            const data = await ensureProfile()
+            setProfile(data)
+          } else {
+            setProfile(null)
+          }
+        })(),
+        timeoutPromise
+      ]);
     } catch (err: any) {
-      console.error('Erro ao carregar perfil:', err)
-      setError(err.message)
+      if (!profile) {
+        console.error('[CRITICAL] Initial load failed:', err)
+        setError(err.message || 'Erro desconhecido na rede.')
+      } else {
+        console.warn('[SYNC] Background sync timeout/fail (ignoring):', err.message);
+      }
     } finally {
       setLoading(false)
     }
   }
+
+  // Monitor for crashes
+  useEffect(() => {
+    const handleError = (e: ErrorEvent) => console.error('[DEBUG-RELOAD] Runtime Crash:', e.error);
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, []);
 
   useEffect(() => {
     refreshProfile()
   }, [])
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      refreshProfile()
-    }, 60_000)
-
+    const interval = setInterval(() => refreshProfile(), 60_000)
     return () => clearInterval(interval)
   }, [])
+
+  // Garante que a tela suba ao trocar de abas
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [activeTab])
 
   // ===== TELA DE ERRO =====
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen text-center px-4 relative overflow-hidden"
-        style={{ background: '#0d0d0d' }}
-      >
-        {/* Imagem de fundo persistente */}
-        <div
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 scale-105"
-          style={{
-            backgroundImage: 'url("/loadingscreen.jpeg")',
-            filter: 'grayscale(0.4) contrast(1.1) brightness(0.7)'
-          }}
-        />
-
-        {/* Overlay Noir Gradiente */}
-        <div
-          className="absolute inset-0 z-1"
-          style={{
-            background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.9) 100%)'
-          }}
-        />
-
-        <div className="relative z-10 max-w-md p-8 bg-black/60 border border-red-900/50 backdrop-blur-sm space-y-6">
-          <div className="text-6xl animate-pulse">⚠️</div>
-          <h2 className="text-xl font-bold text-red-500 uppercase tracking-widest title-medieval">Erro de Conexão</h2>
-          <p className="text-gray-400 text-sm leading-relaxed">
-            Não foi possível conectar ao Reino de Supabase. Isso geralmente ocorre por falta de configuração no Vercel.
-          </p>
-          <div className="p-4 bg-red-950/20 border border-red-900/30 text-red-400 text-[10px] font-mono break-all text-left">
-            {error}
-          </div>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-2 border border-red-500/50 text-red-500 text-xs font-bold uppercase tracking-widest hover:bg-red-500 hover:text-black transition-all"
-          >
-            Tentar Novamente
-          </button>
+      <div className="flex items-center justify-center min-h-screen text-center px-4 bg-black text-white relative z-[9999]">
+        <div className="max-w-md p-8 bg-black border border-red-500/50 space-y-6">
+          <h2 className="text-xl font-bold text-red-500 title-western">PROBLEMA NO SALOON</h2>
+          <p className="text-gray-400 text-sm">{error}</p>
+          <button onClick={() => window.location.reload()} className="btn-western px-6 py-2 text-red-500">RECARREGAR PÁGINA</button>
         </div>
       </div>
     )
   }
 
-  // ===== TELA DE LOADING =====
+  // ===== TELA DE LOADING SIMPLIFICADA =====
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen relative overflow-hidden"
-        style={{ background: '#0d0d0d' }}
-      >
-        {/* Imagem de fundo com overlay */}
-        <div
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 scale-105 animate-pulse-slow"
-          style={{
-            backgroundImage: 'url("/loadingscreen.jpeg")',
-            filter: 'grayscale(0.2) contrast(1.1)'
-          }}
-        />
-
-        {/* Overlay Noir Gradiente */}
-        <div
-          className="absolute inset-0 z-1"
-          style={{
-            background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%)'
-          }}
-        />
-
-        <ParticleBackground count={20} />
-
-        <div className="relative z-10 flex flex-col items-center gap-6">
-          {/* Brasão animado */}
-          <div className="relative">
-            <div
-              className="w-24 h-24 rounded-full flex items-center justify-center text-5xl"
-              style={{
-                background: 'radial-gradient(circle, #1a1208, #0d0d0d)',
-                border: '2px solid #f2b90d',
-                animation: 'glow-pulse-gold 2s ease-in-out infinite',
-              }}
-            >
-              👑
-            </div>
-            <div
-              className="absolute -inset-3 rounded-full border-t-2 border-r-2 border-transparent"
-              style={{
-                borderTopColor: '#f2b90d44',
-                borderRightColor: '#f2b90d22',
-                animation: 'spin-slow 3s linear infinite',
-              }}
-            />
-          </div>
-
-          <div className="flex flex-col items-center gap-2 bg-black/40 backdrop-blur-sm p-6 rounded-lg border border-gold/10">
-            <img
-              src="/logo.png"
-              alt="Velmora Logo"
-              className="w-56 h-auto drop-shadow-[0_0_20px_rgba(242,185,13,0.4)] mb-2"
-            />
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-              <div className="w-1.5 h-1.5 bg-gold rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-              <div className="w-1.5 h-1.5 bg-gold rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-            </div>
-            <span className="text-[10px] uppercase tracking-[0.4em] text-gray-400 font-bold">Resurrecting the Kingdom...</span>
-          </div>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-black text-gold font-serif pb-20">
+        <div className="relative mb-10 group">
+          <div className="w-20 h-20 border-2 border-gold/20 border-t-gold rounded-full animate-spin"></div>
+          <img
+            src="/logo.png"
+            alt="Loading"
+            className="absolute inset-0 m-auto w-10 h-auto opacity-80 animate-pulse"
+          />
         </div>
+        <h1 className="text-sm tracking-[0.6em] animate-pulse uppercase font-black text-gold/80">Fronteira Oeste</h1>
+        <p className="text-[10px] mt-2 text-gray-600 uppercase tracking-widest italic">Sincronizando dados vitais...</p>
       </div>
     )
   }
-
   if (!profile) {
     if (session) {
       return <ClassSelectionScreen userId={session.user.id} onCreated={refreshProfile} />
@@ -170,56 +127,83 @@ export default function Dashboard() {
   }
 
   const tabs = [
-    { id: 'camp', label: 'Acampamento', icon: '🏕️' },
-    { id: 'arena', label: 'Arena', icon: '⚔️' },
-    { id: 'shop', label: 'Loja', icon: '💰' },
-    { id: 'inventory', label: 'Inventário', icon: '🎒' },
-    { id: 'status', label: 'Status', icon: '📊' },
+    { id: 'camp', label: 'Quadro', icon: '📜' },
+    { id: 'arena', label: 'Duelo', icon: '🎯' },
+    { id: 'shop', label: 'Loja', icon: '⚖️' },
+    { id: 'inventory', label: 'Mochila', icon: '👜' },
+    { id: 'status', label: 'Status', icon: '👤' },
   ]
 
+  const tabBackgrounds: Record<string, string> = {
+    camp: '/images/duelo2.jpeg',
+    arena: '/images/duelo3.jpeg',
+    shop: '/images/arma1.jpeg',
+    inventory: '/images/arma2.jpeg',
+    status: '/images/duelo4.jpeg',
+  }
+
   return (
-    <main className="relative min-h-screen">
+    <main className="relative min-h-screen overflow-x-hidden">
+      {/* Global Dynamic Background */}
+      <div
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-1000"
+        style={{
+          backgroundImage: `url("${tabBackgrounds[activeTab]}")`,
+          filter: 'grayscale(0.4) brightness(0.2) contrast(1.2)',
+          opacity: 0.4
+        }}
+      />
+
+      {/* Noir Overlay Gradients (Global) */}
+      <div
+        className="fixed inset-0 z-1 pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle at center, transparent 0%, rgba(20,13,7,0.4) 100%), linear-gradient(180deg, rgba(20,13,7,0.2) 0%, rgba(20,13,7,0.8) 100%)'
+        }}
+      />
+
       {/* Fundo de partículas sutil */}
       <ParticleBackground count={18} />
 
       {/* Conteúdo principal */}
-      <div className="relative z-10 pt-44 pb-20 px-4 md:px-8">
-        <Header profile={profile} />
-
+      <div className="relative z-10 pt-32 md:pt-44 pb-10 md:pb-20 px-4 md:px-8">
+        <Header profile={profile} onRefresh={refreshProfile} />
         <div className="max-w-6xl mx-auto space-y-0">
           {/* ====== ABAS DE NAVEGAÇÃO ====== */}
-          <nav className="flex items-end justify-center gap-1" aria-label="Navegação principal">
+          <nav className="flex flex-wrap items-end justify-center gap-1 md:gap-2 px-1 md:px-2" aria-label="Navegação principal">
             {tabs.map(tab => {
               const isActive = activeTab === tab.id
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className="relative px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-200"
+                  className={`relative px-3 md:px-6 py-2.5 md:py-3 text-[9px] md:text-sm font-bold uppercase tracking-widest transition-all duration-200 rounded-t-md border-b-0 ${isActive ? 'font-serif' : 'font-sans'}`}
                   style={{
                     background: isActive
-                      ? 'linear-gradient(180deg, #1e1e1e, #111)'
-                      : 'linear-gradient(180deg, #141414, #0d0d0d)',
-                    border: `1px solid ${isActive ? '#f2b90d' : '#2a2a2a'}`,
-                    borderBottom: isActive ? '1px solid #111' : '1px solid #2a2a2a',
-                    color: isActive ? '#f2b90d' : '#555',
-                    marginBottom: isActive ? '-1px' : '0',
-                    boxShadow: isActive ? '0 0 12px rgba(242,185,13,0.15)' : 'none',
-                    zIndex: isActive ? 2 : 1,
+                      ? 'linear-gradient(180deg, #382515 0%, #22160d 100%)' // Dark wood active
+                      : 'linear-gradient(180deg, #1f140c 0%, #140d07 100%)', // Darker wood inactive
+                    borderWidth: '2px 2px 0 2px', // Top, Right, Bottom, Left
+                    borderStyle: 'solid',
+                    borderColor: isActive ? '#d4af37' : '#2b1f14', // Gold border if active
+                    color: isActive ? '#fff' : '#8b6508', // White text if active, dark gold if not
+                    marginBottom: isActive ? '-2px' : '0',
+                    boxShadow: isActive ? '0 -4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(212,175,55,0.2)' : 'inset 0 1px 0 rgba(255,255,255,0.02)',
+                    zIndex: isActive ? 10 : 1,
+                    textShadow: isActive ? '1px 1px 2px rgba(0,0,0,0.8)' : 'none'
                   }}
                 >
-                  <span className="mr-1.5">{tab.icon}</span>
+                  <span className={`mr-1 md:mr-2 ${isActive ? 'text-[#d4af37]' : 'text-[#423020]'}`}>{tab.icon}</span>
                   {tab.label}
                   {tab.id === 'status' && profile.stat_points_available > 0 && (
-                    <span className="ml-2 bg-yellow-500 text-black text-[9px] font-black rounded-full w-4 h-4 inline-flex items-center justify-center animate-bounce">
+                    <span className="ml-1 md:ml-2 bg-[#a52a2a] text-[#d9c5b2] text-[8px] md:text-[10px] font-black rounded-full px-1.5 md:px-2 py-0.5 inline-flex items-center justify-center animate-pulse border border-[#423020] shadow-sm">
                       {profile.stat_points_available}
                     </span>
                   )}
-                  {/* Linha de destaque no fundo da aba ativa */}
+                  {/* Linha de destaque no fundo da aba ativa para cobrir a borda do container */}
                   {isActive && (
                     <span
-                      className="absolute bottom-0 left-0 right-0 h-[2px]"
-                      style={{ background: '#111' }}
+                      className="absolute -bottom-[2px] left-0 right-0 h-[4px]"
+                      style={{ background: '#22160d' }}
                     />
                   )}
                 </button>
@@ -229,31 +213,33 @@ export default function Dashboard() {
 
           {/* ====== CONTEÚDO DA ABA ====== */}
           <div
-            className="relative"
+            className="relative rounded-b-lg rounded-tr-lg overflow-hidden"
             style={{
-              background: 'linear-gradient(160deg, #161616, #0e0e0e)',
-              border: '1px solid #3a3a3a',
-              borderTop: '1px solid #f2b90d33',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.6), inset 0 0 30px rgba(0,0,0,0.3)',
-              padding: '2rem',
-              minHeight: '520px',
+              background: 'rgba(20, 13, 7, 0.7)', // Semi-transparent to let global BG through
+              border: '2px solid #d4af37', // Gold border
+              boxShadow: '0 8px 32px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.6)',
+              minHeight: '400px', // Reduced from 520px for better mobile fit
             }}
           >
-            {activeTab === 'camp' && <CampTab profile={profile} onRefresh={refreshProfile} />}
-            {activeTab === 'arena' && <ArenaTab profile={profile} />}
-            {activeTab === 'shop' && <ShopTab profile={profile} onRefresh={refreshProfile} />}
-            {activeTab === 'inventory' && <InventoryTab profile={profile} onRefresh={refreshProfile} />}
-            {activeTab === 'status' && <StatusTab profile={profile} onRefresh={refreshProfile} />}
+            {/* Inner stitching detail */}
+            <div className="absolute inset-1 border border-dashed border-[#d4af37] opacity-20 pointer-events-none rounded-b-md rounded-tr-md z-2"></div>
+
+            <div className="relative z-10 p-4 md:p-8">
+              {activeTab === 'camp' && <CampTab profile={profile} onRefresh={refreshProfile} />}
+              {activeTab === 'arena' && <ArenaTab profile={profile} onRefresh={refreshProfile} />}
+              {activeTab === 'shop' && <ShopTab profile={profile} onRefresh={refreshProfile} />}
+              {activeTab === 'inventory' && <InventoryTab profile={profile} onRefresh={refreshProfile} />}
+              {activeTab === 'status' && <StatusTab profile={profile} onRefresh={refreshProfile} />}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Footer fixo */}
-      <footer className="fixed bottom-0 left-0 right-0 py-3 text-center text-[9px] uppercase tracking-[0.4em] text-gray-700 pointer-events-none z-20"
-        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)' }}
-      >
-        Velmora © 2026 • Forjado nas Sombras
+      {/* Footer no fim da página */}
+      <footer className="w-full py-6 md:py-8 text-center text-[8px] md:text-[9px] uppercase tracking-[0.2em] md:tracking-[0.4em] text-gray-700 z-20 px-4">
+        Far West © 2026 • Poeira, chumbo e glória • Victor Matias
       </footer>
     </main>
+
   )
 }

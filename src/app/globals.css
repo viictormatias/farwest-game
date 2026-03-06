@@ -1,21 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=MedievalSharp&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Rye&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-background: #1a1a1a;
-  --color-foreground: #e0e0e0;
-  --color-gold: #f2b90d;
-  --color-gold-dark: #b88a0a;
-  --color-iron: #3a3a3a;
-  --color-iron-light: #4a4a4a;
-  --color-blood: #b22222;
-  --color-mana: #4169e1;
+  --color-background: #140d07;
+  /* Dark wood base */
+  --color-foreground: #d9c5b2;
+  /* Aged paper text */
+  --color-gold: #d4af37;
+  /* Brass / Gold */
+  --color-gold-dark: #8b6508;
+  --color-iron: #2b1f14;
+  /* Dark weathered wood / leather */
+  --color-iron-light: #423020;
+  --color-blood: #a52a2a;
+  /* Dusty red */
+  --color-mana: #4682b4;
+  /* Faded blue */
 
-  --shadow-medieval-inner: inset 0 0 10px rgba(0, 0, 0, 0.5);
-  --shadow-medieval-outer: 0 5px 15px rgba(0, 0, 0, 0.5);
-  --shadow-gold-glow: 0 0 15px rgba(242, 185, 13, 0.4);
-  --shadow-red-glow: 0 0 15px rgba(178, 34, 34, 0.5);
-  --shadow-blue-glow: 0 0 12px rgba(65, 105, 225, 0.4);
+  --shadow-western-inner: inset 0 0 15px rgba(0, 0, 0, 0.7);
+  --shadow-western-outer: 0 6px 16px rgba(0, 0, 0, 0.6);
+  --shadow-gold-glow: 0 0 12px rgba(212, 175, 55, 0.5);
+  --shadow-red-glow: 0 0 12px rgba(165, 42, 42, 0.5);
+  --shadow-blue-glow: 0 0 10px rgba(70, 130, 180, 0.4);
 }
 
 /* ======================================================
@@ -185,75 +191,90 @@ body {
   color: var(--color-foreground);
   font-family: 'Newsreader', serif;
   background-image:
-    radial-gradient(ellipse at top, #2a1f0e 0%, #1a1a1a 60%),
-    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    radial-gradient(circle at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%),
+    url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+  background-attachment: fixed;
   min-height: 100vh;
 }
 
+button,
+select,
+input[type="button"],
+input[type="submit"],
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
 /* ======================================================
-   COMPONENTES MEDIEVAIS
+   COMPONENTES WESTERN
    ====================================================== */
 
 @layer components {
 
-  /* --- Bordas e Containers --- */
-  .medieval-border {
+  .western-border {
     position: relative;
     border-width: 2px;
-    border-color: var(--color-iron);
-    border-radius: 0.25rem;
-    box-shadow: var(--shadow-medieval-inner), var(--shadow-medieval-outer);
-    background: linear-gradient(160deg, #1e1e1e, #111111);
+    border-color: var(--color-iron-light);
+    border-radius: 4px;
+    box-shadow: var(--shadow-western-inner), var(--shadow-western-outer);
+    background: linear-gradient(160deg, #22160d, #140d07);
+    /* Wood panels */
   }
 
-  .medieval-border::before {
+  .western-border::before {
     content: '';
     position: absolute;
     inset: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px dashed rgba(212, 175, 55, 0.15);
+    /* Stitching effect */
     border-radius: 2px;
     pointer-events: none;
   }
 
   /* --- Botões --- */
-  .btn-medieval {
+  .btn-western {
     padding: 0.5rem 1.5rem;
-    background: linear-gradient(180deg, #3a3a3a, #2a2a2a);
-    border-width: 2px;
-    border-color: var(--color-iron-light);
+    background: linear-gradient(180deg, #382515, #24170d);
+    border: 2px solid var(--color-iron-light);
+    border-radius: 2px;
     color: var(--color-gold);
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
     transition: all 200ms ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
   }
 
-  .btn-medieval::after {
+  .btn-western::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
     pointer-events: none;
   }
 
-  .btn-medieval:hover:not(:disabled) {
-    background: linear-gradient(180deg, #4a4a4a, #363636);
+  .btn-western:hover:not(:disabled) {
+    background: linear-gradient(180deg, #4d331d, #2e1d11);
     border-color: var(--color-gold);
-    box-shadow: var(--shadow-gold-glow), 0 4px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-gold-glow), 0 6px 14px rgba(0, 0, 0, 0.7);
     transform: translateY(-2px);
+    color: #fff;
   }
 
-  .btn-medieval:active:not(:disabled) {
-    transform: translateY(0px);
+  .btn-western:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.8);
   }
 
-  .btn-medieval:disabled {
-    opacity: 0.4;
-    filter: grayscale(0.8);
+  .btn-western:disabled {
+    background: #1a120c;
+    border-color: #2b1f14;
+    color: #4a3b2a;
+    box-shadow: none;
     cursor: not-allowed;
   }
 
@@ -372,8 +393,8 @@ body {
     animation: fadeInUp 0.4s ease-out forwards;
   }
 
-  /* Titulo medieval */
-  .title-medieval {
+  /* Titulo western */
+  .title-western {
     font-family: 'Newsreader', serif;
     font-weight: 800;
     font-style: italic;
@@ -402,8 +423,44 @@ body {
 }
 
 /* ======================================================
+   UTILITÁRIOS RESPONSIVOS & MOBILE
+   ====================================================== */
+@layer utilities {
+  .mobile-only {
+    display: block;
+  }
+
+  @media (min-width: 768px) {
+    .mobile-only {
+      display: none;
+    }
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .desktop-only {
+      display: block;
+    }
+  }
+
+  /* Ajuste de toque para áreas interativas */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ======================================================
    SCROLLBAR CUSTOMIZADA
    ====================================================== */
+::selection {
+  background: rgba(242, 185, 13, 0.3);
+  color: #fff;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -421,47 +478,20 @@ body {
   background: #444;
 }
 
-/* Arena shake animation for heavy hits */
-@keyframes arena-shake {
-
-  0%,
-  100% {
-    transform: translate(0, 0);
+/* Ajustes Globais Mobile */
+@media (max-width: 768px) {
+  .western-border {
+    border-width: 1px;
+    box-shadow: var(--shadow-western-inner), 0 4px 10px rgba(0, 0, 0, 0.5);
   }
 
-  10% {
-    transform: translate(-4px, -2px);
+  .btn-western {
+    padding: 0.4rem 1rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
   }
 
-  20% {
-    transform: translate(4px, 2px);
+  .title-western {
+    font-size: 1.25rem;
   }
-
-  30% {
-    transform: translate(-3px, 3px);
-  }
-
-  40% {
-    transform: translate(3px, -3px);
-  }
-
-  50% {
-    transform: translate(-2px, 2px);
-  }
-
-  60% {
-    transform: translate(2px, -2px);
-  }
-}
-
-.arena-shake {
-  animation: arena-shake 0.45s ease;
-}
-
-/* ======================================================
-   SELEÇÃO DE TEXTO
-   ====================================================== */
-::selection {
-  background: rgba(242, 185, 13, 0.3);
-  color: #fff;
 }

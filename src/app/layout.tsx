@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Velmora — Medieval RPG",
-  description: "Um RPG Dark Medieval imersivo.",
+  title: "Far West - RPG de Duelo",
+  description: "Um RPG de faroeste com duelos entre pistoleiros.",
 };
 
 export default function RootLayout({
@@ -19,3 +19,4 @@ export default function RootLayout({
     </html>
   );
 }
+

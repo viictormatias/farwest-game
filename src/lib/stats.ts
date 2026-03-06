@@ -51,6 +51,6 @@ export function getTotalStats(profile: Profile, bonuses: StatBonuses): Calculate
         agility: profile.agility + bonuses.agility,
         accuracy: profile.accuracy + bonuses.accuracy,
         vigor: profile.vigor + bonuses.vigor,
-        hp_max: profile.hp_max + (bonuses.vigor * 10)
+        hp_max: 100 + ((profile.vigor + bonuses.vigor - 5) * 10)
     }
 }

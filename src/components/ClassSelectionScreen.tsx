@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useMemo, useState } from 'react'
 import {
@@ -20,35 +20,95 @@ const STAT_KEYS: InitialStatKey[] = ['strength', 'defense', 'agility', 'accuracy
 
 const PRESETS: Array<{ id: string; label: string; points: InitialStatAllocation }> = [
     { id: 'balanced', label: 'Balanceada', points: { strength: 2, defense: 2, agility: 1, accuracy: 1, vigor: 2 } },
-    { id: 'forca', label: 'Forca', points: { strength: 4, defense: 2, agility: 0, accuracy: 0, vigor: 2 } },
-    { id: 'destreza', label: 'Destreza', points: { strength: 1, defense: 1, agility: 3, accuracy: 2, vigor: 1 } },
-    { id: 'tanque', label: 'Tanque', points: { strength: 2, defense: 3, agility: 0, accuracy: 0, vigor: 3 } },
+    { id: 'gatilho', label: 'Gatilho Rapido', points: { strength: 1, defense: 1, agility: 2, accuracy: 3, vigor: 1 } },
+    { id: 'bruto', label: 'Brutamontes', points: { strength: 4, defense: 2, agility: 0, accuracy: 0, vigor: 2 } },
+    { id: 'duravel', label: 'Durável', points: { strength: 1, defense: 3, agility: 1, accuracy: 0, vigor: 3 } },
 ]
 
 const CLASSES = [
     {
-        id: 'Cavaleiro' as ClassType,
-        name: 'Cavaleiro',
-        emoji: '🛡️',
-        imageSrc: '/classes/cavaleiro.png',
-        description: 'Frontliner resistente, bom para builds de forca/tanque.',
-        base: { hp: 120, strength: 10, defense: 10, agility: 5, accuracy: 5, vigor: 10 },
+        id: 'Xerife' as ClassType,
+        name: 'Xerife',
+        suggestedName: 'Silas Miller',
+        age: 58,
+        emoji: '👮',
+        imageSrc: '/images/xerife.jpeg',
+        description: 'Linha de frente resistente. Segura o duelo sob pressao.',
+        flavor: 'A estrela no peito pesa tanto quanto o ferro no coldre. A lei é a única coisa que separa este mundo do abismo.',
+        base: { hp: 100, strength: 10, defense: 10, agility: 6, accuracy: 8, vigor: 12 },
+        color: '#3b82f6'
     },
     {
-        id: 'Nobre' as ClassType,
-        name: 'Nobre',
-        emoji: '👑',
-        imageSrc: '/classes/nobre.png',
-        description: 'Classe tecnica, forte em agilidade e precisao.',
+        id: 'Pistoleiro' as ClassType,
+        name: 'Pistoleiro',
+        suggestedName: '"Kid" Cassidy',
+        age: 24,
+        emoji: '🔫',
+        imageSrc: '/images/pistoleiro.jpeg',
+        description: 'Especialista em agilidade e precisao no saque.',
+        flavor: 'Rapidez não é escolha, é sobrevivência. Antes que a poeira baixe, o Kid já terá guardado a arma.',
+        base: { hp: 100, strength: 7, defense: 6, agility: 12, accuracy: 12, vigor: 5 },
+        color: '#f2b90d'
+    },
+    {
+        id: 'Forasteiro' as ClassType,
+        name: 'Forasteiro',
+        suggestedName: 'Caleb Vento-Leste',
+        age: 31,
+        emoji: '🌵',
+        imageSrc: '/images/forasteiro.jpeg',
+        description: 'Versatil e perigoso, pronto para qualquer contrato.',
+        flavor: 'Ninguém sabe de onde veio, e ninguém viverá para saber para onde vai. Ele é o rastro que o vento apaga.',
+        base: { hp: 100, strength: 8, defense: 8, agility: 9, accuracy: 9, vigor: 8 },
+        color: '#ef4444'
+    },
+    {
+        id: 'Pregador' as ClassType,
+        name: 'Pregador',
+        suggestedName: 'Jedidiah',
+        age: 62,
+        emoji: '📖',
+        imageSrc: '/images/pregador.jpeg',
+        description: 'Sancao divina e resistencia espiritual.',
+        flavor: 'Em uma mão a Bíblia, na outra o julgamento. Ele busca salvar almas, mas não se importa em enterrar corpos.',
+        base: { hp: 100, strength: 6, defense: 12, agility: 5, accuracy: 10, vigor: 12 },
+        color: '#a855f7'
+    },
+    {
+        id: 'Nativo' as ClassType,
+        name: 'Nativo',
+        suggestedName: 'Takaani',
+        age: 35,
+        emoji: '🏹',
+        imageSrc: '/images/nativo.jpeg',
+        description: 'Guerreiro das sombras, mestre em emboscadas.',
+        flavor: 'As montanhas lembram de quem era esta terra. Ele não luta por glória, luta para que o passado não seja esquecido.',
+        base: { hp: 100, strength: 11, defense: 7, agility: 12, accuracy: 8, vigor: 7 },
+        color: '#22c55e'
+    },
+    {
+        id: 'Vendedor' as ClassType,
+        name: 'Vendedor',
+        suggestedName: 'Barnaby Jones',
+        age: 42,
+        emoji: '💰',
+        imageSrc: '/images/mercador.jpeg',
+        description: 'Negociante astuto com recursos extras.',
+        flavor: 'O ouro brilha mais que a honra. Se ele não puder te vencer no saque, ele te vencerá no contrato.',
         base: { hp: 100, strength: 5, defense: 5, agility: 10, accuracy: 10, vigor: 5 },
+        color: '#eab308'
     },
     {
-        id: 'Errante' as ClassType,
-        name: 'Errante',
-        emoji: '🗡️',
-        imageSrc: '/classes/errante.png',
-        description: 'Versatil e competitiva para qualquer caminho de build.',
-        base: { hp: 100, strength: 7, defense: 7, agility: 7, accuracy: 7, vigor: 7 },
+        id: 'CacadorDeRecompensas' as ClassType,
+        name: 'Cacador de Recompensas',
+        suggestedName: 'Elias Thorne',
+        age: 45,
+        emoji: '🎯',
+        imageSrc: '/images/cacador-de-recompensas.jpeg',
+        description: 'Rastreador implacavel e precision fatal.',
+        flavor: 'Para ele, homens são apenas números em um papel de \'Procurado\'. Ele nunca erra o rastro, e nunca volta de mãos vazias.',
+        base: { hp: 100, strength: 12, defense: 8, agility: 8, accuracy: 12, vigor: 5 },
+        color: '#f97316'
     }
 ]
 
@@ -61,7 +121,7 @@ const EMPTY_ALLOC: Record<InitialStatKey, number> = {
 }
 
 export default function ClassSelectionScreen({ userId, onCreated }: ClassSelectionScreenProps) {
-    const [selectedClass, setSelectedClass] = useState<ClassType>('Errante')
+    const [selectedClass, setSelectedClass] = useState<ClassType>('Forasteiro')
     const [username, setUsername] = useState('')
     const [isCreating, setIsCreating] = useState(false)
     const [alloc, setAlloc] = useState<Record<InitialStatKey, number>>(EMPTY_ALLOC)
@@ -107,7 +167,7 @@ export default function ClassSelectionScreen({ userId, onCreated }: ClassSelecti
             const current = next[key]
             if (delta > 0) {
                 if (pointsLeft <= 0) return prev
-                if (current >= ONBOARDING_MAX_PER_STAT) return prev
+                if (current >= ONBOARDING_STAT_POINTS) return prev
                 next[key] = current + 1
                 return next
             }
@@ -132,7 +192,19 @@ export default function ClassSelectionScreen({ userId, onCreated }: ClassSelecti
         }
     }
 
-    const borderColor: 'gold' | 'red' | 'blue' = selectedClass === 'Cavaleiro' ? 'blue' : selectedClass === 'Nobre' ? 'gold' : 'red'
+    const nextClass = () => {
+        const currentIndex = CLASSES.findIndex(c => c.id === selectedClass)
+        const nextIndex = (currentIndex + 1) % CLASSES.length
+        setSelectedClass(CLASSES[nextIndex].id)
+    }
+
+    const prevClass = () => {
+        const currentIndex = CLASSES.findIndex(c => c.id === selectedClass)
+        const prevIndex = (currentIndex - 1 + CLASSES.length) % CLASSES.length
+        setSelectedClass(CLASSES[prevIndex].id)
+    }
+
+    const borderColor = classData.color as 'gold' | 'red' | 'blue'
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-[#0d0d0d] z-50 relative overflow-hidden">
@@ -142,125 +214,153 @@ export default function ClassSelectionScreen({ userId, onCreated }: ClassSelecti
             />
             <div className="absolute inset-0 z-1" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%)' }} />
 
-            <div className="max-w-6xl w-full medieval-border p-6 md:p-8 bg-black/60 relative z-10 backdrop-blur-md"
+            <div className="max-w-6xl w-full western-border p-6 md:p-8 bg-black/60 relative z-10 backdrop-blur-md"
                 style={{ border: '1px solid rgba(242,185,13,0.2)', boxShadow: '0 0 60px rgba(0,0,0,0.9), 0 0 30px rgba(242,185,13,0.1)' }}
             >
-                <h1 className="text-3xl font-black text-gold title-medieval text-center mb-6 uppercase tracking-widest">
-                    Forje Sua Build Inicial
+                <h1 className="text-3xl md:text-5xl font-black text-gold title-western text-center mb-6 md:mb-10 uppercase tracking-widest leading-tight">
+                    Monte Seu Pistoleiro
                 </h1>
 
-                <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-6">
-                    <div className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {CLASSES.map((cls) => {
-                                const isActive = selectedClass === cls.id
-                                return (
-                                    <button
-                                        key={cls.id}
-                                        onClick={() => setSelectedClass(cls.id)}
-                                        className={`text-left transition-all duration-300 p-4 border-2 rounded-sm ${isActive
-                                            ? 'bg-gold/10 border-gold shadow-[0_0_20px_rgba(242,185,13,0.2)]'
-                                            : 'bg-[#111] border-[#3a3a3a] opacity-80 hover:opacity-100'
-                                            }`}
-                                    >
-                                        <div className="flex items-center gap-3 mb-2">
-                                            <CharacterPortrait src={cls.imageSrc} fallbackEmoji={cls.emoji} size="sm" borderColor={cls.id === 'Cavaleiro' ? 'blue' : cls.id === 'Nobre' ? 'gold' : 'red'} />
-                                            <div className="text-white font-bold">{cls.name}</div>
-                                        </div>
-                                        <p className="text-[11px] text-gray-400 leading-relaxed mb-3">{cls.description}</p>
-                                        <div className="text-[10px] text-gray-500 uppercase grid grid-cols-2 gap-1">
-                                            <span>HP {cls.base.hp}</span>
-                                            <span>FOR {cls.base.strength}</span>
-                                            <span>DEF {cls.base.defense}</span>
-                                            <span>AGI {cls.base.agility}</span>
-                                            <span>PRE {cls.base.accuracy}</span>
-                                            <span>VIG {cls.base.vigor}</span>
-                                        </div>
-                                    </button>
-                                )
-                            })}
+                <div className="flex flex-col lg:flex-row gap-6 md:gap-8 items-stretch">
+                    {/* Carousel Section */}
+                    <div className="flex-1 flex flex-col items-center justify-center relative min-h-[400px] md:min-h-[500px]">
+                        {/* Navigation Arrows */}
+                        <button
+                            onClick={prevClass}
+                            className="absolute left-0 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full border border-gold/30 bg-black/40 hover:bg-gold/20 flex items-center justify-center text-gold transition-all"
+                        >
+                            ←
+                        </button>
+                        <button
+                            onClick={nextClass}
+                            className="absolute right-0 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full border border-gold/30 bg-black/40 hover:bg-gold/20 flex items-center justify-center text-gold transition-all"
+                        >
+                            →
+                        </button>
+
+                        {/* Large Character Card */}
+                        <div className="relative group transition-all duration-500 transform hover:scale-[1.02] w-full max-w-[280px] md:max-w-sm">
+                            <div className={`absolute -inset-1 rounded-sm blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200`}
+                                style={{ backgroundColor: classData.color }} />
+                            <div className="relative western-border p-1.5 md:p-2 bg-black overflow-hidden aspect-[3/4]">
+                                <img
+                                    src={classData.imageSrc}
+                                    alt={classData.name}
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+
+                                <div className="absolute bottom-4 md:bottom-6 left-4 md:left-6 right-4 md:right-6">
+                                    <div className="flex flex-col md:flex-row md:justify-between md:items-end mb-2">
+                                        <h2 className="text-4xl md:text-6xl font-black title-western uppercase tracking-tighter leading-none" style={{ color: classData.color }}>
+                                            {classData.name}
+                                        </h2>
+                                        <span className="text-white/60 text-[10px] md:text-sm uppercase font-black mt-1 md:mb-3">{classData.suggestedName}, {classData.age} anos</span>
+                                    </div>
+                                    <p className="text-sm md:text-base text-gray-200 italic mt-2 md:mt-4 leading-relaxed border-l-2 border-white/20 pl-4 font-medium line-clamp-3 md:line-clamp-none">"{classData.flavor}"</p>
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="medieval-border p-4 bg-black/30 space-y-4">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-gold uppercase text-xs tracking-[0.2em] font-bold">Distribuicao Inicial</h3>
-                                <span className={`text-xs font-bold ${pointsLeft === 0 ? 'text-green-400' : 'text-yellow-400'}`}>
-                                    Pontos restantes: {pointsLeft}
-                                </span>
-                            </div>
 
-                            <div className="flex flex-wrap gap-2">
-                                {PRESETS.map(preset => (
-                                    <button
-                                        key={preset.id}
-                                        onClick={() => applyPreset(preset.id)}
-                                        className="px-3 py-1 text-[10px] uppercase font-bold border border-[#3a3a3a] text-gray-300 hover:border-gold hover:text-gold transition-colors"
-                                    >
-                                        {preset.label}
-                                    </button>
-                                ))}
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                {STAT_KEYS.map((key) => (
-                                    <div key={key} className="border border-[#2a2a2a] px-3 py-2 flex items-center justify-between">
-                                        <div className="text-[11px] text-gray-300 uppercase">
-                                            {key === 'strength' ? 'Forca' : key === 'defense' ? 'Defesa' : key === 'agility' ? 'Agilidade' : key === 'accuracy' ? 'Precisao' : 'Vigor'}
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <button onClick={() => adjust(key, -1)} className="w-6 h-6 text-xs border border-[#3a3a3a] text-gray-300">-</button>
-                                            <span className="w-5 text-center text-gold font-bold">{alloc[key]}</span>
-                                            <button onClick={() => adjust(key, 1)} className="w-6 h-6 text-xs border border-[#3a3a3a] text-gray-300">+</button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <p className="text-[10px] text-gray-500">
-                                Regras: {ONBOARDING_STAT_POINTS} pontos totais, maximo {ONBOARDING_MAX_PER_STAT} por atributo.
-                            </p>
+                        {/* Breadcrumbs/Dots */}
+                        <div className="flex gap-2 mt-6">
+                            {CLASSES.map((c, i) => (
+                                <div
+                                    key={c.id}
+                                    className={`w-2 h-2 rounded-full transition-all duration-300 ${selectedClass === c.id ? 'w-6 bg-gold' : 'bg-gray-700'}`}
+                                    onClick={() => setSelectedClass(c.id)}
+                                />
+                            ))}
                         </div>
                     </div>
 
-                    <div className="medieval-border p-4 bg-black/35 flex flex-col gap-4">
-                        <div className="flex items-center gap-3">
-                            <CharacterPortrait src={classData.imageSrc} fallbackEmoji={classData.emoji} size="md" borderColor={borderColor} />
+                    {/* Stats & Customization Side */}
+                    <div className="lg:w-[400px] flex flex-col gap-4">
+                        <div className="western-border p-6 bg-black/40 space-y-6 flex-1">
                             <div>
-                                <div className="text-gold font-bold uppercase">{classData.name}</div>
-                                <div className="text-[10px] text-gray-500 uppercase tracking-widest">Previa final de status</div>
+                                <h3 className="text-gold uppercase text-sm tracking-[0.3em] font-black mb-8 border-b border-gold/20 pb-2">Atributos de Cartaz</h3>
+                                <div className="grid grid-cols-2 gap-x-10 gap-y-6">
+                                    <div className="flex justify-between border-b border-white/5 pb-3 text-base">
+                                        <span className="text-gray-500 uppercase font-black">Vida Max</span>
+                                        <span className="text-red-400 font-black text-lg">{projected.hp}</span>
+                                    </div>
+                                    <div className="flex justify-between border-b border-white/5 pb-3 text-base">
+                                        <span className="text-gray-500 uppercase font-black">Força</span>
+                                        <span className="text-gold font-black text-lg">{projected.strength}</span>
+                                    </div>
+                                    <div className="flex justify-between border-b border-white/5 pb-3 text-base">
+                                        <span className="text-gray-500 uppercase font-black">Defesa</span>
+                                        <span className="text-gold font-black text-lg">{projected.defense}</span>
+                                    </div>
+                                    <div className="flex justify-between border-b border-white/5 pb-3 text-base">
+                                        <span className="text-gray-500 uppercase font-black">Agilidade</span>
+                                        <span className="text-gold font-black text-lg">{projected.agility}</span>
+                                    </div>
+                                    <div className="flex justify-between border-b border-white/5 pb-3 text-base">
+                                        <span className="text-gray-500 uppercase font-black">Pontaria</span>
+                                        <span className="text-gold font-black text-lg">{projected.accuracy}</span>
+                                    </div>
+                                    <div className="flex justify-between border-b border-white/5 pb-3 text-base">
+                                        <span className="text-gray-500 uppercase font-black">Vigor</span>
+                                        <span className="text-gold font-black text-lg">{projected.vigor}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="pt-4 border-t border-white/10">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h3 className="text-gold uppercase text-sm tracking-[0.3em] font-black">Recursos Iniciais</h3>
+                                    <span className={`text-sm font-black px-4 py-1.5 rounded-sm border-2 ${pointsLeft === 0 ? 'bg-green-900/40 border-green-400/50 text-green-400' : 'bg-gold/10 border-gold/30 text-gold'}`}>
+                                        {pointsLeft} PTS RESTANTES
+                                    </span>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-3">
+                                    {STAT_KEYS.map((key) => (
+                                        <div key={key} className="bg-white/5 px-4 py-3 flex items-center justify-between group hover:bg-white/10 transition-all">
+                                            <span className="text-base text-gray-200 uppercase font-black tracking-widest">
+                                                {key === 'strength' ? 'Força' : key === 'defense' ? 'Defesa' : key === 'agility' ? 'Agilidade' : key === 'accuracy' ? 'Pontaria' : 'Vigor'}
+                                            </span>
+                                            <div className="flex items-center gap-4">
+                                                <button onClick={() => adjust(key, -1)} className="w-10 h-10 flex items-center justify-center border border-white/20 text-gray-400 hover:text-white hover:border-white transition-all text-xl bg-white/5">-</button>
+                                                <span className="w-6 text-center text-lg font-black text-white">{alloc[key]}</span>
+                                                <button onClick={() => adjust(key, 1)} className="w-10 h-10 flex items-center justify-center border border-white/20 text-gray-400 hover:text-white hover:border-white transition-all text-xl bg-white/5">+</button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="flex flex-wrap gap-2 mt-4">
+                                    {PRESETS.map(p => (
+                                        <button key={p.id} onClick={() => applyPreset(p.id)} className="px-3 py-1.5 text-[10px] border-2 border-white/10 text-gray-400 hover:text-gold hover:border-gold uppercase transition-all font-black">
+                                            {p.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="space-y-3 pt-4 border-t border-white/10">
+                                <input
+                                    type="text"
+                                    placeholder="NOME DO PISTOLEIRO"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    className="w-full bg-black/60 border border-white/10 text-white p-4 text-lg text-center outline-none focus:border-gold transition-all font-black tracking-widest placeholder:text-gray-700"
+                                    maxLength={20}
+                                />
+                                <button
+                                    onClick={handleCreate}
+                                    disabled={isCreating || !username.trim() || pointsLeft !== 0}
+                                    className="btn-western w-full py-6 text-lg font-black tracking-[0.2em] flex items-center justify-center gap-2 disabled:opacity-30 disabled:grayscale transition-all"
+                                >
+                                    {isCreating ? 'PROCESSANDO...' : 'INICIAR JORNADA'}
+                                </button>
                             </div>
                         </div>
-
-                        <div className="grid grid-cols-2 gap-2 text-[11px]">
-                            <div className="flex justify-between border-b border-[#2a2a2a] py-1"><span className="text-gray-500">HP</span><span className="text-red-400 font-bold">{projected.hp}</span></div>
-                            <div className="flex justify-between border-b border-[#2a2a2a] py-1"><span className="text-gray-500">FOR</span><span className="text-gold font-bold">{projected.strength}</span></div>
-                            <div className="flex justify-between border-b border-[#2a2a2a] py-1"><span className="text-gray-500">DEF</span><span className="text-gold font-bold">{projected.defense}</span></div>
-                            <div className="flex justify-between border-b border-[#2a2a2a] py-1"><span className="text-gray-500">AGI</span><span className="text-gold font-bold">{projected.agility}</span></div>
-                            <div className="flex justify-between border-b border-[#2a2a2a] py-1"><span className="text-gray-500">PRE</span><span className="text-gold font-bold">{projected.accuracy}</span></div>
-                            <div className="flex justify-between border-b border-[#2a2a2a] py-1"><span className="text-gray-500">VIG</span><span className="text-gold font-bold">{projected.vigor}</span></div>
-                        </div>
-
-                        <input
-                            type="text"
-                            placeholder="Nome do Personagem"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            className="w-full bg-[#111] border border-[#3a3a3a] text-white p-3 text-center outline-none focus:border-gold transition-all"
-                            maxLength={20}
-                        />
-
-                        <button
-                            onClick={handleCreate}
-                            disabled={isCreating || !username.trim() || pointsLeft !== 0}
-                            className="btn-medieval w-full py-4 text-xl flex items-center justify-center gap-2 disabled:opacity-50"
-                        >
-                            {isCreating ? 'Criando...' : '🔥 INICIAR JORNADA'}
-                        </button>
-                        <p className="text-[9px] text-gray-600 uppercase tracking-widest text-center">
-                            Complete a distribuicao para manter o inicio competitivo.
-                        </p>
                     </div>
                 </div>
             </div>
         </div>
     )
 }
+

@@ -1,31 +1,50 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react'
 import { Profile, getUserInventory } from '@/lib/gameActions'
 import { supabase } from '@/lib/supabase'
 import { ITEMS } from '@/lib/items'
 import { deriveSoulsStats } from '@/lib/soulslike'
+import CharacterPortrait from './CharacterPortrait'
 
 interface StatusTabProps {
     profile: Profile
     onRefresh: () => void
 }
 
+const CLASS_PORTRAITS: Record<string, string> = {
+    'Xerife': '/images/xerife.jpeg',
+    'Pistoleiro': '/images/pistoleiro.jpeg',
+    'Forasteiro': '/images/forasteiro.jpeg',
+    'Pregador': '/images/pregador.jpeg',
+    'Nativo': '/images/nativo.jpeg',
+    'Vendedor': '/images/mercador.jpeg',
+    'CacadorDeRecompensas': '/images/cacador-de-recompensas.jpeg'
+}
+
 /* ─── Atributos "base" do personagem ─── */
 const ATTRIBUTES = [
-    { key: 'strength', label: 'Força', icon: '⚔️', color: '#ef4444', desc: 'Dano físico, armas pesadas' },
-    { key: 'defense', label: 'Defesa', icon: '🛡️', color: '#60a5fa', desc: 'Mitigação de dano recebido' },
-    { key: 'agility', label: 'Agilidade', icon: '💨', color: '#4ade80', desc: 'Esquiva, velocidade de ação' },
-    { key: 'accuracy', label: 'Precisão', icon: '🎯', color: '#f97316', desc: 'Chance de acerto e scaling fino' },
-    { key: 'vigor', label: 'Vigor', icon: '🩸', color: '#a855f7', desc: 'HP máx e carga de equipamento' },
+    { key: 'strength', label: 'Força', icon: 'F', color: '#ef4444', desc: 'Aumenta o dano causado nos seus disparos.' },
+    { key: 'defense', label: 'Defesa', icon: 'D', color: '#60a5fa', desc: 'Sua resistência a ferimentos.' },
+    { key: 'agility', label: 'Agilidade', icon: 'A', color: '#4ade80', desc: 'Sua destreza e chance de esquiva.' },
+    { key: 'accuracy', label: 'Pontaria', icon: 'P', color: '#f97316', desc: 'Precisão crucial para acertar o alvo.' },
+    { key: 'vigor', label: 'Vigor', icon: 'V', color: '#a855f7', desc: 'Sua constituição física e vitalidade total.' },
 ] as const
 
-function buildArchetype(p: Profile): { label: string; color: string } {
-    if (p.strength >= p.agility + 6) return { label: 'Força (Greatsword)', color: '#ef4444' }
-    if (p.agility >= p.strength + 6) return { label: 'Destreza (Rapier)', color: '#4ade80' }
-    if (p.strength >= 14 && p.agility >= 14) return { label: 'Quality Build', color: '#f2b90d' }
-    if (p.vigor >= 18 && p.defense >= 14) return { label: 'Build Tanque', color: '#60a5fa' }
-    return { label: 'Build Híbrida', color: '#c084fc' }
+function buildTrend(p: Profile): { label: string; color: string } {
+    const stats = [
+        { label: 'Força', val: p.strength, color: '#ef4444' },
+        { label: 'Agilidade', val: p.agility, color: '#4ade80' },
+        { label: 'Defesa', val: p.defense, color: '#60a5fa' },
+        { label: 'Vigor', val: p.vigor, color: '#a855f7' },
+        { label: 'Pontaria', val: p.accuracy, color: '#f97316' },
+    ]
+    const highest = [...stats].sort((a, b) => b.val - a.val)[0]
+    const avg = stats.reduce((acc, s) => acc + s.val, 0) / stats.length
+
+    if (highest.val > avg + 5) return { label: `Especialista em ${highest.label}`, color: highest.color }
+    if (highest.val > avg + 3) return { label: `Tendência: ${highest.label}`, color: highest.color }
+    return { label: 'Pistoleiro Equilibrado', color: '#f2b90d' }
 }
 
 /* ─── Mini barra de progresso ─── */
@@ -50,10 +69,10 @@ function StatRow({ label, value, positive }: { label: string; value: string | nu
     return (
         <div style={{
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            borderBottom: '1px solid #1a1a1a', paddingBottom: 6, marginBottom: 6
+            borderBottom: '1px solid #1a1a1a', paddingBottom: 8, marginBottom: 8
         }}>
-            <span style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#6b7280' }}>{label}</span>
-            <span style={{ fontSize: 11, fontFamily: 'monospace', fontWeight: 700, color }}>{value}</span>
+            <span style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#6b7280', fontWeight: 900 }}>{label}</span>
+            <span style={{ fontSize: 16, fontFamily: 'monospace', fontWeight: 900, color }}>{value}</span>
         </div>
     )
 }
@@ -92,219 +111,119 @@ export default function StatusTab({ profile, onRefresh }: StatusTabProps) {
     }
 
     const xpToNext = profile.level * 100
-    const xpPct = Math.min(100, (profile.xp / xpToNext) * 100)
-    const hpPct = Math.min(100, (profile.hp_current / profile.hp_max) * 100)
-    const archetype = buildArchetype(profile)
-
-    const loadPct = souls?.equipLoadPct ?? 0
-    const tierColor = loadPct < 30 ? '#4ade80' : loadPct < 70 ? '#f2b90d' : loadPct < 100 ? '#f97316' : '#dc2626'
+    const trend = buildTrend(profile)
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 820, margin: '0 auto' }}>
+        <div className="flex flex-col gap-5 md:gap-6 max-w-[820px] mx-auto">
 
-            {/* ═══ CABEÇALHO DO PERSONAGEM ═══ */}
-            <div style={{
-                display: 'flex', alignItems: 'center', gap: 20,
-                padding: '16px 20px',
-                background: 'linear-gradient(135deg, rgba(18,10,2,0.9), rgba(10,10,10,0.9))',
-                border: '1px solid #2a200a',
-                borderRadius: 8,
-                boxShadow: '0 0 24px rgba(242,185,13,0.08)',
-            }}>
-                {/* Avatar */}
-                <div style={{
-                    width: 72, height: 72, flexShrink: 0,
-                    border: '2px solid #c9a84c', borderRadius: '50%',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 32, background: 'rgba(0,0,0,0.6)',
-                    boxShadow: '0 0 20px rgba(242,185,13,0.2)',
-                }}>⚔️</div>
-
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {/* Nome / Nível */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                        <h2 style={{ margin: 0, fontSize: 20, fontWeight: 900, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            {profile.username ?? 'Herói'}
+            {/* ─── CABEÇALHO DO PERSONAGEM ─── */}
+            <div className="western-border p-4 md:p-5 flex items-center gap-4 md:gap-5 bg-gradient-to-br from-[#1f140c] to-[#140d07]">
+                <div className="flex-1 flex flex-col gap-2 md:gap-3">
+                    <div className="flex flex-col md:flex-row justify-between md:items-baseline gap-1">
+                        <h2 className="title-western m-0 text-xl md:text-2xl text-[#d9c5b2]">
+                            {profile.username ?? 'Pistoleiro'}
                         </h2>
-                        <span style={{ fontSize: 11, color: '#c9a84c', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
-                            Nível {profile.level} · {archetype.label}
+                        <span className="text-[10px] md:text-xs color-gold-dark uppercase tracking-[0.15em] font-bold">
+                            Nível {profile.level} · {trend.label}
                         </span>
                     </div>
 
-                    {/* HP */}
-                    <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#9ca3af', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    <div className="space-y-1">
+                        <div className="flex justify-between text-[11px] md:text-sm text-[#9ca3af] uppercase tracking-[0.2em] font-black">
                             <span>Vida</span>
-                            <span style={{ color: '#f87171', fontFamily: 'monospace' }}>{profile.hp_current} / {profile.hp_max}</span>
+                            <span className="text-[#f87171] font-mono font-bold">{profile.hp_current} / {profile.hp_max}</span>
                         </div>
-                        <Bar value={profile.hp_current} max={profile.hp_max} color="#ef4444" height={7} />
+                        <Bar value={profile.hp_current} max={profile.hp_max} color="#ef4444" height={8} />
                     </div>
 
-                    {/* XP */}
-                    <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#9ca3af', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    <div className="space-y-1">
+                        <div className="flex justify-between text-[11px] md:text-sm text-[#9ca3af] uppercase tracking-[0.2em] font-black">
                             <span>Experiência</span>
-                            <span style={{ color: '#a855f7', fontFamily: 'monospace' }}>{profile.xp} / {xpToNext} XP</span>
+                            <span className="text-[#a855f7] font-mono font-bold">{profile.xp} / {xpToNext} XP</span>
                         </div>
-                        <Bar value={profile.xp} max={xpToNext} color="#a855f7" height={7} />
+                        <Bar value={profile.xp} max={xpToNext} color="#a855f7" height={8} />
                     </div>
                 </div>
             </div>
 
-            {/* Alerta de pontos disponíveis */}
             {profile.stat_points_available > 0 && (
-                <div style={{
-                    padding: '10px 16px', textAlign: 'center', borderRadius: 6,
-                    border: '1px solid rgba(242,185,13,0.4)', background: 'rgba(242,185,13,0.06)',
-                    fontSize: 11, fontWeight: 700, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '0.15em',
-                    animation: 'pulse 2s infinite',
-                }}>
-                    ✨ {profile.stat_points_available} ponto(s) de atributo disponível(is) — distribua abaixo
+                <div className="p-3 md:p-4 text-center rounded-sm border-2 border-dashed border-gold/40 bg-gold/5 text-[10px] md:text-xs font-bold text-gold uppercase tracking-[0.15em] shadow-lg animate-pulse">
+                    ✨ {profile.stat_points_available} ponto(s) de atributo disponível(is)
                 </div>
             )}
 
-            {/* ═══ GRID PRINCIPAL: Atributos + Stats de Combate ═══ */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 220px', gap: 16, alignItems: 'start' }}>
+            <div className="flex flex-col lg:grid lg:grid-cols-[1fr_260px] gap-5 items-start">
+                {/* Painel Lateral de Stats - Versão "Wanted Card" (MOVED UP FOR MOBILE) */}
+                <div className="w-full lg:w-auto order-first lg:order-last">
+                    <div className="western-border p-4 bg-gradient-to-b from-[#1a120c] to-[#0d0906] border-gold shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                        {/* Portrait Container */}
+                        <div className="w-full aspect-square mb-6 relative border-2 border-gold-dark p-1 bg-black">
+                            <CharacterPortrait
+                                src={profile.image_url || CLASS_PORTRAITS[profile.class] || null}
+                                fallbackEmoji="🤠"
+                                size="full"
+                                borderColor="transparent"
+                                name={profile.username}
+                            />
+                            {/* Decorative banner */}
+                            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-gold text-black px-4 md:px-6 py-1.5 md:py-2 text-sm md:text-base font-black uppercase whitespace-nowrap tracking-[0.15em] rounded-sm shadow-xl border-2 border-black">
+                                {profile.username}
+                            </div>
+                        </div>
 
-                {/* ── Atributos ── */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <div className="text-[10px] md:text-[11px] uppercase text-[#c9a84c] mb-3 font-extrabold text-center tracking-[0.2em] border-b border-[#c9a84c33] pb-1">
+                            Dados de Duelo
+                        </div>
+                        <div className="flex flex-col gap-0.5">
+                            <StatRow label="HP Máximo" value={profile.hp_max} />
+                            <StatRow label="Energia" value={`${profile.energy} / 100`} />
+                            <StatRow label="Pontaria" value={profile.accuracy + (souls?.bonuses.accuracy || 0)} />
+                            <StatRow label="Defesa" value={profile.defense + (souls?.bonuses.defense || 0)} />
+                        </div>
+
+                        {/* Summary of combat stats */}
+                        <div className="mt-3 pt-3 border-top border-[#c9a84c33]">
+                            <div className="flex justify-between items-center mb-1">
+                                <span className="text-[9px] text-[#6b7280] uppercase">Dano Estimado</span>
+                                <span className="text-xs text-white font-bold font-mono">
+                                    {souls?.minDamage || 5}-{souls?.maxDamage || 10}
+                                </span>
+                            </div>
+                            <div className="text-[8px] text-[#4b5563] text-center italic leading-tight">
+                                "Justiça se faz com chumbo."
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Atributos */}
+                <div className="w-full flex flex-col gap-3 md:gap-4 order-last lg:order-first">
                     {ATTRIBUTES.map(({ key, label, icon, color, desc }) => {
                         const value = profile[key] ?? 5
-                        const MAX_PIPS = 20
                         return (
-                            <div key={key} style={{
-                                display: 'flex', alignItems: 'center', gap: 14, padding: '10px 14px',
-                                background: 'rgba(0,0,0,0.35)', border: '1px solid #1e1e1e', borderRadius: 7,
-                                transition: 'border-color 0.2s',
-                            }}
-                                onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = color + '55'}
-                                onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = '#1e1e1e'}
-                            >
-                                {/* Ícone */}
-                                <span style={{ fontSize: 22, flexShrink: 0 }}>{icon}</span>
-
-                                {/* Info */}
-                                <div style={{ flex: 1, minWidth: 0 }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-                                        <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#e5e7eb' }}>{label}</span>
-                                        <span style={{ fontSize: 18, fontWeight: 900, fontFamily: 'monospace', color }}>{value}</span>
+                            <div key={key} className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-black/45 border border-[#2b1f14] rounded-lg transition-all duration-300 group hover:border-gold/30">
+                                <span className="text-xl md:text-2xl flex-shrink-0 w-8 text-center">{icon}</span>
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex justify-between items-baseline mb-2">
+                                        <span className="text-base md:text-lg font-black uppercase text-[#e5e7eb] tracking-[0.1em]">{label}</span>
+                                        <span className="text-2xl md:text-3xl font-black font-mono" style={{ color, textShadow: `0 0 10px ${color}44` }}>{value}</span>
                                     </div>
-                                    {/* Pips */}
-                                    <div style={{ display: 'flex', gap: 2, marginBottom: 4 }}>
-                                        {Array(MAX_PIPS).fill(null).map((_, i) => (
-                                            <div key={i} style={{
-                                                width: 8, height: 10, borderRadius: 2, flexShrink: 0,
+                                    <div className="flex gap-0.5 md:gap-1 mb-2 md:mb-2.5 overflow-hidden">
+                                        {Array(20).fill(null).map((_, i) => (
+                                            <div key={i} className="flex-1 h-3 md:h-4 rounded-xs transition-all duration-300" style={{
                                                 background: i < value ? color : '#1a1a1a',
-                                                border: `1px solid ${i < value ? color + '55' : '#222'}`,
-                                                boxShadow: i < value ? `0 0 4px ${color}44` : 'none',
-                                                transition: 'background 0.2s',
+                                                border: `1px solid ${i < value ? color + '66' : '#222'}`,
                                             }} />
                                         ))}
                                     </div>
-                                    <span style={{ fontSize: 9, color: '#4b5563', fontStyle: 'italic' }}>{desc}</span>
+                                    <span className="text-[11px] md:text-sm text-[#9ca3af] italic leading-relaxed block">{desc}</span>
                                 </div>
-
-                                {/* Botão gastar ponto */}
                                 {profile.stat_points_available > 0 && (
-                                    <button
-                                        onClick={() => spendPoint(key)}
-                                        disabled={spending}
-                                        style={{
-                                            flexShrink: 0, width: 30, height: 30, borderRadius: 6,
-                                            background: `linear-gradient(135deg, ${color}22, ${color}11)`,
-                                            border: `1px solid ${color}55`,
-                                            color, fontSize: 18, fontWeight: 900, cursor: 'pointer',
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            transition: 'all 0.2s', opacity: spending ? 0.5 : 1,
-                                        }}
-                                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = `${color}33`; (e.currentTarget as HTMLElement).style.boxShadow = `0 0 10px ${color}44` }}
-                                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = `linear-gradient(135deg,${color}22,${color}11)`; (e.currentTarget as HTMLElement).style.boxShadow = 'none' }}
-                                    >+</button>
+                                    <button onClick={() => spendPoint(key)} disabled={spending} className="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-current/15 border border-current font-black text-lg md:text-xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95" style={{ color }}>+</button>
                                 )}
                             </div>
                         )
                     })}
-                </div>
-
-                {/* ── Painel de Stats de Combate ── */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-
-                    {/* Vitais */}
-                    <div style={{ padding: '12px 14px', background: 'rgba(0,0,0,0.4)', border: '1px solid #1e1e1e', borderRadius: 7 }}>
-                        <div style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#c9a84c', marginBottom: 10, fontWeight: 700 }}>
-                            Recursos
-                        </div>
-                        <StatRow label="Vida Atual" value={`${profile.hp_current} / ${profile.hp_max}`} />
-                        <StatRow label="Energia" value={profile.energy} />
-                        <StatRow label="Gold" value={profile.gold} />
-                        <StatRow label="XP Total" value={profile.xp} />
-                        <StatRow label="Nível" value={profile.level} />
-                    </div>
-
-                    {/* Stats de combate derivados */}
-                    {souls && (
-                        <div style={{ padding: '12px 14px', background: 'rgba(0,0,0,0.4)', border: '1px solid #1e1e1e', borderRadius: 7 }}>
-                            <div style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#c9a84c', marginBottom: 10, fontWeight: 700 }}>
-                                Combate
-                            </div>
-                            <StatRow label="Attack Rating" value={souls.attackRating} />
-                            <StatRow label="Build" value={archetype.label} />
-
-                            {/* Barra de carga */}
-                            <div style={{ marginBottom: 8 }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#6b7280', marginBottom: 4, textTransform: 'uppercase' }}>
-                                    <span>Carga</span>
-                                    <span style={{ fontFamily: 'monospace', color: tierColor }}>
-                                        {souls.equipLoadCurrent.toFixed(1)} / {souls.equipLoadMax.toFixed(1)}
-                                    </span>
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                    <Bar value={souls.equipLoadCurrent} max={souls.equipLoadMax} color={tierColor} height={6} />
-                                    <span style={{ fontSize: 9, color: tierColor, fontFamily: 'monospace', flexShrink: 0 }}>
-                                        {souls.equipLoadPct.toFixed(0)}%
-                                    </span>
-                                </div>
-                            </div>
-
-                            <StatRow label="Tier de Carga" value={souls.equipTier} />
-                            <StatRow label="Bônus Esquiva" value={`${souls.dodgeBonus >= 0 ? '+' : ''}${souls.dodgeBonus}`}
-                                positive={souls.dodgeBonus >= 0} />
-                            <StatRow label="Pen. Stamina" value={`-${souls.staminaRegenPenalty}%`}
-                                positive={souls.staminaRegenPenalty === 0} />
-
-                            {souls.unmetRequirements.length > 0 && (
-                                <div style={{
-                                    marginTop: 6, padding: '6px 8px', borderRadius: 5,
-                                    background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.35)',
-                                    fontSize: 9, color: '#f87171'
-                                }}>
-                                    ⚠ Req. faltando: {souls.unmetRequirements.join(', ')}
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Bônus de equipamentos */}
-                    {souls && Object.values(souls.bonuses).some(v => v !== 0) && (
-                        <div style={{ padding: '12px 14px', background: 'rgba(0,0,0,0.4)', border: '1px solid #1e1e1e', borderRadius: 7, fontSize: 10 }}>
-                            <div style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#c9a84c', marginBottom: 10, fontWeight: 700 }}>
-                                Bônus de Equipamento
-                            </div>
-                            {Object.entries(souls.bonuses).map(([stat, val]) =>
-                                val !== 0 ? (
-                                    <div key={stat} style={{
-                                        display: 'flex', justifyContent: 'space-between',
-                                        borderBottom: '1px solid #1a1a1a', paddingBottom: 5, marginBottom: 5
-                                    }}>
-                                        <span style={{ textTransform: 'uppercase', color: '#6b7280', fontSize: 9 }}>{stat}</span>
-                                        <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 10, color: val >= 0 ? '#4ade80' : '#f87171' }}>
-                                            {val > 0 ? '+' : ''}{val}
-                                        </span>
-                                    </div>
-                                ) : null
-                            )}
-                        </div>
-                    )}
                 </div>
             </div>
         </div>
