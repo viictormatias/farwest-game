@@ -58,6 +58,9 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
         enemy: Enemy;
     } | null>(null);
 
+    const [shouldSkipCombat, setShouldSkipCombat] = useState(false);
+    const skipCombatRef = useRef(false);
+
     useEffect(() => {
         if (logEndRef.current) {
             logEndRef.current.scrollTo({
@@ -107,16 +110,14 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
 
     const handleFight = async () => {
         if (!selectedEnemy) return
-        if (profile.job_finish_at && new Date(profile.job_finish_at) > new Date()) {
-            alert('Você não pode duelar enquanto trabalha.')
-            return
-        }
         if (profile.energy < COMBAT_ENERGY_COST) {
             alert(`Energia insuficiente. Necessário: ${COMBAT_ENERGY_COST}.`)
             return
         }
         setIsFighting(true)
         setShowCollectButton(false)
+        setShouldSkipCombat(false)
+        skipCombatRef.current = false;
         setCombatLog([])
         setWinner(null)
         setCombatSummary(null)
@@ -168,21 +169,34 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
             if (defenderWasPlayer) {
                 finalPlayerHpVal = turn.resultHp
             }
-        }
-
         for (const turn of result.history) {
-            await new Promise(resolve => setTimeout(resolve, 3200))
+            // Wait logic that can be interrupted
+            const sleepMs = 3200;
+            const pollInterval = 100;
+            let waited = 0;
+            
+            while (waited < sleepMs && !skipCombatRef.current) {
+                await new Promise(resolve => setTimeout(resolve, pollInterval));
+                waited += pollInterval;
+            }
 
             const attackerName = turn.attacker.toLowerCase()
             const playerName = profile.username.toLowerCase()
 
             if (turn.damage > 0) {
                 if (attackerName === playerName) {
-                    setEnemyHp(turn.resultHp)
-                    triggerShake('enemy', turn.isCritical)
+                    if (!skipCombatRef.current) triggerShake('enemy', turn.isCritical);
                 } else {
-                    setPlayerHp(turn.resultHp)
-                    triggerShake('player', turn.isCritical)
+                    if (!skipCombatRef.current) triggerShake('player', turn.isCritical);
+                }
+            }
+            
+            // if skipped, we don't bother triggering shake, we just update the logs and HPs
+            if (turn.damage > 0) {
+                if (attackerName === playerName) {
+                    setEnemyHp(turn.resultHp);
+                } else {
+                    setPlayerHp(turn.resultHp);
                 }
             }
 
@@ -405,17 +419,25 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
                 </select>
 
                 {!showCollectButton ? (
-                    <button
-                        onClick={handleFight}
-                        disabled={isFighting || !selectedEnemy || profile.energy < COMBAT_ENERGY_COST || (profile.job_finish_at ? new Date(profile.job_finish_at) > new Date() : false)}
-                        className="btn-western py-4 px-8 text-base font-black min-w-[200px]"
-                    >
-                        {profile.job_finish_at && new Date(profile.job_finish_at) > new Date() 
-                            ? '⏳ TRABALHANDO...' 
-                            : isFighting 
-                                ? '🔫 DUELANDO...' 
-                                : '⚔️ INICIAR DUELO'}
-                    </button>
+                    isFighting ? (
+                        <button
+                            onClick={() => {
+                                setShouldSkipCombat(true);
+                                skipCombatRef.current = true;
+                            }}
+                            className="btn-western py-4 px-8 text-base font-black min-w-[200px] bg-red-800 hover:bg-red-700"
+                        >
+                            ⏩ PULAR
+                        </button>
+                    ) : (
+                        <button
+                            onClick={handleFight}
+                            disabled={!selectedEnemy || profile.energy < COMBAT_ENERGY_COST}
+                            className="btn-western py-4 px-8 text-base font-black min-w-[200px]"
+                        >
+                            ⚔️ INICIAR DUELO
+                        </button>
+                    )
                 ) : (
                     <button
                         onClick={handleCollectReward}

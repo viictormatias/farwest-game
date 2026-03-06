@@ -157,7 +157,7 @@ export default function InventoryTab({ profile, onRefresh, isActive }: Inventory
 
         return (
             <div
-                className="group relative w-16 h-16 bg-black/40 border-2 transition-all flex items-center justify-center rounded-sm"
+                className="group relative w-16 h-16 bg-black/40 border-2 transition-all flex items-center justify-center rounded-sm hover:z-[100]"
                 style={{
                     borderColor: item ? (req?.meets ? rc?.border : '#8b0000') : '#423020',
                     boxShadow: item ? `0 0 10px ${req?.meets ? rc?.glow : 'rgba(139,0,0,0.3)'}` : 'none'
@@ -253,7 +253,7 @@ export default function InventoryTab({ profile, onRefresh, isActive }: Inventory
                                 draggable={!!item}
                                 onDragStart={(e) => item && handleDragStart(e, item.inventory_id)}
                                 onClick={() => item && handleItemClick(item, req)}
-                                className="aspect-square bg-black/60 border border-white/5 relative group transition-all hover:border-gold/30 hover:bg-white/5 flex items-center justify-center cursor-pointer"
+                                className="aspect-square bg-black/60 border border-white/5 relative group transition-all hover:border-gold/30 hover:bg-white/5 flex items-center justify-center cursor-pointer hover:z-[100]"
                                 style={{
                                     borderColor: item ? (req?.meets ? rc?.border : '#8b0000') : '',
                                     boxShadow: item ? `inset 0 0 10px ${req?.meets ? rc?.glow : 'rgba(139,0,0,0.2)'}` : ''
@@ -309,10 +309,12 @@ export default function InventoryTab({ profile, onRefresh, isActive }: Inventory
             </div>
 
             {/* LADO DIREITO: PERSONAGEM & STATUS */}
-            <div className="w-full lg:w-[420px] western-border bg-black/60 p-4 md:p-5 flex flex-col gap-4 md:gap-6 relative overflow-hidden order-1 lg:order-2">
+            <div className="w-full lg:w-[420px] western-border bg-black/60 p-4 md:p-5 flex flex-col gap-4 md:gap-6 relative order-1 lg:order-2">
                 {/* Background Decor */}
-                <div className="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center">
-                    <img src="/images/logo-semfundo.png" className="w-[80%] grayscale invert" alt="" />
+                <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-sm">
+                    <div className="absolute inset-0 opacity-5 flex items-center justify-center">
+                        <img src="/images/logo-semfundo.png" className="w-[80%] grayscale invert" alt="" />
+                    </div>
                 </div>
 
                 <h2 className="title-western text-lg md:text-xl text-center text-gold tracking-widest relative z-10">

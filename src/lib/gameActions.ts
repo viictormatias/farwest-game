@@ -665,18 +665,6 @@ export async function resolveArenaCombat(
     }
 
     const normalizedProfile = await syncVitals(profile)
-
-    if (normalizedProfile.job_finish_at && new Date(normalizedProfile.job_finish_at) > new Date()) {
-        return {
-            success: false,
-            playerWon,
-            xpGain: 0,
-            goldGain: 0,
-            energyCost: 0,
-            hpAfter: normalizedProfile.hp_current
-        }
-    }
-
     if (normalizedProfile.energy < COMBAT_ENERGY_COST) {
         return {
             success: false,
