@@ -145,9 +145,9 @@ export default function Header({ profile, onRefresh }: { profile: Profile; onRef
                                 src={CLASS_PORTRAITS[profile.class] || null}
                                 fallbackEmoji="🤠"
                                 borderColor="gold"
-                                size="xs"
+                                size="sm"
                                 name={profile.username}
-                                className="md:w-12 md:h-12"
+                                className="scale-90 md:scale-100 origin-left"
                             />
                             <button
                                 onClick={() => supabase.auth.signOut()}

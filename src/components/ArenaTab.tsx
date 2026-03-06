@@ -169,6 +169,7 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
             if (defenderWasPlayer) {
                 finalPlayerHpVal = turn.resultHp
             }
+        }
         for (const turn of result.history) {
             // Wait logic that can be interrupted
             const sleepMs = 3200;
@@ -358,11 +359,15 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
                     {/* VS Overlay */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none text-center">
                         <div className="text-3xl md:text-4xl lg:text-5xl font-black text-[#a52a2a] italic tracking-tighter drop-shadow-2xl animate-pulse">VS</div>
-                        {isFighting && (
+                        {isFighting ? (
                             <div className="text-[8px] md:text-[9px] text-gold font-bold uppercase tracking-[0.2em] mt-1">
                                 Trocando Tiros
                             </div>
-                        )}
+                        ) : profile.current_job_id ? (
+                            <div className="text-[8px] md:text-[9px] text-blue-400/80 font-bold uppercase tracking-[0.2em] mt-1 bg-black/40 px-2 py-0.5 rounded-sm">
+                                💼 Duelando enquanto trabalha...
+                            </div>
+                        ) : null}
                     </div>
                 </div>
 
