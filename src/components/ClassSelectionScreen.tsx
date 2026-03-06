@@ -223,7 +223,7 @@ export default function ClassSelectionScreen({ userId, onCreated }: ClassSelecti
 
                 <div className="flex flex-col lg:flex-row gap-6 md:gap-8 items-stretch">
                     {/* Carousel Section */}
-                    <div className="flex-1 flex flex-col items-center justify-center relative min-h-[400px] md:min-h-[500px]">
+                    <div className="flex-1 flex flex-col items-center justify-start pt-4 relative min-h-[450px] md:min-h-[550px]">
                         {/* Navigation Arrows */}
                         <button
                             onClick={prevClass}
@@ -239,7 +239,7 @@ export default function ClassSelectionScreen({ userId, onCreated }: ClassSelecti
                         </button>
 
                         {/* Large Character Card */}
-                        <div className="relative group transition-all duration-500 transform hover:scale-[1.02] w-full max-w-[240px] md:max-w-xs">
+                        <div className="relative group transition-all duration-500 transform hover:scale-[1.02] w-full max-w-[280px] md:max-w-sm">
                             <div className={`absolute -inset-1 rounded-sm blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200`}
                                 style={{ backgroundColor: classData.color }} />
                             <div className="relative western-border p-1 bg-black overflow-hidden aspect-[3/4]">
