@@ -30,12 +30,12 @@ export default function Dashboard() {
       return;
     }
 
-    // Safety timeout to prevent infinite loading loop (10 seconds)
+    // Safety timeout to prevent infinite loading loop (30 seconds)
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => {
         console.warn('[DEBUG-RELOAD] timeout triggered');
-        reject(new Error('SERVIDOR DEMOROU A RESPONDER. VERIFIQUE SUA CONEXÃO OU CONFIGURAÇÃO.'));
-      }, 10000)
+        reject(new Error('O SERVIDOR ESTÁ LEVANDO MAIS TEMPO QUE O ESPERADO. VERIFIQUE SUA INTERNET OU TENTE NOVAMENTE EM ALGUNS INSTANTES.'));
+      }, 30000)
     )
 
     try {

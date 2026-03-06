@@ -7,7 +7,8 @@ import {
     InitialStatAllocation,
     InitialStatKey,
     ONBOARDING_MAX_PER_STAT,
-    ONBOARDING_STAT_POINTS
+    ONBOARDING_STAT_POINTS,
+    logout
 } from '@/lib/gameActions'
 import CharacterPortrait from './CharacterPortrait'
 
@@ -217,9 +218,18 @@ export default function ClassSelectionScreen({ userId, onCreated }: ClassSelecti
             <div className="max-w-6xl w-full western-border p-4 md:p-6 bg-black/60 relative z-10 backdrop-blur-md"
                 style={{ border: '1px solid rgba(242,185,13,0.2)', boxShadow: '0 0 60px rgba(0,0,0,0.9), 0 0 30px rgba(242,185,13,0.1)' }}
             >
-                <h1 className="text-2xl md:text-3xl font-black text-gold title-western text-center mb-4 md:mb-6 uppercase tracking-widest leading-tight">
-                    Monte Seu Pistoleiro
-                </h1>
+                <div className="flex justify-between items-center mb-4 md:mb-6">
+                    <button 
+                        onClick={() => logout().then(() => onCreated())}
+                        className="text-red-500/70 hover:text-red-500 text-[10px] font-black uppercase tracking-widest border border-red-500/20 px-3 py-1 hover:bg-red-500/10 transition-all"
+                    >
+                        [ Sair do Login ]
+                    </button>
+                    <h1 className="text-2xl md:text-3xl font-black text-gold title-western uppercase tracking-widest leading-tight">
+                        Monte Seu Pistoleiro
+                    </h1>
+                    <div className="w-[100px] hidden md:block"></div> {/* Spacer for centering header */}
+                </div>
 
                 <div className="flex flex-col lg:flex-row gap-6 md:gap-8 items-stretch">
                     {/* Carousel Section */}

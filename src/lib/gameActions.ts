@@ -354,6 +354,10 @@ export async function signUpWithEmail(email: string, password: string) {
     return await supabase.auth.signUp({ email, password })
 }
 
+export async function logout() {
+    return await supabase.auth.signOut()
+}
+
 export async function getJobs(): Promise<Job[]> {
     const { data, error } = await supabase.from('jobs').select('*').order('energy_cost', { ascending: true })
     return error ? [] : data
