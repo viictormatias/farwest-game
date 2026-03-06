@@ -60,7 +60,10 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
 
     useEffect(() => {
         if (logEndRef.current) {
-            logEndRef.current.scrollIntoView({ behavior: 'smooth' })
+            logEndRef.current.scrollTo({
+                top: logEndRef.current.scrollHeight,
+                behavior: 'smooth'
+            })
         }
     }, [combatLog])
 
@@ -352,7 +355,10 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
                         {combatLog.length > 0 && <span className="text-[8px] md:text-[10px] text-gray-600 font-mono uppercase">T{combatLog.length}</span>}
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-2 md:p-3 font-serif text-[12px] md:text-[14px] space-y-1.5 md:space-y-2 scroll-smooth bg-[#0a0a0a]/30">
+                    <div
+                        ref={logEndRef}
+                        className="flex-1 overflow-y-auto p-2 md:p-3 font-serif text-[12px] md:text-[14px] space-y-1.5 md:space-y-2 scroll-smooth bg-[#0a0a0a]/30"
+                    >
                         {combatLog.length === 0 && !winner && (
                             <div className="text-gray-600 text-center italic mt-12 text-[10px] md:text-[11px] tracking-widest uppercase opacity-40">
                                 Sangue na poeira...
@@ -374,7 +380,7 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
                                 </div>
                             </div>
                         )}
-                        <div ref={logEndRef} />
+                        {/* Removeram-se as instâncias antigas de scrollIntoView para evitar saltos na página */}
                     </div>
                 </div>
             </div>
