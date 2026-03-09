@@ -55,7 +55,8 @@ export default function ShopTab({ profile, onRefresh }: ShopTabProps) {
         gloves: 'Luvas',
         legs: 'Calcas',
         boots: 'Botas',
-        consumable: 'Suprimentos'
+        consumable: 'Suprimentos',
+        relic: 'Reliquias'
     }
 
     const ITEM_TYPE_LABELS: Record<ItemType, string> = {

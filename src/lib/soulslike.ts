@@ -61,7 +61,8 @@ export function checkItemRequirements(
 
     return {
         meets: unmet.length === 0,
-        unmetLabels: unmet.map(([attr, needed]) => `${ATTRIBUTE_LABELS[attr] || attr.toUpperCase()} ${needed}`)
+        unmet,
+        unmetLabels: unmet.map((u) => `${ATTRIBUTE_LABELS[u.attr] || u.attr.toUpperCase()} ${u.needed}`)
     }
 }
 

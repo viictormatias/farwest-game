@@ -145,9 +145,9 @@ export default function Dashboard() {
           <div className="relative mb-8 md:mb-10 group">
             <div className="w-16 h-16 md:w-20 md:h-20 border-2 border-gold/20 border-t-gold rounded-full animate-spin"></div>
             <img
-              src="/logo.png"
+              src="/images/logo-pequena-semfundo.png"
               alt="Loading"
-              className="absolute inset-0 m-auto w-8 md:w-10 h-auto opacity-80 animate-pulse"
+              className="absolute inset-0 m-auto w-8 md:w-10 h-auto opacity-85 animate-pulse"
             />
           </div>
           <h1 className="text-xs md:text-sm tracking-[0.6em] animate-pulse uppercase font-black text-gold">

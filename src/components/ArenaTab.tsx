@@ -569,9 +569,10 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
                             )}
                         </div>
                     </div>
+                </div>
 
-                    {/* 2. CENTER COLUMN: CONTROLS & LOG */}
-                    <div className="lg:col-span-4 flex flex-col gap-2 min-h-0 h-full">
+                {/* 2. CENTER COLUMN: CONTROLS & LOG */}
+                <div className="lg:col-span-4 flex flex-col gap-2 min-h-0 h-full">
                         {/* Integrated Combat Status */}
                         {isFighting && (
                             <div className="text-center py-1 animate-in fade-in slide-in-from-top-2">
@@ -656,8 +657,8 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
                         </div>
                     </div>
 
-                    {/* 3. ENEMY COLUMN */}
-                    <div className="lg:col-span-4 flex flex-col gap-3">
+                {/* 3. ENEMY COLUMN */}
+                <div className="lg:col-span-4 flex flex-col gap-3">
                         {selectedEnemy ? (
                             <div className="bg-[#140d07]/90 border-2 border-[#3a2a1a] rounded-sm p-3 shadow-inner flex flex-col items-center h-full auto-rows-min">
                                 <div className="flex justify-between w-full mb-2 items-center flex-row-reverse">
@@ -723,10 +724,9 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
                                 <span className="font-serif tracking-widest text-[#3a2a1a] uppercase text-sm font-black">Nenhum Alvo</span>
                             </div>
                         )}
-                    </div>
-
                 </div>
             </div>
-            )
+        </div>
+    )
 }
 

@@ -743,7 +743,20 @@ export async function resolveArenaCombat(
         }
     }
 
-    const rewards = playerWon ? getArenaRewards(enemy) : { xpGain: 2, goldGain: 0 }
+    // Never trust client-provided enemy stats for rewards.
+    // Use canonical enemy data from DB to keep gold/xp consistent.
+    let rewardEnemy = enemy
+    const { data: enemyRow } = await supabase
+        .from('npc_enemies')
+        .select('id,name,level,hp_max,strength,agility,precision')
+        .eq('id', enemy.id)
+        .single()
+
+    if (enemyRow) {
+        rewardEnemy = enemyRow as Enemy
+    }
+
+    const rewards = playerWon ? getArenaRewards(rewardEnemy) : { xpGain: 2, goldGain: 0 }
     const relicBonuses = playerWon
         ? await getEquippedRelicCombatBonuses(normalizedProfile.id)
         : { goldPct: 0, dropPct: 0 }

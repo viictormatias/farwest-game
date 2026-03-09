@@ -57,7 +57,27 @@ export default function InventoryTab({ profile, onRefresh, isActive }: Inventory
         gloves: 'Luvas',
         legs: 'Calcas',
         boots: 'Botas',
-        consumable: 'Consumiveis'
+        consumable: 'Consumiveis',
+        relic: 'Reliquias'
+    }
+
+    const ITEM_TYPE_LABELS: Record<ItemType, string> = {
+        weapon: 'Arma',
+        shield: 'Acessorio Extra',
+        helmet: 'Chapeu',
+        chest: 'Casaco',
+        gloves: 'Luvas',
+        legs: 'Calcas',
+        boots: 'Botas',
+        consumable: 'Consumivel',
+        relic: 'Reliquia'
+    }
+
+    const relicEffectsForDisplay = (item: any): string[] => {
+        const effects: string[] = []
+        if (item?.relic_effect?.gold_per_duel_pct) effects.push(`+${item.relic_effect.gold_per_duel_pct}% Ouro por duelo`)
+        if (item?.relic_effect?.item_drop_per_duel_pct) effects.push(`+${item.relic_effect.item_drop_per_duel_pct}% Chance de drop`)
+        return effects
     }
 
     const loadInventory = async () => {
