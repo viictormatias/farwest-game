@@ -158,9 +158,9 @@ export default function Header({ profile, onRefresh }: { profile: Profile; onRef
                 <div className="flex flex-row items-center justify-between w-full md:flex-1 md:min-w-0 gap-4 md:gap-6">
                     <div className="flex-shrink-0">
                         <img
-                            src="/logo.png"
+                            src="/images/logo-pequena-semfundo.png"
                             alt="Far West Logo"
-                            className="h-10 md:h-16 w-auto drop-shadow-[0_0_10px_rgba(242,185,13,0.2)]"
+                            className="h-14 md:h-20 w-auto drop-shadow-[0_0_10px_rgba(242,185,13,0.2)]"
                         />
                     </div>
 
