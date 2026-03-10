@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { getOptimizedAssetSrc } from '@/lib/assets'
 import { ensureProfile, Profile } from '@/lib/gameActions'
 import Header from '@/components/Header'
 import CampTab from '@/components/CampTab'
@@ -134,7 +135,7 @@ export default function Dashboard() {
       <div className="flex flex-col items-center justify-center min-h-screen bg-black text-gold font-serif pb-20 relative overflow-hidden">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 scale-105"
-          style={{ backgroundImage: 'url("/images/loading2.jpeg")', filter: 'grayscale(0.3) brightness(0.5)' }}
+          style={{ backgroundImage: `url("${getOptimizedAssetSrc('/images/loading2.jpeg')}")`, filter: 'grayscale(0.3) brightness(0.5)' }}
         />
         <div
           className="absolute inset-0 z-1 pointer-events-none"
@@ -144,7 +145,7 @@ export default function Dashboard() {
         <div className="relative z-10 flex flex-col items-center">
           <div className="relative mb-8 md:mb-10">
             <img
-              src="/images/logo-pequena-semfundo.png"
+              src={getOptimizedAssetSrc('/images/logo-pequena-semfundo.png') || '/images/logo-pequena-semfundo.png'}
               alt="Loading"
               className="w-40 h-40 md:w-52 md:h-52 object-contain opacity-95 animate-pulse"
             />
@@ -186,7 +187,7 @@ export default function Dashboard() {
       <div
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-1000"
         style={{
-          backgroundImage: `url("${tabBackgrounds[activeTab]}")`,
+          backgroundImage: `url("${getOptimizedAssetSrc(tabBackgrounds[activeTab])}")`,
           filter: 'grayscale(0.12) brightness(0.65) contrast(1.08)',
           opacity: 1,
         }}

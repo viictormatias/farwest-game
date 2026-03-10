@@ -201,17 +201,21 @@ function pickRandom<T>(arr: T[]): T {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function clamp(value: number, min: number, max: number) {
+    return Math.max(min, Math.min(max, value));
+}
+
 function getRandomTarget(accuracy: number, agility: number) {
     const advantage = Math.max(0, accuracy - agility);
-    const critBonus = Math.floor(advantage / 5) * 5; 
+    const bonusWeight = Math.floor(advantage / 8);
 
     const dynamicTargets = [
-        { name: 'Cabeça', multiplier: 2.0, weight: 10 + critBonus, gender: 'f', plural: false },
-        { name: 'Peito', multiplier: 1.2, weight: 30 + critBonus, gender: 'm', plural: false },
-        { name: 'Braço', multiplier: 0.8, weight: 20, gender: 'm', plural: false },
-        { name: 'Perna', multiplier: 0.8, weight: 20, gender: 'f', plural: false },
-        { name: 'Mão', multiplier: 0.5, weight: 10, gender: 'f', plural: false },
-        { name: 'Pé', multiplier: 0.5, weight: 10, gender: 'm', plural: false },
+        { key: 'head', name: 'Cabeça', multiplier: 1.75, weight: 6 + bonusWeight, gender: 'f', plural: false },
+        { key: 'chest', name: 'Peito', multiplier: 1.15, weight: 20 + bonusWeight, gender: 'm', plural: false },
+        { key: 'arm', name: 'Braço', multiplier: 0.9, weight: 24, gender: 'm', plural: false },
+        { key: 'leg', name: 'Perna', multiplier: 0.9, weight: 24, gender: 'f', plural: false },
+        { key: 'hand', name: 'Mão', multiplier: 0.65, weight: 13, gender: 'f', plural: false },
+        { key: 'foot', name: 'Pé', multiplier: 0.65, weight: 13, gender: 'm', plural: false },
     ];
 
     const totalWeight = dynamicTargets.reduce((sum, t) => sum + t.weight, 0);
@@ -253,8 +257,8 @@ export function simulateCombat(fighter1: Fighter, fighter2: Fighter): CombatResu
         let isCritical = false;
         let narrative = "";
 
-        let hitChance = 55 + (attacker.accuracy - defender.agility);
-        hitChance = Math.max(20, Math.min(95, hitChance));
+        const accuracyGap = attacker.accuracy - defender.agility;
+        const hitChance = clamp(62 + accuracyGap * 0.7, 12, 96);
 
         const target = getRandomTarget(attacker.accuracy, defender.agility);
         const hasGun = isFirearm(attacker.weaponName || '');
@@ -284,23 +288,32 @@ export function simulateCombat(fighter1: Fighter, fighter2: Fighter): CombatResu
             narrative = interpolate(pickRandom(templates), templateVars);
         } else {
             const rawBase = attacker.minDamage + Math.random() * (attacker.maxDamage - attacker.minDamage);
-            
-            // Defesa Multiplicativa: Dano = Dano Bruto * (100 / (100 + Defesa))
-            const rawDefense = Math.max(0, defender.defense);
-            let finalDamage = Math.max(5, rawBase * (100 / (100 + rawDefense)));
+
+            // Defesa efetiva considera penetração parcial por força para reduzir extremos.
+            const defensePenetration = Math.max(0, attacker.strength * 0.35);
+            const effectiveDefense = Math.max(0, defender.defense - defensePenetration);
+            const mitigation = 100 / (100 + effectiveDefense * 0.9);
+            let finalDamage = Math.max(2, rawBase * mitigation);
 
             const isGraze = Math.random() < 0.18;
             if (isGraze) {
-                finalDamage = Math.floor(finalDamage * 0.5);
-                damage = finalDamage;
+                damage = Math.max(1, Math.floor(finalDamage * 0.55));
                 defender.hp = Math.max(0, defender.hp - damage);
                 templateVars.damage = damage;
 
                 const grazeTemplates = hasGun ? NARRATIVE_TEMPLATES.firearm_graze : NARRATIVE_TEMPLATES.melee_graze;
                 narrative = interpolate(pickRandom(grazeTemplates), templateVars);
             } else {
-                damage = Math.floor(finalDamage * target.multiplier);
-                isCritical = target.name === 'Cabeça' || target.name === 'Peito';
+                const critChance = clamp(5 + Math.max(0, accuracyGap) * 0.18, 5, 28);
+                const canCrit = target.key === 'head' || target.key === 'chest';
+                isCritical = canCrit && Math.random() * 100 < critChance;
+
+                let rolledDamage = finalDamage * target.multiplier;
+                if (isCritical) {
+                    rolledDamage *= target.key === 'head' ? 1.4 : 1.2;
+                }
+
+                damage = Math.max(1, Math.floor(rolledDamage));
                 defender.hp = Math.max(0, defender.hp - damage);
                 templateVars.damage = damage;
 

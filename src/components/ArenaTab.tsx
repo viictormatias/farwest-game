@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, CSSProperties } from 'react'
 import { Profile, Enemy, COMBAT_ENERGY_COST, beginArenaCombat, getEnemies, getUserInventory, resolveArenaCombat, ONBOARDING_STAT_POINTS } from '@/lib/gameActions'
 import { simulateCombat, Fighter, NarrativeTurn } from '@/combat'
+import { getOptimizedAssetSrc } from '@/lib/assets'
 import { ITEMS as CATALOG_ITEMS, Item, ItemRarity, getItemById } from '@/lib/items'
 import { deriveSoulsStats, SoulsDerivedStats } from '@/lib/soulslike'
 import CharacterPortrait from './CharacterPortrait'
@@ -24,6 +25,11 @@ const CLASS_PORTRAITS: Record<string, string> = {
     'Nativo': '/images/nativo.jpeg',
     'Vendedor': '/images/mercador.jpeg',
     'CacadorDeRecompensas': '/images/cacador-de-recompensas.jpeg'
+}
+
+function getEnemyPortraitSrc(enemyId?: string | null) {
+    if (!enemyId) return null
+    return `/images/enemies/${enemyId}.png`
 }
 
 const BASE_CLASS_STAT_SUM = 10
@@ -113,6 +119,39 @@ function getEnemyEquipment(enemy: Enemy, catalog: Item[]) {
         },
     }
 
+    fixedGear['Billy the Kid, O Relampago'] = {
+        weapon: 'fantasma_deserto_legendary_weapon', chest: 'fantasma_deserto_legendary_chest', helmet: 'fantasma_deserto_legendary_helmet',
+        gloves: 'fantasma_deserto_legendary_gloves', legs: 'fantasma_deserto_legendary_legs', boots: 'fantasma_deserto_legendary_boots', shield: 'fantasma_deserto_legendary_shield'
+    }
+    fixedGear['Wyatt Earp, Lei de Ferro'] = {
+        weapon: 'xerife_lendario_legendary_weapon', chest: 'xerife_lendario_legendary_chest', helmet: 'xerife_lendario_legendary_helmet',
+        gloves: 'xerife_lendario_legendary_gloves', legs: 'xerife_lendario_legendary_legs', boots: 'xerife_lendario_legendary_boots', shield: 'xerife_lendario_legendary_shield'
+    }
+    fixedGear['Jesse James, Sombra do Trem'] = {
+        weapon: 'duelista_carmesim_epic_weapon', chest: 'duelista_carmesim_epic_chest', helmet: 'duelista_carmesim_epic_helmet',
+        gloves: 'duelista_carmesim_epic_gloves', legs: 'duelista_carmesim_epic_legs', boots: 'duelista_carmesim_epic_boots', shield: 'duelista_carmesim_epic_shield'
+    }
+    fixedGear['Doc Holliday, As de Sangue'] = {
+        weapon: 'xama_tormenta_epic_weapon', chest: 'xama_tormenta_epic_chest', helmet: 'xama_tormenta_epic_helmet',
+        gloves: 'xama_tormenta_epic_gloves', legs: 'xama_tormenta_epic_legs', boots: 'xama_tormenta_epic_boots', shield: 'xama_tormenta_epic_shield'
+    }
+    fixedGear['Annie Oakley, Mira Implacavel'] = {
+        weapon: 'xerife_lendario_legendary_weapon', chest: 'xama_tormenta_epic_chest', helmet: 'xama_tormenta_epic_helmet',
+        gloves: 'xama_tormenta_epic_gloves', legs: 'xama_tormenta_epic_legs', boots: 'xama_tormenta_epic_boots', shield: 'xama_tormenta_epic_shield'
+    }
+    fixedGear['Butch Cassidy, Rei do Assalto'] = {
+        weapon: 'lobo_tempestade_legendary_weapon', chest: 'lobo_tempestade_legendary_chest', helmet: 'lobo_tempestade_legendary_helmet',
+        gloves: 'lobo_tempestade_legendary_gloves', legs: 'lobo_tempestade_legendary_legs', boots: 'lobo_tempestade_legendary_boots', shield: 'lobo_tempestade_legendary_shield'
+    }
+    fixedGear['Sundance Kid, Passo Fantasma'] = {
+        weapon: 'fantasma_deserto_legendary_weapon', chest: 'fantasma_deserto_legendary_chest', helmet: 'fantasma_deserto_legendary_helmet',
+        gloves: 'fantasma_deserto_legendary_gloves', legs: 'fantasma_deserto_legendary_legs', boots: 'fantasma_deserto_legendary_boots', shield: 'fantasma_deserto_legendary_shield'
+    }
+    fixedGear['Calamity Jane, Tempestade Escarlate'] = {
+        weapon: 'xama_tormenta_epic_weapon', chest: 'guardiao_aco_epic_chest', helmet: 'guardiao_aco_epic_helmet',
+        gloves: 'guardiao_aco_epic_gloves', legs: 'guardiao_aco_epic_legs', boots: 'guardiao_aco_epic_boots', shield: 'guardiao_aco_epic_shield'
+    }
+
     const gearMap = fixedGear[enemy.name];
     if (gearMap) {
         return {
@@ -148,6 +187,22 @@ function getEnemyEquipment(enemy: Enemy, catalog: Item[]) {
         w = 'precision_rifle'; c = 'sheriff_coat'; h = 'trigger_king_hat';
         g = 'nightfang_grips'; l = 'ghost_step_pants'; b = 'raven_boots'; s = 'iron_star_buckler';
     }
+    if (lvl >= 20) {
+        w = 'xama_tormenta_epic_weapon'; c = 'xama_tormenta_epic_chest'; h = 'xama_tormenta_epic_helmet';
+        g = 'xama_tormenta_epic_gloves'; l = 'xama_tormenta_epic_legs'; b = 'xama_tormenta_epic_boots'; s = 'xama_tormenta_epic_shield';
+    }
+    if (lvl >= 24) {
+        w = 'fantasma_deserto_legendary_weapon'; c = 'fantasma_deserto_legendary_chest'; h = 'fantasma_deserto_legendary_helmet';
+        g = 'fantasma_deserto_legendary_gloves'; l = 'fantasma_deserto_legendary_legs'; b = 'fantasma_deserto_legendary_boots'; s = 'fantasma_deserto_legendary_shield';
+    }
+    if (lvl >= 28) {
+        w = 'lobo_tempestade_legendary_weapon'; c = 'lobo_tempestade_legendary_chest'; h = 'lobo_tempestade_legendary_helmet';
+        g = 'lobo_tempestade_legendary_gloves'; l = 'lobo_tempestade_legendary_legs'; b = 'lobo_tempestade_legendary_boots'; s = 'lobo_tempestade_legendary_shield';
+    }
+    if (lvl >= 32) {
+        w = 'xerife_lendario_legendary_weapon'; c = 'xerife_lendario_legendary_chest'; h = 'xerife_lendario_legendary_helmet';
+        g = 'xerife_lendario_legendary_gloves'; l = 'xerife_lendario_legendary_legs'; b = 'xerife_lendario_legendary_boots'; s = 'xerife_lendario_legendary_shield';
+    }
 
     return {
         weapon: catalog.find(i => i.id === w) || catalog.find(i => i.id === 'rusty_dagger')!,
@@ -176,7 +231,7 @@ type CombatLogEntry = NarrativeTurn & { isNew?: boolean }
 
 function ItemIcon({ item, className = "" }: { item: Item; className?: string }) {
     const [imgError, setImgError] = useState(false)
-    const displayUrl = item.image_url
+    const displayUrl = getOptimizedAssetSrc(item.image_url)
 
     if (displayUrl && !imgError) {
         return (
@@ -193,8 +248,10 @@ function ItemIcon({ item, className = "" }: { item: Item; className?: string }) 
 }
 
 export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onRefresh: () => void }) {
+    type EnemyTier = 'tier1' | 'tier2'
     const [enemies, setEnemies] = useState<Enemy[]>([])
     const [selectedEnemy, setSelectedEnemy] = useState<Enemy | null>(null)
+    const [enemyTier, setEnemyTier] = useState<EnemyTier>('tier1')
     const [combatLog, setCombatLog] = useState<CombatLogEntry[]>([])
     const [isFighting, setIsFighting] = useState(false)
     const [winner, setWinner] = useState<string | null>(null)
@@ -225,6 +282,9 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
 
     const [shouldSkipCombat, setShouldSkipCombat] = useState(false);
     const skipCombatRef = useRef(false);
+    const tier1Enemies = enemies.filter((e) => e.level < 20)
+    const tier2Enemies = enemies.filter((e) => e.level >= 20)
+    const filteredEnemies = enemyTier === 'tier2' ? tier2Enemies : tier1Enemies
 
     useEffect(() => {
         if (logEndRef.current) {
@@ -249,17 +309,36 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
     useEffect(() => {
         getEnemies().then(data => {
             setEnemies(data)
-            if (data.length > 0) {
-                setSelectedEnemy(data[0])
-                setEnemyHp(getEnemyMaxHp(data[0], CATALOG_ITEMS))
+            const initialTierEnemies = data.filter((e) => e.level < 20)
+            const initialEnemy = initialTierEnemies[0] || data[0] || null
+            if (initialEnemy) {
+                setSelectedEnemy(initialEnemy)
+                setEnemyHp(getEnemyMaxHp(initialEnemy, CATALOG_ITEMS))
             }
         })
         loadSoulsSnapshot()
     }, [profile.id])
 
+    useEffect(() => {
+        if (filteredEnemies.length === 0) {
+            setSelectedEnemy(null)
+            setEnemyHp(0)
+            return
+        }
+
+        const isCurrentEnemyInTier = selectedEnemy
+            ? filteredEnemies.some((enemy) => enemy.id === selectedEnemy.id)
+            : false
+
+        if (!isCurrentEnemyInTier) {
+            setSelectedEnemy(filteredEnemies[0])
+            setEnemyHp(getEnemyMaxHp(filteredEnemies[0], CATALOG_ITEMS))
+        }
+    }, [enemyTier, enemies])
+
 
     const handleEnemyChange = (id: string) => {
-        const en = enemies.find(e => e.id === id) || null
+        const en = filteredEnemies.find(e => e.id === id) || null
         setSelectedEnemy(en)
         if (en) setEnemyHp(getEnemyMaxHp(en, CATALOG_ITEMS))
     }
@@ -517,9 +596,9 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
     }
 
     return (
-        <div className="relative flex flex-col gap-3 lg:h-[min(800px,calc(100vh-140px))] p-3 md:p-4 rounded-sm overflow-hidden"
+        <div className="relative flex flex-col gap-3 h-[min(100vh,calc(100vh-110px))] max-h-[100vh] p-3 md:p-4 rounded-sm overflow-hidden"
             style={{
-                backgroundImage: `linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('/images/duelo1.jpeg')`,
+                backgroundImage: `linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('${getOptimizedAssetSrc('/images/duelo1.jpeg')}')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundAttachment: 'fixed'
@@ -531,25 +610,26 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
 
                 {/* 1. PLAYER COLUMN */}
                 <div className="lg:col-span-4 flex flex-col gap-3">
-                    <div className="bg-[#140d07]/90 border-2 border-[#3a2a1a] rounded-sm p-3 shadow-inner flex flex-col items-center h-full auto-rows-min">
+                    <div className="relative bg-[#140d07]/90 border-2 border-[#3a2a1a] rounded-sm p-4 shadow-inner flex flex-col h-full">
                         <div className="flex justify-between w-full mb-2 items-center">
-                            <span className="text-xs font-black text-blue-400 uppercase tracking-widest">{profile.username}</span>
-                            <span className="text-[10px] text-blue-200/50 font-mono">HP {playerHp}/{playerMaxHp}</span>
+                            <span className="text-sm md:text-base font-black text-blue-300 uppercase tracking-[0.12em]">{profile.username}</span>
+                            <span className="text-xs md:text-sm text-blue-100/80 font-mono">HP {playerHp}/{playerMaxHp}</span>
                         </div>
-                        <div className="w-full h-2 mb-4 bg-black/60 border border-blue-900/30 rounded-full overflow-hidden shrink-0">
+                        <div className="w-full h-3 mb-4 bg-black/60 border border-blue-900/30 rounded-full overflow-hidden shrink-0">
                             <div className="h-full bg-gradient-to-r from-blue-700 to-blue-400 transition-all duration-500" style={{ width: `${playerHpPct}%` }} />
                         </div>
 
+                        <div className="w-full flex items-center gap-4">
                         <CharacterPortrait
                             src={CLASS_PORTRAITS[profile.class] || null}
                             fallbackEmoji="🤠"
                             borderColor="blue"
-                            size="sm"
+                            size="md"
                             isHit={playerHit}
                         />
 
                         {/* Player Stats (TOTAL (+BÔNUS)) */}
-                        <div className="grid grid-cols-5 gap-1 mt-auto pt-3 border-t border-[#3a2a1a]">
+                        <div className="grid grid-cols-5 gap-2 flex-1 py-2 border-l border-[#3a2a1a] pl-3">
                             {[
                                 { label: 'FOR', base: profile.strength, bonus: soulsSnapshot?.bonuses.strength || 0 },
                                 { label: 'DEF', base: profile.defense, bonus: soulsSnapshot?.bonuses.defense || 0 },
@@ -558,16 +638,17 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
                                 { label: 'VIG', base: profile.vigor, bonus: soulsSnapshot?.bonuses.vigor || 0 },
                             ].map(({ label, base, bonus }) => (
                                 <div key={label} className="flex flex-col items-center">
-                                    <span className="text-[10px] text-[#8a7a6a] font-bold uppercase tracking-wider">{label}</span>
+                                    <span className="text-[11px] text-[#a39281] font-bold uppercase tracking-wider">{label}</span>
                                     <div className="flex flex-col items-center leading-tight">
-                                        <span className="text-sm font-black text-white">{base + bonus}</span>
-                                        <div className="flex flex-col items-center text-[9px] text-gray-500 font-bold leading-none">
+                                        <span className="text-base md:text-lg font-black text-white">{base + bonus}</span>
+                                        <div className="flex flex-col items-center text-[10px] text-gray-400 font-bold leading-none">
                                             <span>({base})</span>
                                             {bonus > 0 ? <span>(+{bonus})</span> : null}
                                         </div>
                                     </div>
                                 </div>
                             ))}
+                        </div>
                         </div>
 
                         {/* VS Overlay */}
@@ -596,19 +677,47 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
 
                         {/* Controls */}
                         <div className="bg-[#140d07] border border-[#3a2a1a] p-3 rounded-sm shadow-md flex flex-col gap-3 h-fit flex-shrink-0">
+                            <div className="grid grid-cols-2 gap-2">
+                                <button
+                                    onClick={() => setEnemyTier('tier1')}
+                                    disabled={isFighting || showCollectButton}
+                                    className={`py-2 px-3 text-[11px] font-black uppercase tracking-[0.08em] border rounded-sm transition-colors ${enemyTier === 'tier1'
+                                        ? 'bg-[#2a3e58] border-blue-400 text-blue-100'
+                                        : 'bg-[#111] border-[#3a3a3a] text-gray-300 hover:border-blue-700'
+                                        } disabled:opacity-60 disabled:cursor-not-allowed`}
+                                >
+                                    Tier 1 ({tier1Enemies.length})
+                                </button>
+                                <button
+                                    onClick={() => setEnemyTier('tier2')}
+                                    disabled={isFighting || showCollectButton || tier2Enemies.length === 0}
+                                    className={`py-2 px-3 text-[11px] font-black uppercase tracking-[0.08em] border rounded-sm transition-colors ${enemyTier === 'tier2'
+                                        ? 'bg-[#5a2a2a] border-red-400 text-red-100'
+                                        : 'bg-[#111] border-[#3a3a3a] text-gray-300 hover:border-red-700'
+                                        } disabled:opacity-60 disabled:cursor-not-allowed`}
+                                >
+                                    Tier 2 ({tier2Enemies.length})
+                                </button>
+                            </div>
+
                             <select
                                 className="w-full bg-[#111] border-2 border-[#3a3a3a] text-white p-2 outline-none focus:border-red-600 transition-colors rounded-sm western-select text-sm font-black"
                                 onChange={(e) => handleEnemyChange(e.target.value)}
                                 disabled={isFighting || showCollectButton}
                                 value={selectedEnemy?.id || ''}
                             >
-                                <option value="">-- SELECIONAR ALVO --</option>
-                                {enemies.map(en => (
+                                <option value="">
+                                    {filteredEnemies.length === 0
+                                        ? '-- SEM INIMIGOS NESTE TIER --'
+                                        : '-- SELECIONAR ALVO --'}
+                                </option>
+                                {filteredEnemies.map(en => (
                                     <option key={en.id} value={en.id}>{en.name} (Nvl {en.level})</option>
                                 ))}
                             </select>
 
                             {!showCollectButton ? (
+                                <>
                                 <button
                                     onClick={handleFight}
                                     disabled={isFighting || !selectedEnemy || profile.energy < COMBAT_ENERGY_COST}
@@ -616,6 +725,19 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
                                 >
                                     {isFighting ? '🔫 DUELANDO...' : '⚔️ INICIAR DUELO'}
                                 </button>
+                                {isFighting && (
+                                    <button
+                                        onClick={() => {
+                                            setShouldSkipCombat(true)
+                                            skipCombatRef.current = true
+                                        }}
+                                        disabled={shouldSkipCombat}
+                                        className="py-2 px-4 text-xs font-black uppercase tracking-[0.08em] bg-[#2b1a0a] text-[#f2b90d] border border-[#5e3e1f] hover:bg-[#3a2410] disabled:opacity-60 disabled:cursor-not-allowed transition-colors rounded-sm"
+                                    >
+                                        {shouldSkipCombat ? 'PULANDO DUELO...' : 'PULAR DUELO'}
+                                    </button>
+                                )}
+                                </>
                             ) : (
                                 <button
                                     onClick={handleCollectReward}
@@ -671,24 +793,25 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
                 {/* 3. ENEMY COLUMN */}
                 <div className="lg:col-span-4 flex flex-col gap-3">
                         {selectedEnemy ? (
-                            <div className="bg-[#140d07]/90 border-2 border-[#3a2a1a] rounded-sm p-3 shadow-inner flex flex-col items-center h-full auto-rows-min">
+                            <div className="bg-[#140d07]/90 border-2 border-[#3a2a1a] rounded-sm p-4 shadow-inner flex flex-col h-full">
                                 <div className="flex justify-between w-full mb-2 items-center flex-row-reverse">
-                                    <span className="text-xs font-black text-red-500 uppercase tracking-widest">{selectedEnemy.name}</span>
-                                    <span className="text-[10px] text-red-300/50 font-mono">HP {enemyHp}/{enemyHpMax}</span>
+                                    <span className="text-sm md:text-base font-black text-red-400 uppercase tracking-[0.12em]">{selectedEnemy.name}</span>
+                                    <span className="text-xs md:text-sm text-red-100/80 font-mono">HP {enemyHp}/{enemyHpMax}</span>
                                 </div>
-                                <div className="w-full h-2 mb-4 bg-black/60 border border-red-900/30 rounded-full overflow-hidden shrink-0">
+                                <div className="w-full h-3 mb-4 bg-black/60 border border-red-900/30 rounded-full overflow-hidden shrink-0">
                                     <div className="h-full bg-gradient-to-l from-red-700 to-red-500 transition-all duration-500" style={{ width: `${enemyHpPct}%`, marginLeft: 'auto' }} />
                                 </div>
 
+                                <div className="w-full flex items-center gap-4">
                                 <CharacterPortrait
-                                    src={null}
+                                    src={getEnemyPortraitSrc(selectedEnemy.id)}
                                     fallbackEmoji="💀"
                                     borderColor="red"
-                                    size="sm"
+                                    size="md"
                                     isHit={enemyHit}
                                 />
                                 {/* Enemy Stats (TOTAL = BASE + BÔNUS) */}
-                                <div className="grid grid-cols-5 gap-1 mt-auto pt-3 border-t border-[#3a2a1a] w-full">
+                                <div className="grid grid-cols-5 gap-2 flex-1 py-2 border-l border-[#3a2a1a] pl-3">
                                     {[
                                         { label: 'FOR', base: enemyBase?.strength ?? selectedEnemy.strength, bonus: enemyBonusStrength },
                                         { label: 'DEF', base: enemyBase?.defense ?? 0, bonus: enemyBonusDefense },
@@ -697,16 +820,17 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
                                         { label: 'VIG', base: enemyBase?.vigor ?? 0, bonus: enemyBonusVigor },
                                     ].map(({ label, base, bonus }) => (
                                         <div key={label} className="flex flex-col items-center">
-                                            <span className="text-[10px] text-[#8a7a6a] font-bold uppercase tracking-wider">{label}</span>
+                                            <span className="text-[11px] text-[#a39281] font-bold uppercase tracking-wider">{label}</span>
                                             <div className="flex flex-col items-center leading-tight">
-                                                <span className="text-sm font-black text-white">{base + bonus}</span>
-                                                <div className="flex flex-col items-center text-[9px] text-gray-500 font-bold leading-none">
+                                                <span className="text-base md:text-lg font-black text-white">{base + bonus}</span>
+                                                <div className="flex flex-col items-center text-[10px] text-gray-400 font-bold leading-none">
                                                     <span>({base})</span>
                                                     {bonus > 0 ? <span>(+{bonus})</span> : null}
                                                 </div>
                                             </div>
                                         </div>
                                     ))}
+                                </div>
                                 </div>
 
                                 {/* Enemy Equipment Grid */}

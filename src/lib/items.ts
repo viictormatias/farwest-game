@@ -274,14 +274,18 @@ function createSetItems(rarity: ItemRarity, theme: SetTheme): Item[] {
         const price = Math.max(40, Math.round(referencePrice * (1 + prestige)))
         const powerFactor = Math.max(0.82, Math.min(1.35, price / referencePrice))
 
+        const item_id = `${theme.key}_${rarity}_${type}`;
+        const image_url = `/images/items/${item_id}_realistic.png`;
+        
         const baseItem: Item = {
-            id: `${theme.key}_${rarity}_${type}`,
+            id: item_id,
             name: type === 'weapon' ? weaponNameForTheme(theme) : `${SLOT_LABELS[type]} do ${theme.name}`,
             type,
             rarity,
             price,
             description: `Conjunto ${theme.name} (${rarity}): ${theme.lore}`,
             requirements: buildRequirements(rarity, theme.archetype, type, powerFactor),
+            image_url,
             icon: SLOT_ICONS[type]
         }
 
@@ -365,7 +369,7 @@ const GENERATED_SET_ITEMS_RAW: Item[] = (Object.keys(SETS_BY_RARITY) as ItemRari
     .flatMap((rarity) => SETS_BY_RARITY[rarity].flatMap((theme) => createSetItems(rarity, theme)))
 const GENERATED_SET_ITEMS: Item[] = rebalancePricesByPower(GENERATED_SET_ITEMS_RAW)
 
-export const ITEMS: Item[] = [
+const BASE_ITEMS: Item[] = [
     // Compatibilidade com onboarding atual
     {
         id: 'rusty_dagger',
@@ -405,7 +409,86 @@ export const ITEMS: Item[] = [
         rarity: 'common',
         description: 'Recupera o fôlego e a energia.',
         stats: { energy: 30 },
+        image_url: '/images/items/canned_beans_realistic.jpg',
         icon: '🥫'
+    },
+
+    // Gloves
+    { id: 'leather_gloves', name: 'Luvas de Couro', type: 'gloves', price: 90, rarity: 'common', description: 'Aderência e controle no saque.', stats: { agility: 1, accuracy: 1 }, image_url: '/images/items/leather_gloves_realistic.jpg', icon: '🧤' },
+    { id: 'reinforced_gloves', name: 'Luvas Reforçadas', type: 'gloves', price: 360, rarity: 'uncommon', description: 'Boas para pancada e recoil pesado.', requirements: { strength: 8 }, stats: { defense: 9 }, image_url: '/images/items/reinforced_gloves_realistic.jpg', icon: '🥊' },
+    { id: 'duelist_gloves', name: 'Luvas do Duelista', type: 'gloves', price: 760, rarity: 'rare', description: 'Feitas para tiro rápido.', requirements: { agility: 10 }, stats: { agility: 3, accuracy: 4 }, image_url: '/images/items/duelist_gloves_realistic.jpg', icon: '💨' },
+    { id: 'marshal_gloves', name: 'Luvas do Marechal', type: 'gloves', price: 1300, rarity: 'epic', description: 'Aguentam briga longa sem tremer.', requirements: { strength: 14, vigor: 8 }, stats: { defense: 15, vigor: 4 }, image_url: '/images/items/marshal_gloves_realistic.jpg', icon: '🧤' },
+    { id: 'nightfang_grips', name: 'Empunhadura Noturna', type: 'gloves', price: 2100, rarity: 'legendary', description: 'Controle fino para tiros letais.', requirements: { agility: 16, accuracy: 12 }, stats: { agility: 5, accuracy: 7 }, image_url: '/images/items/nightfang_grips_realistic.jpg', icon: '🌙' },
+
+    // Legs
+    { id: 'traveler_pants', name: 'Calça de Viajante', type: 'legs', price: 110, rarity: 'common', description: 'Confortável para longas cavalgadas.', stats: { agility: 2 }, image_url: '/images/items/traveler_pants_realistic.jpg', icon: '👖' },
+    { id: 'leather_chaps', name: 'Perneira de Couro', type: 'legs', price: 430, rarity: 'uncommon', description: 'Proteção básica contra estilhaços.', requirements: { strength: 8 }, stats: { defense: 11 }, image_url: '/images/items/leather_chaps_realistic.jpg', icon: '👖' },
+    { id: 'lined_pants', name: 'Calça Forrada', type: 'legs', price: 880, rarity: 'rare', description: 'Boa defesa sem travar o movimento.', requirements: { vigor: 8 }, stats: { defense: 14, vigor: 3 }, image_url: '/images/items/lined_pants_realistic.jpg', icon: '🛡️' },
+    { id: 'sheriff_greaves', name: 'Perneira do Xerife', type: 'legs', price: 1650, rarity: 'epic', description: 'Equipamento de alto nível da lei.', requirements: { strength: 16, vigor: 10 }, stats: { defense: 22, vigor: 6 }, image_url: '/images/items/sheriff_greaves_realistic.jpg', icon: '👖' },
+    { id: 'ghost_step_pants', name: 'Calça Passo Fantasma', type: 'legs', price: 2350, rarity: 'legendary', description: 'Feita para aproximação silenciosa.', requirements: { agility: 16 }, stats: { agility: 8, accuracy: 4, defense: 9 }, image_url: '/images/items/ghost_step_pants_realistic.jpg', icon: '💨' },
+
+    // Boots
+    { id: 'cloth_boots', name: 'Botas de Pano', type: 'boots', price: 70, rarity: 'common', description: 'Leves para iniciar na trilha.', stats: { agility: 1 }, image_url: '/images/items/cloth_boots_realistic.jpg', icon: '🥾' },
+    { id: 'mercenary_boots', name: 'Botas de Mercenário', type: 'boots', price: 300, rarity: 'uncommon', description: 'Firmes para duelo em rua de terra.', requirements: { agility: 8 }, stats: { agility: 2, defense: 6 }, image_url: '/images/items/mercenary_boots_realistic.jpg', icon: '🥾' },
+    { id: 'iron_boots', name: 'Botas Ferradas', type: 'boots', price: 700, rarity: 'rare', description: 'Passada pesada, difícil derrubar.', requirements: { strength: 10 }, stats: { defense: 11 }, image_url: '/images/items/iron_boots_realistic.jpg', icon: '👞' },
+    { id: 'ranger_boots', name: 'Botas do Ranger', type: 'boots', price: 1350, rarity: 'epic', description: 'Resistentes para vigia da fronteira.', requirements: { strength: 14, vigor: 8 }, stats: { defense: 16, vigor: 4 }, image_url: '/images/items/ranger_boots_realistic.jpg', icon: '👞' },
+    { id: 'raven_boots', name: 'Botas do Corvo', type: 'boots', price: 2200, rarity: 'legendary', description: 'Mobilidade extrema para emboscadas.', requirements: { agility: 18, accuracy: 12 }, stats: { agility: 7, accuracy: 5 }, image_url: '/images/items/raven_boots_realistic.jpg', icon: '🐦‍⬛' },
+
+    // Relics
+    { 
+        id: 'blood_nugget', 
+        name: 'Pepita de Sangue', 
+        type: 'relic', 
+        price: 1200, 
+        rarity: 'rare', 
+        description: 'Uma pepita manchada de vermelho que pulsa com vitalidade sombria.', 
+        relic_effect: { gold_per_duel_pct: 15 },
+        image_url: '/images/items/blood_nugget_realistic.jpg', 
+        icon: '💎' 
+    },
+    { 
+        id: 'hangman_noose', 
+        name: 'Corda do Carrasco', 
+        type: 'relic', 
+        price: 1500, 
+        rarity: 'rare', 
+        description: 'Fragmento de corda antiga usada em enforcamentos na fronteira.', 
+        relic_effect: { item_drop_per_duel_pct: 10 },
+        image_url: '/images/items/hangman_noose_realistic.jpg', 
+        icon: '🪢' 
+    },
+    { 
+        id: 'saint_medallion', 
+        name: 'Medalhão do Peregrino', 
+        type: 'relic', 
+        price: 1800, 
+        rarity: 'rare', 
+        description: 'Relíquia sagrada de metal envelhecido com símbolos de proteção.', 
+        relic_effect: { gold_per_duel_pct: 10, item_drop_per_duel_pct: 5 },
+        image_url: '/images/items/saint_medallion_realistic.jpg', 
+        icon: '📿' 
+    },
+    { 
+        id: 'phantom_horseshoe', 
+        name: 'Ferradura Fantasma', 
+        type: 'relic', 
+        price: 2500, 
+        rarity: 'rare', 
+        description: 'Ferradura espectral envolta em poeira e energia etérea.', 
+        relic_effect: { gold_per_duel_pct: 20 },
+        image_url: '/images/items/phantom_horseshoe_realistic.jpg', 
+        icon: '🐎' 
+    },
+    { 
+        id: 'devils_coin', 
+        name: 'Moeda do Diabo', 
+        type: 'relic', 
+        price: 3000, 
+        rarity: 'rare', 
+        description: 'Moeda amaldiçoada marcada com sigilos profanos.', 
+        relic_effect: { gold_per_duel_pct: 25, item_drop_per_duel_pct: 10 },
+        image_url: '/images/items/devils_coin_realistic.jpg', 
+        icon: '🪙' 
     }
 ]
 
@@ -421,24 +504,6 @@ const LEGACY_ITEM_ID_ALIASES: Record<string, string> = {
     sheriff_hat: 'guarda_velha_rare_helmet',
     bandit_mask: 'duelista_carmesim_epic_helmet',
     trigger_king_hat: 'xerife_lendario_legendary_helmet',
-
-    leather_gloves: 'pistoleiro_estrada_common_gloves',
-    reinforced_gloves: 'mercenario_fronteira_uncommon_gloves',
-    duelist_gloves: 'cacador_recompensas_rare_gloves',
-    marshal_gloves: 'guardiao_aco_epic_gloves',
-    nightfang_grips: 'fantasma_deserto_legendary_gloves',
-
-    traveler_pants: 'forasteiro_po_common_legs',
-    leather_chaps: 'mercenario_fronteira_uncommon_legs',
-    lined_pants: 'bandoleiro_sombrio_rare_legs',
-    sheriff_greaves: 'guardiao_aco_epic_legs',
-    ghost_step_pants: 'fantasma_deserto_legendary_legs',
-
-    cloth_boots: 'forasteiro_po_common_boots',
-    mercenary_boots: 'mercenario_fronteira_uncommon_boots',
-    iron_boots: 'bandoleiro_sombrio_rare_boots',
-    ranger_boots: 'guardiao_aco_epic_boots',
-    raven_boots: 'fantasma_deserto_legendary_boots',
 
     simple_bandolier: 'garimpeiro_cobre_common_shield',
     reinforced_bandolier: 'bandoleiro_sombrio_rare_shield',
@@ -461,6 +526,16 @@ const LEGACY_ITEM_ID_ALIASES: Record<string, string> = {
     xerife_tactical_bracer: 'guarda_velha_rare_shield',
     xerife_highmarshal_shield: 'xerife_lendario_legendary_shield'
 }
+
+export const ITEMS: Item[] = BASE_ITEMS.map((item) => {
+    const aliasId = LEGACY_ITEM_ID_ALIASES[item.id]
+    if (!aliasId) return item
+
+    return {
+        ...item,
+        image_url: `/images/items/${aliasId}_realistic.png`
+    }
+})
 
 const ITEM_BY_ID = new Map<string, Item>(ITEMS.map((item) => [item.id, item]))
 

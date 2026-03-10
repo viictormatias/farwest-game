@@ -10,6 +10,7 @@ import {
     ONBOARDING_STAT_POINTS,
     logout
 } from '@/lib/gameActions'
+import { getOptimizedAssetSrc } from '@/lib/assets'
 import CharacterPortrait from './CharacterPortrait'
 
 interface ClassSelectionScreenProps {
@@ -237,7 +238,7 @@ export default function ClassSelectionScreen({ userId, onCreated }: ClassSelecti
         <div className="min-h-screen flex items-center justify-center p-4 bg-[#0d0d0d] z-50 relative overflow-hidden">
             <div
                 className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 scale-105"
-                style={{ backgroundImage: 'url("/loadingscreen.jpeg")', filter: 'grayscale(0.2) contrast(1.1)' }}
+                style={{ backgroundImage: `url("${getOptimizedAssetSrc('/loadingscreen.jpeg')}")`, filter: 'grayscale(0.2) contrast(1.1)' }}
             />
             <div className="absolute inset-0 z-1" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%)' }} />
 
@@ -280,7 +281,7 @@ export default function ClassSelectionScreen({ userId, onCreated }: ClassSelecti
                                 style={{ backgroundColor: classData.color }} />
                             <div className="relative western-border p-1 bg-black overflow-hidden aspect-[3/4]">
                                 <img
-                                    src={classData.imageSrc}
+                                    src={getOptimizedAssetSrc(classData.imageSrc) || classData.imageSrc}
                                     alt={classData.name}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { getOptimizedAssetSrc } from '@/lib/assets'
 import Lightbox from './Lightbox'
 
 interface CharacterPortraitProps {
@@ -38,12 +39,13 @@ export default function CharacterPortrait({
     isHit = false,
     className = ''
 }: CharacterPortraitProps) {
-    const [showImage, setShowImage] = useState(Boolean(src))
+    const optimizedSrc = getOptimizedAssetSrc(src)
+    const [showImage, setShowImage] = useState(Boolean(optimizedSrc))
     const [isLightboxOpen, setIsLightboxOpen] = useState(false)
 
     useEffect(() => {
-        setShowImage(Boolean(src))
-    }, [src])
+        setShowImage(Boolean(optimizedSrc))
+    }, [optimizedSrc])
 
     const sz = SIZE_MAP[size] || SIZE_MAP.lg
     const border = BORDER_MAP[borderColor] || ''
@@ -78,11 +80,11 @@ export default function CharacterPortrait({
                         background: 'linear-gradient(135deg, #1a1a1a, #0d0d0d)',
                         borderWidth: borderColor === 'transparent' ? 0 : 2
                     }}
-                    onClick={() => src && showImage && setIsLightboxOpen(true)}
+                    onClick={() => optimizedSrc && showImage && setIsLightboxOpen(true)}
                 >
-                    {src && showImage ? (
+                    {optimizedSrc && showImage ? (
                         <img
-                            src={src}
+                            src={optimizedSrc}
                             alt={name || 'Personagem'}
                             className="w-full h-full object-cover rounded-md group-hover:brightness-125 transition-all"
                             onError={() => setShowImage(false)}
@@ -132,7 +134,7 @@ export default function CharacterPortrait({
             )}
 
             <Lightbox
-                src={src as string | null}
+                src={optimizedSrc as string | null}
                 isOpen={isLightboxOpen}
                 onClose={() => setIsLightboxOpen(false)}
                 alt={name}

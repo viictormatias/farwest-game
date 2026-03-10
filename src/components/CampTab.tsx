@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Profile, Job, getJobs, startJobAction, claimJobAction } from '@/lib/gameActions'
+import { getOptimizedAssetSrc } from '@/lib/assets'
 
 const JOB_ICONS: Record<string, string> = {
     default: '⚔️',
@@ -22,6 +23,23 @@ function getJobIcon(title: string): string {
         if (lower.includes(key)) return icon
     }
     return JOB_ICONS.default
+}
+
+const JOB_CARD_IMAGES: Array<{ keywords: string[]; image: string }> = [
+    { keywords: ['fumo', 'fazenda'], image: '/images/jobs/farm_tobacco.jpg' },
+    { keywords: ['patrulha', 'fronteira'], image: '/images/jobs/frontier_patrol.jpg' },
+    { keywords: ['roubados', 'mercado negro', 'vender'], image: '/images/jobs/black_market.jpg' },
+    { keywords: ['recompensa', 'fugitivo'], image: '/images/jobs/bounty_hunt.jpg' },
+    { keywords: ['diligência', 'diligencia', 'escolta'], image: '/images/jobs/stagecoach_escort.jpg' },
+    { keywords: ['caravana', 'sal', 'deserto'], image: '/images/jobs/salt_caravan.jpg' },
+    { keywords: ['trem', 'express'], image: '/images/jobs/train_heist.jpg' },
+    { keywords: ['banco', 'assalto'], image: '/images/jobs/bank_heist.jpg' },
+]
+
+function getJobCardImage(title: string): string {
+    const lower = title.toLowerCase()
+    const hit = JOB_CARD_IMAGES.find((entry) => entry.keywords.some((kw) => lower.includes(kw)))
+    return hit?.image || '/images/jobs/frontier_patrol.jpg'
 }
 
 function formatDuration(seconds: number): string {
@@ -101,6 +119,7 @@ export default function CampTab({ profile, onRefresh }: { profile: Profile; onRe
                     const isOtherBusy = profile.current_job_id && !isActive
                     const canStart = !profile.current_job_id && profile.energy >= job.energy_cost && profile.level >= job.min_level
                     const jobIcon = getJobIcon(job.title)
+                    const jobImage = getOptimizedAssetSrc(getJobCardImage(job.title)) || getJobCardImage(job.title)
                     const progressPct = isActive
                         ? Math.min(100, ((job.duration_seconds - timeLeft) / job.duration_seconds) * 100)
                         : 0
@@ -116,7 +135,10 @@ export default function CampTab({ profile, onRefresh }: { profile: Profile; onRe
                             style={{
                                 animationDelay: `${idx * 60}ms`,
                                 boxShadow: isActive ? '0 0 20px rgba(242,185,13,0.15), inset 0 0 15px rgba(0,0,0,0.4)' : undefined,
-                                background: 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.05\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noise)\' opacity=\'0.08\'/%3E%3C/svg%3E"), #1a120c'
+                                backgroundImage: `linear-gradient(135deg, rgba(10,7,5,0.92), rgba(20,14,10,0.78)), url("${jobImage}")`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                backgroundBlendMode: 'normal',
                             }}
                         >
                             {/* WANTED POSTER HEADER */}

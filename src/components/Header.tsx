@@ -1,6 +1,7 @@
 'use client'
 
 import { Profile, getUserInventory, getJobs, claimJobAction, Job } from '@/lib/gameActions'
+import { getOptimizedAssetSrc } from '@/lib/assets'
 import StatBar from './StatBar'
 import CharacterPortrait from './CharacterPortrait'
 import { getStatBonuses } from '@/lib/stats'
@@ -158,7 +159,7 @@ export default function Header({ profile, onRefresh }: { profile: Profile; onRef
                 <div className="flex flex-row items-center justify-between w-full md:flex-1 md:min-w-0 gap-4 md:gap-6">
                     <div className="flex-shrink-0">
                         <img
-                            src="/images/logo-pequena-semfundo.png"
+                            src={getOptimizedAssetSrc('/images/logo-pequena-semfundo.png') || '/images/logo-pequena-semfundo.png'}
                             alt="Far West Logo"
                             className="h-14 md:h-20 w-auto drop-shadow-[0_0_10px_rgba(242,185,13,0.2)]"
                         />

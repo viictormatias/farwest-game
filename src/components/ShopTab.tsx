@@ -1,7 +1,8 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import { Profile, buyItem, sellItem, getUserInventory } from '@/lib/gameActions'
+import { getOptimizedAssetSrc } from '@/lib/assets'
 import { ITEMS, Item, ItemType, getItemById } from '@/lib/items'
 import { checkItemRequirements } from '@/lib/soulslike'
 import Lightbox from './Lightbox'
@@ -16,7 +17,7 @@ const RARITY_COLORS: Record<string, { border: string; glow: string; label: strin
 
 function ItemIcon({ item, className = "" }: { item: any; className?: string }) {
     const [imgError, setImgError] = useState(false)
-    const displayUrl = item.image_url
+    const displayUrl = getOptimizedAssetSrc(item.image_url)
 
     if (displayUrl && !imgError) {
         return (
@@ -42,6 +43,7 @@ export default function ShopTab({ profile, onRefresh }: ShopTabProps) {
     const [invItems, setInvItems] = useState<any[]>([])
     const [actionId, setActionId] = useState<string | null>(null)
     const [filter, setFilter] = useState<'all' | ItemType>('all')
+    const [sortBy, setSortBy] = useState<'rarity' | 'price_asc' | 'price_desc'>('rarity')
     const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)
     const [lightboxAlt, setLightboxAlt] = useState<string | null>(null)
     const [lightboxStats, setLightboxStats] = useState<Record<string, number> | undefined>(undefined)
@@ -50,7 +52,7 @@ export default function ShopTab({ profile, onRefresh }: ShopTabProps) {
         all: 'Tudo',
         weapon: 'Armas',
         shield: 'Acessório Extra',
-        helmet: 'Chapéus',
+        helmet: 'Chapeus',
         chest: 'Casacos',
         gloves: 'Luvas',
         legs: 'Calças',
@@ -125,6 +127,25 @@ export default function ShopTab({ profile, onRefresh }: ShopTabProps) {
     }
 
     const formatSigned = (value: number) => (value >= 0 ? `+${value}` : `${value}`)
+    const rarityRank: Record<string, number> = {
+        common: 1,
+        uncommon: 2,
+        rare: 3,
+        epic: 4,
+        legendary: 5
+    }
+
+    const sortItems = <T extends { price: number; rarity?: string; name: string }>(items: T[]) => {
+        return [...items].sort((a, b) => {
+            if (sortBy === 'price_asc') return a.price - b.price
+            if (sortBy === 'price_desc') return b.price - a.price
+
+            const rarityDiff = (rarityRank[b.rarity || 'common'] || 0) - (rarityRank[a.rarity || 'common'] || 0)
+            if (rarityDiff !== 0) return rarityDiff
+            if (b.price !== a.price) return b.price - a.price
+            return a.name.localeCompare(b.name, 'pt-BR')
+        })
+    }
 
     return (
         <div className="space-y-4 md:space-y-6">
@@ -159,11 +180,23 @@ export default function ShopTab({ profile, onRefresh }: ShopTabProps) {
                         </button>
                     ))}
                 </div>
+                <div className="flex items-center gap-2 bg-[#1a120c] p-1.5 md:p-2 rounded-sm border border-[#2b1f14]">
+                    <span className="text-[10px] md:text-xs uppercase font-black tracking-wider text-[#a3907c]">Ordenar</span>
+                    <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value as 'rarity' | 'price_asc' | 'price_desc')}
+                        className="bg-[#111] border border-[#3a2a1a] text-[#d9c5b2] text-[10px] md:text-sm font-black uppercase px-2 py-1 rounded-sm outline-none focus:border-gold"
+                    >
+                        <option value="rarity">Raridade</option>
+                        <option value="price_asc">Menos &gt; Mais Gold</option>
+                        <option value="price_desc">Mais &gt; Menos Gold</option>
+                    </select>
+                </div>
             </div>
 
             {mode === 'buy' ? (
                 <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
-                    {filteredItems.map((item) => {
+                    {sortItems(filteredItems).map((item) => {
                         const canAfford = profile.gold >= item.price
                         const reqStatus = checkItemRequirements(profile, item)
                         const rarityColor = RARITY_COLORS[item.rarity || 'common']
@@ -271,7 +304,9 @@ export default function ShopTab({ profile, onRefresh }: ShopTabProps) {
                             return { ...spec, inventoryId: invEntry.id, is_equipped: invEntry.is_equipped }
                         }).filter(Boolean) as any[]
 
-                        const unequippedItems = itemsWithDetails.filter(i => !i.is_equipped && (filter === 'all' || i.type === filter))
+                        const unequippedItems = sortItems(
+                            itemsWithDetails.filter(i => !i.is_equipped && (filter === 'all' || i.type === filter))
+                        )
 
                         if (unequippedItems.length === 0) {
                             return (

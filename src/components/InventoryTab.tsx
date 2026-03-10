@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { Profile, getUserInventory, toggleEquip, consumeItem, sellItem } from '@/lib/gameActions'
+import { getOptimizedAssetSrc } from '@/lib/assets'
 import { ItemType, getItemById } from '@/lib/items'
 import { checkItemRequirements, deriveSoulsStats } from '@/lib/soulslike'
 import Lightbox from './Lightbox'
@@ -15,7 +16,7 @@ const RARITY_COLORS: Record<string, { border: string; glow: string; label: strin
 
 function ItemIcon({ item, className = "" }: { item: any; className?: string }) {
     const [imgError, setImgError] = useState(false)
-    const displayUrl = item.image_url
+    const displayUrl = getOptimizedAssetSrc(item.image_url)
 
     if (displayUrl && !imgError) {
         return (
@@ -463,7 +464,7 @@ export default function InventoryTab({ profile, onRefresh, isActive }: Inventory
                 {/* Background Decor */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-sm">
                     <div className="absolute inset-0 opacity-5 flex items-center justify-center">
-                        <img src="/images/logo-semfundo.png" className="w-[80%] grayscale invert" alt="" />
+                        <img src={getOptimizedAssetSrc('/images/logo-semfundo.png') || '/images/logo-semfundo.png'} className="w-[80%] grayscale invert" alt="" />
                     </div>
                 </div>
 
@@ -506,8 +507,27 @@ export default function InventoryTab({ profile, onRefresh, isActive }: Inventory
                             </div>
                         </div>
 
-                        <div className="flex-1 bg-black/80 border border-gold/30 p-3 md:p-4 rounded-sm flex flex-col justify-between">
+                        <div className="flex-1 bg-black/80 border border-gold/30 p-3 md:p-4 rounded-sm flex flex-col justify-between relative">
                             <h3 className="text-[10px] md:text-[11px] text-gold font-bold uppercase tracking-widest text-center mb-2 md:mb-4">Potencial</h3>
+                            
+                            {/* Legenda de Atributos */}
+                            <div className="mb-4 flex flex-col items-center gap-1 border-b border-gold/10 pb-3">
+                                <div className="text-[9px] text-gray-400 font-black uppercase tracking-tighter">Legenda de Atributos</div>
+                                <div className="flex items-center gap-3 text-[8px] uppercase font-bold">
+                                    <div className="flex items-center gap-1">
+                                        <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                                        <span className="text-white">Total</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <div className="w-1.5 h-1.5 bg-gray-500 rounded-full"></div>
+                                        <span className="text-gray-500">(Base)</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <div className="w-1.5 h-1.5 bg-gray-500 rounded-full"></div>
+                                        <span className="text-gray-500">(+Bônus)</span>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div className="space-y-2 md:space-y-4">
                                 <div className="flex flex-col items-center">

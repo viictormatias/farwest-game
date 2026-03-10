@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { getOptimizedAssetSrc } from '@/lib/assets'
 
 interface LightboxProps {
     src: string | null
@@ -14,6 +15,7 @@ interface LightboxProps {
 export default function Lightbox({ src, isOpen, onClose, alt, stats }: LightboxProps) {
     const [mounted, setMounted] = useState(false)
     const formatSigned = (value: number) => (value >= 0 ? `+${value}` : `${value}`)
+    const optimizedSrc = getOptimizedAssetSrc(src)
 
     // Garante que o portal só é renderizado no cliente
     useEffect(() => {
@@ -32,7 +34,7 @@ export default function Lightbox({ src, isOpen, onClose, alt, stats }: LightboxP
         }
     }, [isOpen])
 
-    if (!isOpen || !src || !mounted) return null
+    if (!isOpen || !optimizedSrc || !mounted) return null
 
     const content = (
         <div
@@ -54,7 +56,7 @@ export default function Lightbox({ src, isOpen, onClose, alt, stats }: LightboxP
                     {/* Imagem Principal */}
                     <div className="relative western-border p-1 bg-black shadow-2xl overflow-hidden group">
                         <img
-                            src={src}
+                            src={optimizedSrc}
                             alt={alt || "View Image"}
                             className="max-w-[80vw] md:max-w-md max-h-[60vh] md:max-h-[80vh] object-contain rounded-sm select-none animate-in zoom-in-95 duration-300"
                         />

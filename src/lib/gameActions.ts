@@ -82,6 +82,7 @@ async function callSecureAction<T = any>(action: string, payload: Record<string,
         const token = session?.access_token
 
         if (!token) {
+            console.error('[SECURE-ACTION] Sem token de sessão');
             return { success: false, error: 'Sessão expirada. Faça login novamente.' }
         }
 
@@ -95,8 +96,10 @@ async function callSecureAction<T = any>(action: string, payload: Record<string,
         })
 
         const json = await res.json().catch(() => null)
+        console.log(`[SECURE-ACTION] Response for ${action}:`, { status: res.status, json });
+
         if (!res.ok) {
-            return { success: false, error: json?.error || 'Falha na ação segura do servidor.' }
+            return { success: false, error: json?.error || `Falha na ação segura (${res.status}).` }
         }
 
         if (!json || json.success !== true) {
@@ -105,6 +108,7 @@ async function callSecureAction<T = any>(action: string, payload: Record<string,
 
         return { success: true, data: json.data as T }
     } catch (error: any) {
+        console.error(`[SECURE-ACTION] Erro crítico em ${action}:`, error);
         return { success: false, error: error?.message || 'Erro de conexão com o servidor.' }
     }
 }

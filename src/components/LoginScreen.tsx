@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { loginWithEmail, signUpWithEmail } from '@/lib/gameActions'
+import { getOptimizedAssetSrc } from '@/lib/assets'
 import ParticleBackground from './ParticleBackground'
 
 export default function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => void }) {
@@ -36,7 +37,7 @@ export default function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => 
     return (
         <div className="relative flex items-center justify-center min-h-screen overflow-hidden" style={{ background: '#0d0d0d' }}>
             <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 scale-105"
-                style={{ backgroundImage: 'url("/images/loading1.jpeg")', filter: 'grayscale(0.2) contrast(1.1)' }}
+                style={{ backgroundImage: `url("${getOptimizedAssetSrc('/images/loading1.jpeg')}")`, filter: 'grayscale(0.2) contrast(1.1)' }}
             />
             <div className="absolute inset-0 z-1" style={{ background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%)' }} />
 
@@ -50,7 +51,7 @@ export default function LoginScreen({ onLoginSuccess }: { onLoginSuccess: () => 
                 }}
             >
                 <div className="relative mb-6 w-full flex justify-center">
-                    <img src="/images/logo-grande.jpeg" alt="Far West Logo" className="w-72 h-auto drop-shadow-[0_0_20px_rgba(242,185,13,0.4)] animate-fade-in rounded-sm" />
+                    <img src={getOptimizedAssetSrc('/images/logo-grande.jpeg') || '/images/logo-grande.jpeg'} alt="Far West Logo" className="w-72 h-auto drop-shadow-[0_0_20px_rgba(242,185,13,0.4)] animate-fade-in rounded-sm" />
                 </div>
                 <p className="text-base text-gray-400 italic mb-8 uppercase tracking-[0.2em] font-black">Viva rápido, mire melhor</p>
 
