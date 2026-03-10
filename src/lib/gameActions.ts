@@ -61,7 +61,7 @@ export interface CombatResolution {
 
 export type InitialStatKey = 'strength' | 'defense' | 'agility' | 'accuracy' | 'vigor'
 export type InitialStatAllocation = Partial<Record<InitialStatKey, number>>
-export const ONBOARDING_STAT_POINTS = 0
+export const ONBOARDING_STAT_POINTS = 5
 export const ONBOARDING_MAX_PER_STAT = 8
 export const COMBAT_ENERGY_COST = 0
 const MAX_ENERGY = 100
@@ -182,7 +182,7 @@ export async function ensureProfile(): Promise<Profile | null> {
         .from('profiles')
         .select('*')
         .eq('id', currentUser.id)
-        .single()
+        .maybeSingle()
 
     if (profileError || !profile) {
         console.log('[DEBUG-PROFILE] No profile found for user:', currentUser.id, 'Error:', profileError);
@@ -390,3 +390,4 @@ export async function consumeItem(profileId: string, inventoryId: string, _item:
 
     return result.data || { success: false, message: 'Falha ao consumir item.' }
 }
+

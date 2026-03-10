@@ -12,7 +12,7 @@ const ENERGY_REGEN_INTERVAL_SECONDS = 360
 const HP_REGEN_INTERVAL_SECONDS = 30
 const HP_REGEN_FULL_HEAL_SECONDS = 600
 
-const ONBOARDING_STAT_POINTS = 0
+const ONBOARDING_STAT_POINTS = 5
 const ONBOARDING_FREE_STAT_POINTS = 5
 const ONBOARDING_MAX_PER_STAT = 8
 const COMBAT_ENERGY_COST = 0
@@ -1046,3 +1046,4 @@ export async function POST(req: Request) {
     return fail(message, 400)
   }
 }
+

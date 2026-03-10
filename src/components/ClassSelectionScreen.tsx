@@ -358,13 +358,10 @@ export default function ClassSelectionScreen({ userId, onCreated }: ClassSelecti
                             <div className="pt-2 border-t border-white/10">
                                 <div className="flex justify-between items-center mb-3">
                                     <h3 className="text-gold uppercase text-[10px] tracking-[0.3em] font-black">Recursos Iniciais</h3>
-                                    <span className="text-[10px] font-black px-3 py-1 rounded-sm border-2 bg-green-900/40 border-green-400/50 text-green-400">
-                                        5 PTS LIVRES APÓS CRIAR
-                                    </span>
                                 </div>
                                 {ONBOARDING_STAT_POINTS > 0 ? (
                                     <div className="text-[9px] text-gray-400 uppercase tracking-widest mb-3">
-                                        Distribua exatamente {ONBOARDING_STAT_POINTS} pontos iniciais.
+                                        Distribua exatamente {ONBOARDING_STAT_POINTS} pontos iniciais. Você começa com 5 pontos para distribuir na aba de status.
                                     </div>
                                 ) : (
                                     <div className="text-[9px] text-gray-400 uppercase tracking-widest mb-3">
