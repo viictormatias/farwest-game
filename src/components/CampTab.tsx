@@ -18,10 +18,17 @@ const JOB_ICONS: Record<string, string> = {
     fort: '🏰',
     route: '🛤️',
     expedition: '🧭',
+    heist: '💰',
+    bank: '🏦',
+    train: '🚂',
+    bounty: '📜',
 }
 
 function getJobIcon(title: string): string {
     const lower = title.toLowerCase()
+    if (lower.includes('banco') || lower.includes('assalto')) return JOB_ICONS.bank
+    if (lower.includes('trem') || lower.includes('express')) return JOB_ICONS.train
+    if (lower.includes('recompensa') || lower.includes('fugitivo')) return JOB_ICONS.bounty
     for (const [key, icon] of Object.entries(JOB_ICONS)) {
         if (lower.includes(key)) return icon
     }
@@ -29,24 +36,24 @@ function getJobIcon(title: string): string {
 }
 
 const JOB_CARD_IMAGES: Array<{ keywords: string[]; image: string }> = [
-    { keywords: ['fumo', 'fazenda'], image: '/images/jobs/farm_tobacco.jpg' },
-    { keywords: ['patrulha', 'fronteira'], image: '/images/jobs/frontier_patrol.jpg' },
-    { keywords: ['roubados', 'mercado negro', 'vender'], image: '/images/jobs/black_market.jpg' },
-    { keywords: ['recompensa', 'fugitivo'], image: '/images/jobs/bounty_hunt.jpg' },
-    { keywords: ['diligência', 'diligencia', 'escolta'], image: '/images/jobs/stagecoach_escort.jpg' },
-    { keywords: ['caravana', 'sal', 'deserto'], image: '/images/jobs/salt_caravan.jpg' },
-    { keywords: ['trem', 'express'], image: '/images/jobs/train_heist.jpg' },
-    { keywords: ['banco', 'assalto'], image: '/images/jobs/bank_heist.jpg' },
-    { keywords: ['forte', 'vigilia'], image: '/images/jobs/fort_vigil.jpg' },
-    { keywords: ['contrabando', 'rota longa'], image: '/images/jobs/contraband_route.jpg' },
-    { keywords: ['expedicao', 'expedição', 'canyon'], image: '/images/jobs/forgotten_canyon.jpg' },
-    { keywords: ['lendário', 'lendario', 'fugitivo', 'legendary'], image: '/images/jobs/bounty_hunt_legendary.jpg' },
+    { keywords: ['fumo', 'fazenda'], image: '/images/jobs/farm_tobacco.webp' },
+    { keywords: ['patrulha', 'fronteira'], image: '/images/jobs/frontier_patrol.webp' },
+    { keywords: ['roubados', 'mercado negro', 'vender'], image: '/images/jobs/black_market.webp' },
+    { keywords: ['fugitivo lendário', 'fugitivo lendario'], image: '/images/jobs/bounty_hunt_legendary.webp' },
+    { keywords: ['recompensa', 'fugitivo'], image: '/images/jobs/bounty_hunt.webp' },
+    { keywords: ['diligência', 'diligencia', 'escolta de diligencia'], image: '/images/jobs/stagecoach_escort.webp' },
+    { keywords: ['caravana', 'sal', 'deserto'], image: '/images/jobs/salt_caravan.webp' },
+    { keywords: ['trem', 'express'], image: '/images/jobs/train_heist.webp' },
+    { keywords: ['banco', 'assalto'], image: '/images/jobs/bank_heist.webp' },
+    { keywords: ['forte', 'vigilia'], image: '/images/jobs/fort_vigil.webp' },
+    { keywords: ['contrabando', 'rota longa'], image: '/images/jobs/contraband_route.webp' },
+    { keywords: ['expedicao', 'expedição', 'canyon'], image: '/images/jobs/forgotten_canyon.webp' },
 ]
 
 function getJobCardImage(title: string): string {
     const lower = title.toLowerCase()
     const hit = JOB_CARD_IMAGES.find((entry) => entry.keywords.some((kw) => lower.includes(kw)))
-    return hit?.image || '/images/jobs/frontier_patrol.jpg'
+    return hit?.image || '/images/jobs/frontier_patrol.webp'
 }
 
 function formatDuration(seconds: number): string {
@@ -122,7 +129,7 @@ export default function CampTab({ profile, onRefresh }: { profile: Profile; onRe
 
     return (
         <div className="space-y-4 md:space-y-6">
-            <div className="ornament-divider text-[10px] md:text-xs">Missões Disponíveis</div>
+            <div className="ornament-divider text-[10px] md:text-xs">Quadro de Missões</div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
                 {jobs.map((job, idx) => {
@@ -138,128 +145,114 @@ export default function CampTab({ profile, onRefresh }: { profile: Profile; onRe
                     return (
                         <div
                             key={job.id}
-                            className={`western-border flex flex-col fade-in-up transition-all duration-300 relative overflow-hidden bg-[#0a0705]
-                ${isActive ? 'border-gold' : ''}
+                            className={`western-border flex flex-col fade-in-up transition-all duration-300 relative overflow-hidden group
+                ${isActive ? 'border-gold ring-1 ring-gold/30' : ''}
                 ${isOtherBusy ? 'opacity-40 grayscale pointer-events-none' : ''}
                 ${profile.level < job.min_level ? 'opacity-60 grayscale' : ''}
               `}
                             style={{
                                 animationDelay: `${idx * 60}ms`,
-                                boxShadow: isActive ? '0 0 20px rgba(242,185,13,0.15), inset 0 0 15px rgba(0,0,0,0.4)' : undefined,
+                                boxShadow: isActive ? '0 0 25px rgba(212,175,55,0.2), inset 0 0 15px rgba(0,0,0,0.4)' : undefined,
                             }}
                         >
                             {/* IMAGEM NO TOPO */}
-                            <div className="w-full h-32 md:h-40 shrink-0 relative border-b-2 border-[#423020]">
-                                <img 
-                                    src={jobImage} 
-                                    alt={job.title} 
-                                    className="w-full h-full object-cover relative z-0"
-                                    loading="lazy"
-                                    onError={(e) => {
-                                        const img = e.currentTarget;
-                                        if (img.src !== (window.location.origin + '/images/jobs/frontier_patrol.jpg')) {
-                                            img.src = '/images/jobs/frontier_patrol.jpg';
-                                        }
-                                    }}
+                            <div className="relative h-40 md:h-44 overflow-hidden border-b-2 border-[#423020] bg-[#0a0705]">
+                                <img
+                                    src={jobImage}
+                                    alt={job.title}
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
-                                {/* WANTED POSTER OVERLAY */}
-                                <div className="absolute inset-0 z-10 flex items-center justify-center opacity-40 pointer-events-none bg-gradient-to-t from-black/60 to-transparent">
-                                    <span className="font-serif text-3xl md:text-4xl tracking-[0.2em] text-red-900 font-bold mix-blend-hard-light" style={{ WebkitTextStroke: '1px #b22222' }}>
-                                        WANTED
-                                    </span>
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#140d07] via-transparent to-transparent opacity-80" />
+
+                                {/* ICON OVERLAY */}
+                                <div className="absolute bottom-3 right-3 w-10 h-10 bg-[rgba(20,13,7,0.85)] border border-[#d4af37]/40 rounded-sm flex items-center justify-center text-lg shadow-lg backdrop-blur-sm">
+                                    {jobIcon}
                                 </div>
                             </div>
 
-                            <div className="p-4 md:p-5 flex flex-col gap-3 md:gap-4 flex-1">
-                                <div className="flex items-start justify-between relative mt-2">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 md:w-14 md:h-14 bg-[#2b1f14] border-2 border-[#423020] rounded-sm flex items-center justify-center text-xl md:text-2xl shadow-inner">
-                                        {jobIcon}
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="font-bold text-[#d9c5b2] text-xl md:text-2xl font-serif tracking-wide mb-1 leading-tight">{job.title}</h3>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-[10px] md:text-sm uppercase tracking-[0.2em] text-[#a52a2a] font-black bg-black/30 px-2 py-0.5 rounded-sm">
-                                                {formatDuration(job.duration_seconds)}
+                            <div className="p-4 md:p-5 flex flex-col flex-1 gap-3">
+                                <div>
+                                    <h3 className="font-bold text-[#d9c5b2] text-lg md:text-xl font-serif tracking-wide mb-1 leading-tight group-hover:text-gold transition-colors">
+                                        {job.title}
+                                    </h3>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[9px] md:text-[11px] uppercase tracking-[0.2em] text-[#d4af37] font-black bg-[#1a120c] border border-[#d4af37]/20 px-2 py-0.5 rounded-sm">
+                                            {formatDuration(job.duration_seconds)}
+                                        </span>
+                                        {profile.level < job.min_level && (
+                                            <span className="text-[9px] md:text-[10px] uppercase tracking-widest font-black bg-red-900/40 text-red-400 border border-red-500/30 px-2 py-0.5 rounded-sm">
+                                                Nível {job.min_level}
                                             </span>
-                                            {profile.level < job.min_level && (
-                                                <span className="text-[9px] md:text-[10px] uppercase tracking-widest font-black bg-red-900/40 text-red-400 border border-red-500/30 px-2 py-0.5 rounded-sm">
-                                                    Desbloqueia no Nvl {job.min_level}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <p className="text-xs md:text-sm text-[#a3907c] leading-relaxed italic flex-1 border-y border-dashed border-[#423020] py-2 md:py-3 my-1 md:my-2 bg-[rgba(255,255,255,0.02)] pl-2">
-                                "{job.description}"
-                            </p>
-
-                            {/* Separador dourado */}
-                            <div className="h-px" style={{ background: 'linear-gradient(to right, transparent, #3a3a3a, transparent)' }} />
-
-                            {/* Recompensas */}
-                            <div className="flex items-center gap-2 md:gap-4 bg-[#110b07] p-2 md:p-4 rounded-sm border border-[#2b1f14] shadow-inner">
-                                <div className="flex-1 flex flex-col items-center">
-                                    <span className="text-[9px] md:text-xs uppercase tracking-widest text-gray-500 mb-1 font-black">Energia</span>
-                                    <span className="text-sm md:text-base font-black font-mono text-blue-400">-{job.energy_cost}</span>
-                                </div>
-                                <div className="w-px h-8 md:h-10 bg-[#2b1f14]" />
-                                <div className="flex-1 flex flex-col items-center">
-                                    <span className="text-[9px] md:text-xs uppercase tracking-widest text-gray-500 mb-1 font-black">XP</span>
-                                    <span className="text-sm md:text-base font-black font-mono text-purple-400">+{job.reward_xp}</span>
-                                </div>
-                                <div className="w-px h-8 md:h-10 bg-[#2b1f14]" />
-                                <div className="flex-1 flex flex-col items-center">
-                                    <span className="text-[9px] md:text-xs uppercase tracking-widest text-gray-500 mb-1 font-black">Gold</span>
-                                    <span className="text-sm md:text-base font-black font-mono text-yellow-400">+{job.reward_gold}</span>
-                                </div>
-                            </div>
-
-                            {/* Ação / Progresso */}
-                            {isActive ? (
-                                <div className="space-y-2 mt-2">
-                                    <div className="progress-bar-container h-[0.65rem] md:h-[0.75rem]">
-                                        <div
-                                            className="progress-bar-fill progress-bar-shimmer"
-                                            style={{ width: `${progressPct}%` }}
-                                        />
-                                    </div>
-
-                                    <div className="text-center text-[10px] md:text-xs font-bold">
-                                        {timeLeft > 0 ? (
-                                            <span className="text-gold font-mono">⏳ {formatDuration(timeLeft)} restante</span>
-                                        ) : (
-                                            <span className="text-green-400 animate-pulse">✅ Missão concluída!</span>
                                         )}
                                     </div>
-                                    {timeLeft === 0 && profile.job_finish_at && (
-                                        <button
-                                            onClick={handleClaim}
-                                            disabled={isClaiming}
-                                            className="btn-western w-full text-xs md:text-sm py-2 md:py-3"
-                                            style={{ boxShadow: '0 0 16px rgba(242,185,13,0.3)' }}
-                                        >
-                                            {isClaiming ? '⏳ Coletando...' : '🎁 Coletar Recompensa'}
-                                        </button>
-                                    )}
                                 </div>
-                            ) : (
-                                <button
-                                    onClick={() => handleStart(job)}
-                                    disabled={!!isOtherBusy || !canStart}
-                                    className="btn-western w-full py-3 md:py-4 text-sm md:text-base font-black tracking-widest mt-2"
-                                >
-                                    {isOtherBusy
-                                        ? '🔒 OCUPADO'
-                                        : profile.level < job.min_level
-                                            ? `🔒 LVL ${job.min_level}`
-                                            : !canStart
-                                                ? '⚡ SEM ENERGIA'
-                                                : '▶ INICIAR MISSÃO'}
-                                </button>
-                            )}
+
+                                <p className="text-[11px] md:text-xs text-[#a3907c] leading-relaxed italic line-clamp-2 border-l-2 border-[#423020] pl-3 py-1">
+                                    "{job.description}"
+                                </p>
+
+                                <div className="flex-1" />
+
+                                {/* Recompensas */}
+                                <div className="grid grid-cols-3 gap-1 bg-[#0a0705] p-2 rounded-sm border border-[#2b1f14] shadow-inner mt-2">
+                                    <div className="flex flex-col items-center">
+                                        <span className="text-[8px] uppercase tracking-tighter text-gray-500 font-bold">⚡ Energia</span>
+                                        <span className="text-[11px] font-black font-mono text-blue-400">-{job.energy_cost}</span>
+                                    </div>
+                                    <div className="flex flex-col items-center border-x border-[#2b1f14]">
+                                        <span className="text-[8px] uppercase tracking-tighter text-gray-500 font-bold">⭐ XP</span>
+                                        <span className="text-[11px] font-black font-mono text-purple-400">+{job.reward_xp}</span>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                        <span className="text-[8px] uppercase tracking-tighter text-gray-500 font-bold">💰 Gold</span>
+                                        <span className="text-[11px] font-black font-mono text-yellow-400">+{job.reward_gold}</span>
+                                    </div>
+                                </div>
+
+                                {/* Ações / Progresso */}
+                                {isActive ? (
+                                    <div className="space-y-2 mt-2 pt-2 border-t border-[#2b1f14]">
+                                        <div className="progress-bar-container h-2">
+                                            <div
+                                                className="progress-bar-fill progress-bar-shimmer"
+                                                style={{ width: `${progressPct}%` }}
+                                            />
+                                        </div>
+
+                                        <div className="text-center text-[10px] font-bold">
+                                            {timeLeft > 0 ? (
+                                                <span className="text-gold font-mono">⏳ {formatDuration(timeLeft)}</span>
+                                            ) : (
+                                                <span className="text-green-400 animate-pulse">✅ Concluído!</span>
+                                            )}
+                                        </div>
+
+                                        {timeLeft === 0 && profile.job_finish_at && new Date(profile.job_finish_at).getTime() <= Date.now() && (
+                                            <button
+                                                onClick={handleClaim}
+                                                disabled={isClaiming}
+                                                className="btn-western w-full text-xs py-2 mt-1"
+                                                style={{ boxShadow: '0 0 16px rgba(212,175,55,0.2)' }}
+                                            >
+                                                {isClaiming ? '⏳...' : 'COLETAR RECOMPENSA'}
+                                            </button>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => handleStart(job)}
+                                        disabled={!!isOtherBusy || !canStart}
+                                        className="btn-western find flex-1 w-full py-2.5 text-[11px] md:text-xs font-black tracking-widest mt-2"
+                                    >
+                                        {isOtherBusy
+                                            ? 'Bloqueado'
+                                            : profile.level < job.min_level
+                                                ? `Nível ${job.min_level}`
+                                                : !canStart
+                                                    ? 'Sem Energia'
+                                                    : 'Iniciar Missão'}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     )
@@ -268,4 +261,3 @@ export default function CampTab({ profile, onRefresh }: { profile: Profile; onRe
         </div>
     )
 }
-

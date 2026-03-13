@@ -1,0 +1,134 @@
+[
+  {
+    "id": "c301516d-c051-424d-97fd-84b2223e2503",
+    "title": "Coletar Fumo",
+    "description": "Colha folhas de fumo nas fazendas próximas para os charutos da elite.",
+    "duration_seconds": 30,
+    "reward_xp": 5,
+    "reward_gold": 5,
+    "energy_cost": 4,
+    "created_at": "2026-03-06T02:12:12.289055+00:00",
+    "min_level": 1
+  },
+  {
+    "id": "c3a12c75-7a6a-401f-b68c-52db249c6403",
+    "title": "Patrulha da Fronteira",
+    "description": "Vigie as bordas da cidade contra coyotes e bandidos.",
+    "duration_seconds": 60,
+    "reward_xp": 10,
+    "reward_gold": 10,
+    "energy_cost": 8,
+    "created_at": "2026-03-06T02:12:12.289055+00:00",
+    "min_level": 1
+  },
+  {
+    "id": "04c81c0c-fed1-47e4-8a61-1cdf57c0a5ab",
+    "title": "Vender Objetos Roubados",
+    "description": "Negocie itens de procedência duvidosa no mercado negro da cidade.",
+    "duration_seconds": 120,
+    "reward_xp": 18,
+    "reward_gold": 22,
+    "energy_cost": 12,
+    "created_at": "2026-03-06T02:12:12.289055+00:00",
+    "min_level": 1
+  },
+  {
+    "id": "6e894aef-bdc3-42d1-aea1-a8968daa1daf",
+    "title": "Caça de Recompensa",
+    "description": "Traga um fora-da-lei procurado vivo ou morto.",
+    "duration_seconds": 300,
+    "reward_xp": 40,
+    "reward_gold": 60,
+    "energy_cost": 20,
+    "created_at": "2026-03-06T02:12:12.289055+00:00",
+    "min_level": 1
+  },
+  {
+    "id": "ae26ed48-a01d-4eb9-acd1-842cc29e340a",
+    "title": "Escolta de Diligência",
+    "description": "Proteja a diligência de assaltantes na trilha do ouro.",
+    "duration_seconds": 900,
+    "reward_xp": 100,
+    "reward_gold": 180,
+    "energy_cost": 35,
+    "created_at": "2026-03-06T02:12:12.289055+00:00",
+    "min_level": 1
+  },
+  {
+    "id": "628b42fe-15ef-4ea1-ad2d-a85912984833",
+    "title": "Escolta de Caravana de Sal",
+    "description": "Proteja as caravanas de sal que cruzam o deserto scalante.",
+    "duration_seconds": 2700,
+    "reward_xp": 250,
+    "reward_gold": 600,
+    "energy_cost": 50,
+    "created_at": "2026-03-06T02:12:12.289055+00:00",
+    "min_level": 1
+  },
+  {
+    "id": "55d1f65f-095b-45f4-b3ce-66b95e4c1cf0",
+    "title": "Caçada a Fugitivo Lendário",
+    "description": "Rastreie e capture um dos criminosos mais perigosos do território.",
+    "duration_seconds": 3600,
+    "reward_xp": 350,
+    "reward_gold": 850,
+    "energy_cost": 65,
+    "created_at": "2026-03-06T02:12:12.289055+00:00",
+    "min_level": 3
+  },
+  {
+    "id": "225f9596-8623-4209-8ae8-20c81fc4061a",
+    "title": "Assalto ao Trem Express de Prata",
+    "description": "Intercepte o trem carregado de minérios de prata que cruzam a fronteira.",
+    "duration_seconds": 7200,
+    "reward_xp": 650,
+    "reward_gold": 1000,
+    "energy_cost": 80,
+    "created_at": "2026-03-06T02:12:12.289055+00:00",
+    "min_level": 5
+  },
+  {
+    "id": "1dfce943-13e4-4652-a692-37e562b833d9",
+    "title": "Grande Assalto ao Banco de Santa Fé",
+    "description": "O maior golpe do oeste. Requer planejamento, coragem e muitas balas.",
+    "duration_seconds": 14400,
+    "reward_xp": 1200,
+    "reward_gold": 1000,
+    "energy_cost": 95,
+    "created_at": "2026-03-06T02:12:12.289055+00:00",
+    "min_level": 8
+  },
+  {
+    "id": "9ab1b6f2-4bc9-4a32-90cf-7ed9f4f4cd10",
+    "title": "Vigilia no Forte Abandonado",
+    "description": "Passe a noite inteira guardando um forte antigo contra saqueadores e predadores.",
+    "duration_seconds": 21600,
+    "reward_xp": 520,
+    "reward_gold": 1250,
+    "energy_cost": 32,
+    "created_at": "2026-03-10T01:27:40.922319+00:00",
+    "min_level": 14
+  },
+  {
+    "id": "20d68d94-23a4-4d82-a7be-b08f17d4a1bc",
+    "title": "Rota Longa de Contrabando",
+    "description": "Conduza carga ilegal por trilhas remotas e retorne sem chamar atencao da lei.",
+    "duration_seconds": 28800,
+    "reward_xp": 690,
+    "reward_gold": 1680,
+    "energy_cost": 40,
+    "created_at": "2026-03-10T01:27:41.086214+00:00",
+    "min_level": 18
+  },
+  {
+    "id": "4f55f34d-6f4d-45ec-9ccf-c17b6b171f69",
+    "title": "Expedicao ao Canyon Esquecido",
+    "description": "Uma expedicao extensa por regioes perigosas para recuperar artefatos e ouro bruto.",
+    "duration_seconds": 43200,
+    "reward_xp": 980,
+    "reward_gold": 2450,
+    "energy_cost": 52,
+    "created_at": "2026-03-10T01:27:41.149748+00:00",
+    "min_level": 24
+  }
+]
