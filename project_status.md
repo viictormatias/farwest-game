@@ -30,6 +30,10 @@ O projeto acaba de passar por uma restauração completa de ativos visuais. Recu
 14. **Remoção de Imagens Específicas**:
     - Removidas as imagens de uma lista específica de itens (Duelista, Fantasma, Mercenário, Bandoleiro e Corda do Carrasco) a pedido do usuário.
     - Ocultação feita via filtros em `items.ts` ou ajuste manual em `BASE_ITEMS`.
+15. **Organização de Ativos Não Utilizados**:
+    - Foram identificados e movidos **786 arquivos de imagem** que não estavam sendo utilizados pelo código ou pelo banco de dados.
+    - Todos esses arquivos agora estão na pasta raiz `imagens nao usadas`.
+    - A pasta `public/images` foi limpa e diretórios vazios foram removidos, otimizando o carregamento e a manutenção.
 
 ## Pendências Imediatas
 1. **Auditoria Visual Final**: Confirmar se todos os itens estão carregando as novas imagens renomeadas corretamente.
