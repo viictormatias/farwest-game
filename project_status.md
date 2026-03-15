@@ -19,11 +19,18 @@ O projeto acaba de passar por uma restauração completa de ativos visuais. Recu
     - Após a tentativa de limpeza, foram detectados erros 404 em diversas imagens.
     - Todos os ativos foram restaurados para suas pastas originais (`public/images/items`, `public/images/enemies`, etc.).
     - Foram removidos prefixos redundantes (ex: `items_`, `images_`, GUIDs) gerados por backups antigos, garantindo que o código encontre os arquivos corretamente.
-    - O projeto agora deve exibir todas as imagens corretamente.
+12. **Novo Esquema de Nomes de Imagens**:
+    - Padronizados os nomes dos arquivos de imagem para seguirem o nome do item formatado (slug), ex: `Revólver do Duelista Carmesim` -> `revolver_do_duelista_carmesim.webp`.
+    - Implementada função `slugify` em `items.ts` para vinculação dinâmica automática.
+    - Isso torna o projeto muito mais fácil de manter e organizar via sistema de arquivos.
+13. **Migração Tier 1 Arena**:
+    - Aplicada a migration `20260315120000_add_tier1_arena_enemies.sql`.
+    - 10 novos inimigos para a faixa de níveis 1-19 foram inseridos com sucesso.
+    - Inimigos de nível 20+ foram preservados.
 
 ## Pendências Imediatas
-1. **Auditoria Visual Final**: Navegar por toda a Galeria para verificar se todas as imagens estão aparecendo.
-2. **Sincronização GitHub**: Subir as correções de nomes e caminhos.
+1. **Auditoria Visual Final**: Confirmar se todos os itens estão carregando as novas imagens renomeadas corretamente.
+2. **Commit e Push**: Garantir que as migrations e as mudanças de código estejam no GitHub.
 
 ## Erros ou Bloqueios Conhecidos
 - Nenhuma falha crítica após a reorganização dos recursos.
