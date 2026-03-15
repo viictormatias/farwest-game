@@ -1,0 +1,48 @@
+IMAGENS-NAO-USADAS/audit_cleanup_final/images/items/blood_nugget.webp
+IMAGENS-NAO-USADAS/audit_cleanup_final/images/items/medical_kit.webp
+IMAGENS-NAO-USADAS/audit_cleanup_final/images/items/rusty_dagger.webp
+IMAGENS-NAO-USADAS/cleared_from_public/enemies/1437006a-8743-47ff-90ca-5831f5cfeaec.webp
+IMAGENS-NAO-USADAS/cleared_from_public/enemies/364e3d07-8878-4c4a-8a2e-7b550ada56da.webp
+IMAGENS-NAO-USADAS/cleared_from_public/enemies/557f1808-7312-4a70-9a43-e2f4be92f684.webp
+IMAGENS-NAO-USADAS/cleared_from_public/enemies/71bdf111-64cf-4b31-860e-650a42f7f13f.webp
+IMAGENS-NAO-USADAS/cleared_from_public/enemies/7573f5da-8ad5-4e31-92a9-9a8e6dd63853.webp
+IMAGENS-NAO-USADAS/cleared_from_public/enemies/93fe8d95-adc7-4cc4-b6aa-12df7f6eec8c.webp
+IMAGENS-NAO-USADAS/cleared_from_public/enemies/b16b7e0d-8f68-4e9f-b95a-1d57553295ad.webp
+IMAGENS-NAO-USADAS/cleared_from_public/enemies/bf80f087-42bc-428d-a588-e33317e16e95.webp
+IMAGENS-NAO-USADAS/cleared_from_public/enemies/c9f8a20b-6f30-418e-b4a2-6eb7e2f95f30.webp
+IMAGENS-NAO-USADAS/cleared_from_public/enemies/e27a181d-f355-48ed-ace0-1c09221cbb0b.webp
+IMAGENS-NAO-USADAS/cleared_from_public/enemies/f79dbad0-90a5-4f5a-b1a3-b23652269b96.webp
+IMAGENS-NAO-USADAS/cleared_from_public/logo-grande.webp
+IMAGENS-NAO-USADAS/images/Imagens pra usar/coiote.webp
+IMAGENS-NAO-USADAS/images/Imagens pra usar/duelo3.webp
+IMAGENS-NAO-USADAS/images/Imagens pra usar/duelo4.webp
+IMAGENS-NAO-USADAS/images/Imagens pra usar/logo-pequena.webp
+IMAGENS-NAO-USADAS/images/Imagens pra usar/xerife.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/1f11c0a3-c7fd-6fa0-a25e-47fa6415636c.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/7e065efe-881b-4c3b-8caf-7f5c592d1344.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/enemies/62041973-0653-42c5-af84-276e3128056c.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/enemies/a465f424-93b6-4201-95cb-412d80ef9080.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/enemies/aa7f6db8-0716-49fe-8fc0-6d0328d60dd7.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/enemies/ab7c86b9-97a7-4758-940a-3a61c16134c2.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/enemies/d2c27b9e-7e7e-403f-ad13-3066eb7fc5d0.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/09833efa-e7f0-4663-b875-90deb5e24c3b.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/11f37f0f-8247-43a6-9da2-213175c5c8e1.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/164b7b3f-fa6c-4e5d-a30c-4e02185b1a50.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/31e1188e-f9b9-468e-afc4-231d1c774c85.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/3cf79f73-58fe-4871-85ad-06b473915d3b.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/4d60b781-7327-41b7-a83c-b9e7b3cf00a7.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/5329f435-9ac8-4588-8418-6610a549d361.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/6bdc53f8-dba3-4703-a331-a43fc1d06f87.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/6c0b4905-7371-45bb-b5b6-bf7843304984.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/8e0ee164-1fa2-4890-b178-700d44e552eb.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/a65f59c8-adb8-4b84-905e-facc367e36ea.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/ab732dd5-c7df-4452-9109-e9df858e7896.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/b6d91047-fddd-4d9d-b237-7da9089cfaf1.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/cc9b4782-8988-49e6-b1e1-c57ba02c8cf4.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/ccb6f3eb-6123-4c47-8a6f-f4e5c15ba2a5.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/d238d337-c136-44e7-a1a4-fae9555d9b0b.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/f312f5ac-f3f2-4820-a35c-3e28c8145a7e.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/f672bc7e-6de4-403a-a83e-4f429eb6a00d.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/fb3edade-13d3-4868-8a8f-b7b86747eb77.webp
+IMAGENS-NAO-USADAS/images/leonardo-history/scenario/fe118013-1249-45f7-94bc-8f28732fcfa6.webp
+IMAGENS-NAO-USADAS/logo.webp

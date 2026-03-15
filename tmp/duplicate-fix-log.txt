@@ -1,0 +1,101 @@
+REPLACED bandoleiro_sombrio_rare_legs_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\cleared_from_public\enemies\1437006a-8743-47ff-90ca-5831f5cfeaec.webp
+REPLACED forasteiro_po_uncommon_legs_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\cleared_from_public\enemies\364e3d07-8878-4c4a-8a2e-7b550ada56da.webp
+REPLACED garimpeiro_cobre_legendary_boots_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\cleared_from_public\enemies\557f1808-7312-4a70-9a43-e2f4be92f684.webp
+REPLACED lobo_tempestade_legendary_legs_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\cleared_from_public\enemies\71bdf111-64cf-4b31-860e-650a42f7f13f.webp
+REPLACED forasteiro_po_common_chest_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\cleared_from_public\enemies\93fe8d95-adc7-4cc4-b6aa-12df7f6eec8c.webp
+REPLACED pregador_cinzento_uncommon_chest_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\cleared_from_public\enemies\b16b7e0d-8f68-4e9f-b95a-1d57553295ad.webp
+REPLACED xama_tormenta_epic_chest_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\cleared_from_public\enemies\bf80f087-42bc-428d-a588-e33317e16e95.webp
+REPLACED duelista_carmesim_epic_gloves_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\cleared_from_public\enemies\c9f8a20b-6f30-418e-b4a2-6eb7e2f95f30.webp
+REPLACED forasteiro_po_epic_gloves_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\cleared_from_public\enemies\e27a181d-f355-48ed-ace0-1c09221cbb0b.webp
+REPLACED metal_leather_bracer.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\cleared_from_public\enemies\f79dbad0-90a5-4f5a-b1a3-b23652269b96.webp
+REPLACED forasteiro_po_epic_helmet_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\cleared_from_public\logo-grande.webp
+REPLACED guarda_velha_rare_helmet_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\Imagens pra usar\coiote.webp
+REPLACED pregador_cinzento_uncommon_helmet_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\Imagens pra usar\duelo3.webp
+REPLACED decorative_metal_box_relic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\Imagens pra usar\duelo4.webp
+REPLACED forasteiro_po_legendary_shield_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\Imagens pra usar\logo-pequena.webp
+REPLACED garimpeiro_cobre_common_shield_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\Imagens pra usar\xerife.webp
+REPLACED xerife_lendario_legendary_gloves_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\enemies\62041973-0653-42c5-af84-276e3128056c.webp
+REPLACED guardiao_aco_epic_weapon_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\enemies\a465f424-93b6-4201-95cb-412d80ef9080.webp
+REPLACED mercenario_fronteira_uncommon_weapon_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\enemies\aa7f6db8-0716-49fe-8fc0-6d0328d60dd7.webp
+REPLACED duelist_gloves_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\enemies\ab7c86b9-97a7-4758-940a-3a61c16134c2.webp
+REPLACED forasteiro_po_uncommon_gloves_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\enemies\d2c27b9e-7e7e-403f-ad13-3066eb7fc5d0.webp
+REPLACED garimpeiro_cobre_common_gloves_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\misc\unknown\1f11c0a3-c7fd-6fa0-a25e-47fa6415636c.webp
+REPLACED guardiao_aco_epic_gloves_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\misc\unknown\7e065efe-881b-4c3b-8caf-7f5c592d1344.webp
+REPLACED rastreador_canyon_uncommon_gloves_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\09833efa-e7f0-4663-b875-90deb5e24c3b.webp
+REPLACED duelista_carmesim_epic_boots_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\11f37f0f-8247-43a6-9da2-213175c5c8e1.webp
+REPLACED garimpeiro_cobre_rare_boots_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\164b7b3f-fa6c-4e5d-a30c-4e02185b1a50.webp
+REPLACED ranger_boots_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\31e1188e-f9b9-468e-afc4-231d1c774c85.webp
+REPLACED xerife_lendario_legendary_legs_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\3cf79f73-58fe-4871-85ad-06b473915d3b.webp
+REPLACED duelista_carmesim_epic_chest_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\4d60b781-7327-41b7-a83c-b9e7b3cf00a7.webp
+REPLACED forasteiro_po_uncommon_chest_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\5329f435-9ac8-4588-8418-6610a549d361.webp
+REPLACED guarda_velha_rare_chest_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\6bdc53f8-dba3-4703-a331-a43fc1d06f87.webp
+REPLACED lobo_tempestade_legendary_chest_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\6c0b4905-7371-45bb-b5b6-bf7843304984.webp
+REPLACED forasteiro_po_rare_gloves_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\8e0ee164-1fa2-4890-b178-700d44e552eb.webp
+REPLACED guarda_velha_rare_gloves_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\a65f59c8-adb8-4b84-905e-facc367e36ea.webp
+REPLACED leather_brown_gloves.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\ab732dd5-c7df-4452-9109-e9df858e7896.webp
+REPLACED forasteiro_po_legendary_helmet_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\b6d91047-fddd-4d9d-b237-7da9089cfaf1.webp
+REPLACED mercenario_fronteira_uncommon_helmet_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\cc9b4782-8988-49e6-b1e1-c57ba02c8cf4.webp
+REPLACED forasteiro_po_common_legs_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\ccb6f3eb-6123-4c47-8a6f-f4e5c15ba2a5.webp
+REPLACED garimpeiro_cobre_common_legs_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\d238d337-c136-44e7-a1a4-fae9555d9b0b.webp
+REPLACED lined_pants_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\f312f5ac-f3f2-4820-a35c-3e28c8145a7e.webp
+REPLACED rastreador_canyon_uncommon_legs_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\f672bc7e-6de4-403a-a83e-4f429eb6a00d.webp
+REPLACED simple_leather_pants.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\fb3edade-13d3-4868-8a8f-b7b86747eb77.webp
+REPLACED circular_medallion_relic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\images\leonardo-history\scenario\fe118013-1249-45f7-94bc-8f28732fcfa6.webp
+REPLACED fantasma_deserto_legendary_shield_realistic.webp <= c:\Users\Victor\Documents\GitHub\far-west\IMAGENS-NAO-USADAS\logo.webp
+NO_SOURCE_FOR forasteiro_po_epic_shield_realistic.webp
+NO_SOURCE_FOR rastreador_canyon_uncommon_shield_realistic.webp
+NO_SOURCE_FOR duelista_carmesim_epic_weapon_realistic.webp
+NO_SOURCE_FOR forasteiro_po_common_boots_realistic.webp
+NO_SOURCE_FOR pistoleiro_estrada_uncommon_helmet_realistic.webp
+NO_SOURCE_FOR garimpeiro_cobre_epic_boots_realistic.webp
+NO_SOURCE_FOR guardiao_aco_epic_boots_realistic.webp
+NO_SOURCE_FOR xama_tormenta_epic_boots_realistic.webp
+NO_SOURCE_FOR forasteiro_po_rare_shield_realistic.webp
+NO_SOURCE_FOR lobo_tempestade_legendary_shield_realistic.webp
+NO_SOURCE_FOR mercenario_fronteira_uncommon_shield_realistic.webp
+NO_SOURCE_FOR iron_boots_realistic.webp
+NO_SOURCE_FOR pistoleiro_estrada_uncommon_boots_realistic.webp
+NO_SOURCE_FOR forasteiro_po_uncommon_weapon_realistic.webp
+NO_SOURCE_FOR xerife_lendario_legendary_chest_realistic.webp
+NO_SOURCE_FOR forasteiro_po_common_weapon_realistic.webp
+NO_SOURCE_FOR pistoleiro_estrada_common_shield_realistic.webp
+NO_SOURCE_FOR wooden_star_chest_relic.webp
+NO_SOURCE_FOR xama_tormenta_epic_shield_realistic.webp
+NO_SOURCE_FOR forasteiro_po_common_helmet_realistic.webp
+NO_SOURCE_FOR garimpeiro_cobre_common_boots_realistic.webp
+NO_SOURCE_FOR pistoleiro_estrada_uncommon_weapon_realistic.webp
+NO_SOURCE_FOR pregador_cinzento_uncommon_weapon_realistic.webp
+NO_SOURCE_FOR xama_tormenta_epic_weapon_realistic.webp
+NO_SOURCE_FOR leather_arm_bracer.webp
+NO_SOURCE_FOR mercenario_fronteira_uncommon_gloves_realistic.webp
+NO_SOURCE_FOR pregador_cinzento_uncommon_gloves_realistic.webp
+NO_SOURCE_FOR xama_tormenta_epic_gloves_realistic.webp
+NO_SOURCE_FOR guarda_velha_rare_shield_realistic.webp
+NO_SOURCE_FOR metal_compass_relic.webp
+NO_SOURCE_FOR pregador_cinzento_uncommon_shield_realistic.webp
+NO_SOURCE_FOR xerife_lendario_legendary_shield_realistic.webp
+NO_SOURCE_FOR mercenario_fronteira_uncommon_legs_realistic.webp
+NO_SOURCE_FOR xerife_lendario_legendary_boots_realistic.webp
+NO_SOURCE_FOR garimpeiro_cobre_common_chest_realistic.webp
+NO_SOURCE_FOR guardiao_aco_epic_chest_realistic.webp
+NO_SOURCE_FOR mercenario_fronteira_uncommon_chest_realistic.webp
+NO_SOURCE_FOR rastreador_canyon_uncommon_chest_realistic.webp
+NO_SOURCE_FOR guardiao_aco_epic_helmet_realistic.webp
+NO_SOURCE_FOR lobo_tempestade_legendary_helmet_realistic.webp
+NO_SOURCE_FOR rastreador_canyon_uncommon_helmet_realistic.webp
+NO_SOURCE_FOR mercenary_boots_realistic.webp
+NO_SOURCE_FOR xama_tormenta_epic_legs_realistic.webp
+NO_SOURCE_FOR xama_tormenta_epic_helmet_realistic.webp
+NO_SOURCE_FOR xerife_lendario_legendary_helmet_realistic.webp
+NO_SOURCE_FOR guardiao_aco_epic_shield_realistic.webp
+NO_SOURCE_FOR lobo_tempestade_legendary_gloves_realistic.webp
+NO_SOURCE_FOR lobo_tempestade_legendary_weapon_realistic.webp
+NO_SOURCE_FOR pistoleiro_estrada_common_weapon_realistic.webp
+NO_SOURCE_FOR raven_boots_realistic.webp
+NO_SOURCE_FOR guardiao_aco_epic_legs_realistic.webp
+NO_SOURCE_FOR lobo_tempestade_legendary_boots_realistic.webp
+NO_SOURCE_FOR pistoleiro_estrada_rare_boots_realistic.webp
+NO_SOURCE_FOR pistoleiro_estrada_legendary_boots_realistic.webp
+NO_SOURCE_FOR rastreador_canyon_uncommon_weapon_realistic.webp
+NO_SOURCE_FOR xerife_lendario_legendary_weapon_realistic.webp
+NO_SOURCE_FOR pregador_cinzento_uncommon_legs_realistic.webp

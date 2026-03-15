@@ -15,15 +15,14 @@ O projeto acaba de passar por uma restauração completa de ativos visuais. Recu
     - A imagem do "Revólver do Caçador de Recompensas" foi transferida para o novo "Rifle do Guardião de Aço".
 9. **Reaproveitamento de Ativos (Fase 2)**:
     - Realizada uma atribuição massiva de imagens recuperadas de pastas de backup para preencher itens sem arte.
-    - **Armas**: A escopeta do garimpeiro e o revólver do rastreador (renomeado para "Pacificador") agora possuem artes de alta qualidade.
-    - **Armas Específicas**: Restaurada a arte da Carabina do Guarda Velha.
-    - **Equipamentos**: Diversas botas (Ranger, Mercenário, Duelista, etc), casacos (Caçador de Recompensas, Xamã) e chapéus (Xerife Lendário, Guardião de Aço) agora possuem imagens.
-    - **Relíquias**: Adicionado o **Símbolo do Canyon** como uma nova relíquia com arte recuperada.
-    - **Máscaras**: O Pregador Cinzento agora possui uma "máscara" (usando a arte do chapéu recuperada).
+10. **Limpeza e Organização Final**:
+    - Todos os arquivos de imagem não utilizados no código (incluindo backups e artes obsoletas) foram movidos para uma única pasta na raiz chamada **`imagens nao usadas`**.
+    - Pastas temporárias e vazias foram removidas para manter o projeto limpo.
+    - O repositório agora contém apenas as artes que estão sendo ativamente exibidas no jogo.
 
 ## Pendências Imediatas
 1. **Auditoria Visual Final**: Navegar por toda a Galeria para verificar se as novas atribuições de imagens ficaram coerentes com os nomes dos itens.
-2. **Sincronização GitHub**: Garantir que todos os binários de imagem foram subidos.
+2. **Sincronização GitHub**: Garantir que todos os binários de imagem e a nova organização foram subidos.
 
 ## Erros ou Bloqueios Conhecidos
 - Nenhuma falha crítica após a reorganização dos recursos.

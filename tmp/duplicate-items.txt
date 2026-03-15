@@ -1,0 +1,134 @@
+HASH 0e2ac822ba189e945dadcffb0af8bcd4
+  - cacador_recompensas_rare_shield_realistic.webp
+  - forasteiro_po_epic_shield_realistic.webp
+  - rastreador_canyon_uncommon_shield_realistic.webp
+
+HASH bcfd058e422487a81ed7481882ee3eac
+  - cacador_recompensas_rare_weapon_realistic.webp
+  - duelista_carmesim_epic_weapon_realistic.webp
+
+HASH ec42fe22185a1e7f2b8899df8edbad1a
+  - cloth_boots_realistic.webp
+  - forasteiro_po_common_boots_realistic.webp
+
+HASH db602dd543c6a23bdf61669b55873847
+  - duelista_carmesim_epic_helmet_realistic.webp
+  - pistoleiro_estrada_uncommon_helmet_realistic.webp
+
+HASH 70a2bd3634a1a1a672c36ddf0da16320
+  - duelista_carmesim_epic_legs_realistic.webp
+  - garimpeiro_cobre_epic_boots_realistic.webp
+  - guardiao_aco_epic_boots_realistic.webp
+  - xama_tormenta_epic_boots_realistic.webp
+
+HASH 21e25e8235e74c87e3f44e5ae0b3d38e
+  - duelista_carmesim_epic_shield_realistic.webp
+  - forasteiro_po_rare_shield_realistic.webp
+  - lobo_tempestade_legendary_shield_realistic.webp
+  - mercenario_fronteira_uncommon_shield_realistic.webp
+
+HASH 05d8775f4d7fa95e4c515933c61cc12f
+  - fantasma_deserto_legendary_boots_realistic.webp
+  - iron_boots_realistic.webp
+  - pistoleiro_estrada_uncommon_boots_realistic.webp
+
+HASH a0c041ba11804ce3b1d9ace4c40b2621
+  - fantasma_deserto_legendary_chest_realistic.webp
+  - forasteiro_po_uncommon_weapon_realistic.webp
+  - xerife_lendario_legendary_chest_realistic.webp
+
+HASH 638008fbd3da52a74a310da2a1622c07
+  - fantasma_deserto_legendary_gloves_realistic.webp
+  - forasteiro_po_common_weapon_realistic.webp
+  - pistoleiro_estrada_common_shield_realistic.webp
+  - wooden_star_chest_relic.webp
+  - xama_tormenta_epic_shield_realistic.webp
+
+HASH 1608fe8526bac4b9891956dfa9e4d940
+  - fantasma_deserto_legendary_helmet_realistic.webp
+  - forasteiro_po_common_helmet_realistic.webp
+
+HASH 5c3a2f0618ed019e697ed814f93c9cf0
+  - fantasma_deserto_legendary_legs_realistic.webp
+  - garimpeiro_cobre_common_boots_realistic.webp
+
+HASH 9536de1bf65234a1aeda6d8be8f11c15
+  - fantasma_deserto_legendary_weapon_realistic.webp
+  - pistoleiro_estrada_uncommon_weapon_realistic.webp
+  - pregador_cinzento_uncommon_weapon_realistic.webp
+  - xama_tormenta_epic_weapon_realistic.webp
+
+HASH b9274512efe8fabf91df27f2e38e3c66
+  - forasteiro_po_common_gloves_realistic.webp
+  - leather_arm_bracer.webp
+  - mercenario_fronteira_uncommon_gloves_realistic.webp
+  - pregador_cinzento_uncommon_gloves_realistic.webp
+  - xama_tormenta_epic_gloves_realistic.webp
+
+HASH 68a48918dd3430a115b24a6028d3f00d
+  - forasteiro_po_common_shield_realistic.webp
+  - guarda_velha_rare_shield_realistic.webp
+  - metal_compass_relic.webp
+  - pregador_cinzento_uncommon_shield_realistic.webp
+  - xerife_lendario_legendary_shield_realistic.webp
+
+HASH bc2803d82c5949ab2a4349019dae7115
+  - forasteiro_po_epic_boots_realistic.webp
+  - mercenario_fronteira_uncommon_legs_realistic.webp
+  - xerife_lendario_legendary_boots_realistic.webp
+
+HASH eb6cb3641853db01b877aae47414a392
+  - forasteiro_po_rare_chest_realistic.webp
+  - garimpeiro_cobre_common_chest_realistic.webp
+  - guardiao_aco_epic_chest_realistic.webp
+  - mercenario_fronteira_uncommon_chest_realistic.webp
+  - rastreador_canyon_uncommon_chest_realistic.webp
+
+HASH 029eb7524180e01e7fe9dd4b384be0a7
+  - forasteiro_po_rare_helmet_realistic.webp
+  - guardiao_aco_epic_helmet_realistic.webp
+  - lobo_tempestade_legendary_helmet_realistic.webp
+  - rastreador_canyon_uncommon_helmet_realistic.webp
+
+HASH 00d4eb5f09a7aecdc9413798d06afa30
+  - forasteiro_po_uncommon_boots_realistic.webp
+  - mercenary_boots_realistic.webp
+  - xama_tormenta_epic_legs_realistic.webp
+
+HASH 499e70c57e9a8eab59d0d5cdd6e91023
+  - forasteiro_po_uncommon_helmet_realistic.webp
+  - xama_tormenta_epic_helmet_realistic.webp
+  - xerife_lendario_legendary_helmet_realistic.webp
+
+HASH 1a5fd55c1e961889cea1dcb9b6f869ba
+  - forasteiro_po_uncommon_shield_realistic.webp
+  - guardiao_aco_epic_shield_realistic.webp
+  - lobo_tempestade_legendary_gloves_realistic.webp
+
+HASH ea666217709c119755a0a182573216b4
+  - garimpeiro_cobre_common_weapon_realistic.webp
+  - lobo_tempestade_legendary_weapon_realistic.webp
+  - pistoleiro_estrada_common_weapon_realistic.webp
+
+HASH 143540cd8a4fc38226a08d0eb055e0ae
+  - garimpeiro_cobre_uncommon_boots_realistic.webp
+  - raven_boots_realistic.webp
+
+HASH 8d4cd9b5d9d54029a8a0b415479607df
+  - guarda_velha_rare_boots_realistic.webp
+  - guardiao_aco_epic_legs_realistic.webp
+  - lobo_tempestade_legendary_boots_realistic.webp
+  - pistoleiro_estrada_rare_boots_realistic.webp
+
+HASH 75714ab5820e88dd5e3ab43541a4b4c2
+  - guarda_velha_rare_legs_realistic.webp
+  - pistoleiro_estrada_legendary_boots_realistic.webp
+
+HASH d1998dac9632a707e06fc2ae7f374e64
+  - guarda_velha_rare_weapon_realistic.webp
+  - rastreador_canyon_uncommon_weapon_realistic.webp
+  - xerife_lendario_legendary_weapon_realistic.webp
+
+HASH 080e1b59e1842fd9d494cb0d89dc725a
+  - pistoleiro_estrada_epic_boots_realistic.webp
+  - pregador_cinzento_uncommon_legs_realistic.webp
