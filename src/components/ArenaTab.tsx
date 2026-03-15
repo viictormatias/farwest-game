@@ -149,6 +149,46 @@ function getEnemyEquipment(enemy: Enemy, catalog: Item[]) {
             weapon: 'rusty_dagger', chest: 'dusty_poncho', helmet: 'cloth_hat',
             gloves: 'leather_gloves', legs: 'traveler_pants', boots: 'cloth_boots'
         },
+        'Batedor de Saloon': {
+            weapon: 'rusty_dagger', chest: 'dusty_poncho', helmet: 'cloth_hat',
+            gloves: 'leather_gloves', legs: 'traveler_pants', boots: 'cloth_boots', mask: 'simple_bandolier'
+        },
+        'Contrabandista do Vale': {
+            weapon: 'short_revolver', chest: 'reinforced_poncho', helmet: 'leather_hat',
+            gloves: 'reinforced_gloves', legs: 'leather_chaps', boots: 'mercenary_boots', mask: 'reinforced_sling'
+        },
+        'Bandido da Ravina': {
+            weapon: 'short_revolver', chest: 'reinforced_poncho', helmet: 'leather_hat',
+            gloves: 'reinforced_gloves', legs: 'leather_chaps', boots: 'mercenary_boots', mask: 'reinforced_sling'
+        },
+        'Esporo do Deserto': {
+            weapon: 'short_revolver', chest: 'reinforced_poncho', helmet: 'leather_hat',
+            gloves: 'reinforced_gloves', legs: 'leather_chaps', boots: 'mercenary_boots', mask: 'reinforced_sling'
+        },
+        'Atirador da Poeira': {
+            weapon: 'sawed_off', chest: 'steel_lined_coat', helmet: 'bandit_mask',
+            gloves: 'duelist_gloves', legs: 'lined_pants', boots: 'iron_boots', mask: 'reinforced_bandolier'
+        },
+        'Pistoleiro de Fronteira': {
+            weapon: 'duelist_revolver', chest: 'marshal_trenchcoat', helmet: 'trigger_king_hat',
+            gloves: 'marshal_gloves', legs: 'sheriff_greaves', boots: 'ranger_boots', mask: 'sheriff_arm_shield'
+        },
+        'Foragido das Montanhas': {
+            weapon: 'duelist_revolver', chest: 'marshal_trenchcoat', helmet: 'trigger_king_hat',
+            gloves: 'marshal_gloves', legs: 'sheriff_greaves', boots: 'ranger_boots', mask: 'sheriff_arm_shield'
+        },
+        'Carrasco da Estrada': {
+            weapon: 'precision_rifle', chest: 'sheriff_coat', helmet: 'trigger_king_hat',
+            gloves: 'nightfang_grips', legs: 'ghost_step_pants', boots: 'raven_boots', mask: 'iron_star_buckler'
+        },
+        'Cacador de Recompensas Sombrio': {
+            weapon: 'precision_rifle', chest: 'sheriff_coat', helmet: 'trigger_king_hat',
+            gloves: 'nightfang_grips', legs: 'ghost_step_pants', boots: 'raven_boots', mask: 'iron_star_buckler'
+        },
+        'Tenente do Abismo': {
+            weapon: 'precision_rifle', chest: 'sheriff_coat', helmet: 'trigger_king_hat',
+            gloves: 'nightfang_grips', legs: 'ghost_step_pants', boots: 'raven_boots', mask: 'iron_star_buckler'
+        },
         'Bandoleiro Novato': {
             weapon: 'short_revolver', chest: 'reinforced_poncho', helmet: 'leather_hat',
             gloves: 'reinforced_gloves', legs: 'leather_chaps', boots: 'mercenary_boots', mask: 'reinforced_sling'
