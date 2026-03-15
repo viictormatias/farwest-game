@@ -332,7 +332,8 @@ function createSetItems(rarity: ItemRarity, theme: SetTheme): Item[] {
 
         // Apply visual cleanup filters - 2026-03-15
         if (type === 'helmet') {
-            if (item_id !== 'lobo_tempestade_legendary_helmet') image_url = undefined;
+            const keepHelmets = ['lobo_tempestade_legendary_helmet', 'pistoleiro_estrada_common_helmet', 'pregador_cinzento_uncommon_helmet'];
+            if (!keepHelmets.includes(item_id)) image_url = undefined;
         } else if (type === 'mask') {
             if (item_id !== 'forasteiro_po_common_shield') image_url = undefined;
         } else if (type === 'gloves') {
@@ -345,7 +346,7 @@ function createSetItems(rarity: ItemRarity, theme: SetTheme): Item[] {
             }
         } else if (type === 'chest') {
             const coatsToRemove = [
-                'pistoleiro_estrada_common_chest', 'forasteiro_po_common_chest', 'mercenario_fronteira_uncommon_chest',
+                'forasteiro_po_common_chest', 'mercenario_fronteira_uncommon_chest',
                 'pregador_cinzento_uncommon_chest', 'cacador_recompensas_rare_chest', 'xama_tormenta_epic_chest',
                 'duelista_carmesim_epic_chest', 'guarda_velha_rare_chest', 'xerife_lendario_legendary_chest',
                 'fantasma_deserto_legendary_chest'
@@ -357,7 +358,7 @@ function createSetItems(rarity: ItemRarity, theme: SetTheme): Item[] {
             const keepBoots = [
                 'pistoleiro_estrada_common_boots', 'cacador_recompensas_rare_boots', 'mercenario_fronteira_uncommon_boots',
                 'guardiao_aco_epic_boots', 'xama_tormenta_epic_boots', 'xerife_lendario_legendary_boots',
-                'lobo_tempestade_legendary_boots'
+                'lobo_tempestade_legendary_boots', 'iron_boots'
             ];
             if (!keepBoots.includes(item_id)) image_url = undefined;
         } else if (type === 'weapon') {
@@ -569,11 +570,6 @@ const BASE_ITEMS: Item[] = [
     },
 
     ...GENERATED_SET_ITEMS,
-    
-    // Generic Equipment
-    { id: 'simple_hat', name: 'Chapéu Simples', type: 'helmet', price: 80, rarity: 'common', description: 'Proteção básica contra o sol.', stats: { defense: 3 }, image_url: '/images/items/simple_hat.webp', icon: '🤠' },
-    { id: 'cowboy_hat', name: 'Chapéu de Cowboy', type: 'helmet', price: 120, rarity: 'common', description: 'Estilo clássico da fronteira.', stats: { defense: 5 }, image_url: '/images/items/cowboy_hat.webp', icon: '🤠' },
-    { id: 'simple_coat', name: 'Casaco Simples', type: 'chest', price: 150, rarity: 'common', description: 'Um casaco leve de couro.', stats: { defense: 7 }, image_url: '/images/items/simple_coat.webp', icon: '🧥' },
 
     // Consumables
     {
@@ -616,7 +612,6 @@ const BASE_ITEMS: Item[] = [
     // Boots
     { id: 'cloth_boots', name: 'Botas de Pano', type: 'boots', price: 70, rarity: 'common', description: 'Leves para iniciar na trilha.', stats: { agility: 1 }, icon: '🥾' },
     { id: 'mercenary_boots', name: 'Botas de Mercenário', type: 'boots', price: 300, rarity: 'uncommon', description: 'Firmes para duelo em rua de terra.', requirements: { agility: 8 }, stats: { agility: 2, defense: 6 }, image_url: '/images/items/mercenary_boots.webp', icon: '🥾' },
-    { id: 'heavy_boots', name: 'Botas Pesadas', type: 'boots', price: 500, rarity: 'rare', description: 'Calçado robusto para terrenos difíceis.', requirements: { strength: 10 }, stats: { defense: 14 }, image_url: '/images/items/heavy_boots.webp', icon: '🥾' },
     { id: 'iron_boots', name: 'Botas Ferradas', type: 'boots', price: 700, rarity: 'rare', description: 'Passada pesada, difícil derrubar.', requirements: { strength: 10 }, stats: { defense: 11 }, icon: '👞' },
     { id: 'ranger_boots', name: 'Botas do Ranger', type: 'boots', price: 1350, rarity: 'epic', description: 'Resistentes para vigia da fronteira.', requirements: { strength: 14, vigor: 8 }, stats: { defense: 16, vigor: 4 }, icon: '👞' },
     { id: 'raven_boots', name: 'Botas do Corvo', type: 'boots', price: 2200, rarity: 'legendary', description: 'Mobilidade extrema para emboscadas.', requirements: { agility: 18, accuracy: 12 }, stats: { agility: 7, accuracy: 5 }, icon: '🐦‍⬛' },
