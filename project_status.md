@@ -15,14 +15,15 @@ O projeto acaba de passar por uma restauração completa de ativos visuais. Recu
     - A imagem do "Revólver do Caçador de Recompensas" foi transferida para o novo "Rifle do Guardião de Aço".
 9. **Reaproveitamento de Ativos (Fase 2)**:
     - Realizada uma atribuição massiva de imagens recuperadas de pastas de backup para preencher itens sem arte.
-10. **Limpeza e Organização Final**:
-    - Todos os arquivos de imagem não utilizados no código (incluindo backups e artes obsoletas) foram movidos para uma única pasta na raiz chamada **`imagens nao usadas`**.
-    - Pastas temporárias e vazias foram removidas para manter o projeto limpo.
-    - O repositório agora contém apenas as artes que estão sendo ativamente exibidas no jogo.
+10. **Restauração e Correção de Ativos**:
+    - Após a tentativa de limpeza, foram detectados erros 404 em diversas imagens.
+    - Todos os ativos foram restaurados para suas pastas originais (`public/images/items`, `public/images/enemies`, etc.).
+    - Foram removidos prefixos redundantes (ex: `items_`, `images_`, GUIDs) gerados por backups antigos, garantindo que o código encontre os arquivos corretamente.
+    - O projeto agora deve exibir todas as imagens corretamente.
 
 ## Pendências Imediatas
-1. **Auditoria Visual Final**: Navegar por toda a Galeria para verificar se as novas atribuições de imagens ficaram coerentes com os nomes dos itens.
-2. **Sincronização GitHub**: Garantir que todos os binários de imagem e a nova organização foram subidos.
+1. **Auditoria Visual Final**: Navegar por toda a Galeria para verificar se todas as imagens estão aparecendo.
+2. **Sincronização GitHub**: Subir as correções de nomes e caminhos.
 
 ## Erros ou Bloqueios Conhecidos
 - Nenhuma falha crítica após a reorganização dos recursos.

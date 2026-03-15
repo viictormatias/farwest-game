@@ -257,7 +257,8 @@ function getEnemyEquipment(enemy: Enemy, catalog: Item[]) {
 
 function getEnemyEquipmentHpBonus(enemy: Enemy, catalog: Item[]) {
     const eq = getEnemyEquipment(enemy, catalog)
-    return (eq.armor || []).reduce((sum, item) => sum + (item.stats?.vigor || 0), 0)
+    const vigorSum = (eq.armor || []).reduce((sum, item) => sum + (item.stats?.vigor || 0), 0)
+    return vigorSum * 10
 }
 
 function getEnemyMaxHp(enemy: Enemy, catalog: Item[]) {
@@ -635,7 +636,7 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
 
     const playerMaxHp = profile.hp_max + (soulsSnapshot?.hpBonus || 0)
     const enemyVigorBonus = (enemyEquipment?.armor || []).reduce((sum, item) => sum + (item.stats?.vigor || 0), 0)
-    const enemyHpMax = (enemyBase?.hp_max || selectedEnemy?.hp_max || 1) + enemyVigorBonus
+    const enemyHpMax = (enemyBase?.hp_max || selectedEnemy?.hp_max || 1) + (enemyVigorBonus * 10)
 
     const playerIsWinner = winner?.toLowerCase() === profile.username.toLowerCase()
 

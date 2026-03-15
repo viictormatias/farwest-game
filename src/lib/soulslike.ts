@@ -155,6 +155,6 @@ export function deriveSoulsStats(profile: Profile, equippedItems: EquippedItemEn
         maxDamage,
         requirementPenalty,
         unmetRequirements: Array.from(new Set(unmetRequirements)),
-        hpBonus: bonuses.vigor
+        hpBonus: bonuses.vigor * 10
     }
 }

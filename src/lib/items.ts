@@ -751,6 +751,20 @@ function applyVigorBalance(item: Item): Item {
     }
 }
 
+const DEFENSE_NERF_FACTOR = 0.8
+
+function applyDefenseNerf(item: Item): Item {
+    if (!item.stats || typeof item.stats.defense !== 'number' || item.stats.defense <= 0) return item
+
+    return {
+        ...item,
+        stats: {
+            ...item.stats,
+            defense: Math.max(1, Math.round(item.stats.defense * DEFENSE_NERF_FACTOR))
+        }
+    }
+}
+
 const ITEMS_WITH_ALIASED_IMAGES: Item[] = BASE_ITEMS.map((item) => {
     const aliasId = LEGACY_ITEM_ID_ALIASES[item.id]
     if (!aliasId) return item
@@ -761,7 +775,9 @@ const ITEMS_WITH_ALIASED_IMAGES: Item[] = BASE_ITEMS.map((item) => {
     }
 })
 
-export const ITEMS: Item[] = rebalanceEquipmentStatsByBudget(ITEMS_WITH_ALIASED_IMAGES).map(applyVigorBalance)
+export const ITEMS: Item[] = rebalanceEquipmentStatsByBudget(ITEMS_WITH_ALIASED_IMAGES)
+    .map(applyVigorBalance)
+    .map(applyDefenseNerf)
 
 const ITEM_BY_ID = new Map<string, Item>(ITEMS.map((item) => [item.id, item]))
 

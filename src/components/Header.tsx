@@ -123,7 +123,7 @@ export default function Header({ profile, onRefresh }: { profile: Profile; onRef
     const cappedLevel = isMaxLevel(profile.level)
     const xpBarValue = cappedLevel ? 1 : profile.xp
     const xpBarMax = cappedLevel ? 1 : xpNeeded
-    const gearHpBonus = bonuses.vigor
+    const gearHpBonus = bonuses.vigor * 10
     const totalHpMax = profile.hp_max + gearHpBonus
     const totalHpCurrent = Math.min(totalHpMax, profile.hp_current + gearHpBonus)
 
