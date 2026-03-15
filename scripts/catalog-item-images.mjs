@@ -14,7 +14,7 @@ const SLOT_DESC = {
   gloves: 'Luvas de combate/manuseio',
   legs: 'Calças/perneiras',
   boots: 'Botas',
-  shield: 'Braçadeira/defesa de antebraço',
+  mask: 'Mascara/lenco/tapa-olho',
   consumable: 'Consumível',
   relic: 'Relíquia temática',
 }
@@ -106,11 +106,12 @@ async function main() {
   const rows = []
 
   // Generated set items (always in runtime ITEMS)
-  const slotTypes = ['weapon', 'helmet', 'chest', 'gloves', 'legs', 'boots', 'shield']
+  const slotTypes = ['weapon', 'helmet', 'chest', 'gloves', 'legs', 'boots', 'mask']
   for (const [rarity, keys] of setKeysByRarity.entries()) {
     for (const key of keys) {
       for (const type of slotTypes) {
-        const id = `${key}_${rarity}_${type}`
+        const idSuffix = type === 'mask' ? 'shield' : type
+        const id = `${key}_${rarity}_${idSuffix}`
         const imageUrl = `/images/items/${id}_realistic.png`
         rows.push({
           item_id: id,

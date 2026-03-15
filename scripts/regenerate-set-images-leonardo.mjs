@@ -38,7 +38,25 @@ const SETS_BY_RARITY = {
   ],
 }
 
-const TYPES = ['weapon', 'helmet', 'chest', 'gloves', 'legs', 'boots', 'shield']
+const TYPES = ['weapon', 'helmet', 'chest', 'gloves', 'legs', 'boots', 'mask']
+
+const ARCHETYPE_BY_SET_KEY = {
+  pistoleiro_estrada: 'lawman',
+  forasteiro_po: 'agile',
+  garimpeiro_cobre: 'tank',
+  rastreador_canyon: 'agile',
+  mercenario_fronteira: 'tank',
+  pregador_cinzento: 'lawman',
+  cacador_recompensas: 'agile',
+  bandoleiro_sombrio: 'tank',
+  guarda_velha: 'lawman',
+  duelista_carmesim: 'agile',
+  guardiao_aco: 'tank',
+  xama_tormenta: 'lawman',
+  xerife_lendario: 'lawman',
+  fantasma_deserto: 'agile',
+  lobo_tempestade: 'tank',
+}
 
 const TYPE_LABEL = {
   weapon: 'arma principal',
@@ -47,7 +65,7 @@ const TYPE_LABEL = {
   gloves: 'luvas',
   legs: 'perneiras ou calcas',
   boots: 'botas',
-  shield: 'bracadeira defensiva',
+  mask: 'mascara/lenço/tapa-olho',
 }
 
 const TYPE_CONTEXT = {
@@ -57,7 +75,7 @@ const TYPE_CONTEXT = {
   gloves: 'Close-up of a pair of gloves as the only subject, detailed leather grain.',
   legs: 'Standalone pants/chaps on neutral support, folds and trail dust clearly visible.',
   boots: 'Pair of boots as primary subject, cracked leather and worn metal details.',
-  shield: 'Standalone forearm guard accessory on display stand, no person visible.',
+  mask: 'Standalone face accessory on display stand, no person visible.',
 }
 
 const STYLE = [
@@ -87,9 +105,16 @@ async function loadEnvLocal() {
   }
 }
 
-function itemName(setName, type) {
+function maskNameForSet(setKey, setName) {
+  const archetype = ARCHETYPE_BY_SET_KEY[setKey]
+  if (archetype === 'agile') return `Lenco do ${setName}`
+  if (archetype === 'tank') return `Mascara do ${setName}`
+  return `Tapa-Olho do ${setName}`
+}
+
+function itemName(setKey, setName, type) {
   if (type === 'weapon') return `Arma do ${setName}`
-  if (type === 'shield') return `Bracadeira do ${setName}`
+  if (type === 'mask') return maskNameForSet(setKey, setName)
   if (type === 'helmet') return `Chapeu do ${setName}`
   if (type === 'chest') return `Casaco do ${setName}`
   if (type === 'gloves') return `Luvas do ${setName}`
@@ -102,10 +127,11 @@ function buildItems() {
   for (const [rarity, sets] of Object.entries(SETS_BY_RARITY)) {
     for (const set of sets) {
       for (const type of TYPES) {
-        const id = `${set.key}_${rarity}_${type}`
+        const idSuffix = type === 'mask' ? 'shield' : type
+        const id = `${set.key}_${rarity}_${idSuffix}`
         out.push({
           id,
-          name: itemName(set.name, type),
+          name: itemName(set.key, set.name, type),
           rarity,
           type,
           lore: set.lore,

@@ -1,23 +1,32 @@
-# Status do Projeto - Far West
-
-## Estado Atual
-O projeto está em fase de refinamento de jogabilidade e correção de bugs críticos de sincronização e economia. A interface está estável, e as mecânicas core (Duelo, Inventário, Loja e Quadro de Empregos) estão funcionais. O código está sincronizado com o repositório remoto (GitHub).
+## Estado Atual do Projeto
+O projeto acaba de passar por uma restauração completa de ativos visuais. Recuperamos imagens de inimigos e itens que haviam sido perdidos, utilizando o histórico do Git e novas gerações de alta qualidade.
 
 ## Funcionalidades Implementadas
-- ✅ **Sincronização de Inventário:** Inventário agora é centralizado no Dashboard, garantindo atualização instantânea entre as abas.
-- ✅ **Ações Seguras Otimizadas:** Operações de compra, venda e equipamento agora retornam o estado completo do perfil em uma única requisição.
-- ✅ **Correção de Recompensas de Duelo:** Resolvido bug onde a chave do payload impedia o recebimento de ouro e XP.
-- ✅ **Equilíbrio de Combate:** Inimigos agora utilizam corretamente os bônus de seus equipamentos, e o limite de turnos foi aumentado para 120, tornando os duelos mais justos e estratégicos.
-- ✅ **Tooltips de Inventário:** Corrigido z-index para que os cards de hover não fiquem escondidos sob outros elementos.
-- ✅ **Imagens de Trabalhos:** Todas as 12 imagens de trabalhos foram mapeadas corretamente para arquivos `.webp` e o layout dos cards foi atualizado para exibir a foto no topo.
+1. **Recuperação de Inimigos**: Restauramos todas as imagens da pasta `public/images/enemies` que haviam sumido.
+2. **Atualização do Conjunto Lobo da Tempestade**: Novas imagens realistas integradas.
+3. **Correção de "Imagens Sem Sentido"**: Substituição de imagens incoerentes por versões corretas.
+4. **Organização de Recursos**: Pasta `RECURSOS-MODERNO-GIT` criada.
+5. **Otimização de Ativos**: Imagens convertidas para `.webp`.
+6. **Limpeza e Reorganização de Imagens**: Realizada uma limpeza em massa de imagens de itens (chapéus, máscaras, luvas, casacos, perneiras e botas) para manter apenas ativos de qualidade. Imagens de máscaras e luvas foram redirecionadas para melhor aproveitamento.
+7. **Remoção de Fallback Incorreto**: Removida a lógica que forçava a imagem do `medical_kit.webp` em itens sem imagem na Galeria. Agora, itens sem imagem exibem corretamente seus ícones.
+8. **Ajuste Fino de Armas**: 
+    - Removidas artes de carabinas e escopetas específicas (Pistoleiro, Garimpeiro, Pregador, etc) conforme solicitado.
+    - Renomeado "Escopeta do Guardião de Aço" para "Rifle do Guardião de Aço".
+    - A imagem do "Revólver do Caçador de Recompensas" foi transferida para o novo "Rifle do Guardião de Aço".
+9. **Reaproveitamento de Ativos**:
+    - Recuperadas imagens da pasta de "não usados" e atribuídas a itens específicos.
+    - Adicionados novos itens genéricos à `BASE_ITEMS`: **Chapéu Simples**, **Chapéu de Cowboy**, **Casaco Simples** e **Botas Pesadas**.
+    - O **Lenço do Forasteiro do Pó** agora possui arte própria recuperada.
+    - Corrigidas artes das **Luvas de Couro** e **Botas de Mercenário**.
 
 ## Pendências Imediatas
-1. 🧪 Testar o fluxo de progressão (XP e Nível) após as correções no duelo.
-2. 🛡️ Verificar se as relíquias estão aplicando os bônus de drop corretamente no servidor.
-3. 🎨 **Imagens de Itens Pendentes:** Continuar a substituição de imagens de itens (15 pendentes).
+1. **Auditoria Visual**: Verificar se os novos itens genéricos e o lenço do forasteiro aparecem corretamente na Galeria.
+2. **Novas Gerações**: Planejar novas gerações para suprir os itens agora sem imagem.
+
+## Erros ou Bloqueios Conhecidos
+- Nenhuma falha crítica após a reorganização dos recursos.
 
 ## Próximos Passos Sugeridos
-- Implementar logs visuais mais detalhados para os ganhos de XP e Ouro na tela de recompensa do duelo.
-- Revisar a tabela de loot para garantir variedade nos drops de inimigos de alto nível.
-- Realizar testes de estresse no sistema de inventário em tempo real.
-- Verificar se as relíquias estão aplicando os bônus de drop corretamente no servidor.
+1. **Gerar Imagens para Itens Vazios**: Iniciar o ciclo de geração para os itens limpos.
+2. **Refinar Descrições**: Ajustar as descrições no `items.ts` para condizer com o novo visual.
+3. **Balanceamento de Sets**: Revisar os bônus de conjunto.

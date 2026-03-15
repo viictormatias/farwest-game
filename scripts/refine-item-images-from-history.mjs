@@ -30,7 +30,7 @@ const SLOT_SYNONYMS = {
   gloves: ['luvas', 'gloves'],
   legs: ['perneiras', 'calcas', 'calças', 'pants', 'legs', 'chaps'],
   boots: ['botas', 'boots'],
-  shield: ['bracadeira', 'braçadeira', 'shield', 'forearm', 'guard', 'buckler', 'bandolier'],
+  mask: ['mascara', 'tapa-olho', 'tapa olho', 'lenco', 'bandana', 'mask', 'eyepatch', 'face'],
 }
 
 const RARITY_BY_SET = {
@@ -125,7 +125,8 @@ async function main() {
     if (!set || !slot || !url) continue
 
     const rarity = RARITY_BY_SET[set.key]
-    const targetId = `${set.key}_${rarity}_${slot}`
+    const idSuffix = slot === 'mask' ? 'shield' : slot
+    const targetId = `${set.key}_${rarity}_${idSuffix}`
     const score = scoreGeneration(g)
     const createdAt = new Date(g.createdAt || 0).getTime() || 0
 
@@ -142,7 +143,8 @@ async function main() {
   for (const set of SETS) {
     const rarity = RARITY_BY_SET[set.key]
     for (const slot of Object.keys(SLOT_SYNONYMS)) {
-      const id = `${set.key}_${rarity}_${slot}`
+      const idSuffix = slot === 'mask' ? 'shield' : slot
+      const id = `${set.key}_${rarity}_${idSuffix}`
       const hit = bestByTarget.get(id)
       if (!hit) {
         missing += 1

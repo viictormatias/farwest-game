@@ -11,9 +11,12 @@ interface LightboxProps {
     alt?: string
     stats?: Record<string, number>
     requirements?: Record<string, number>
+    minDamage?: number
+    maxDamage?: number
+    icon?: string
 }
 
-export default function Lightbox({ src, isOpen, onClose, alt, stats, requirements }: LightboxProps) {
+export default function Lightbox({ src, isOpen, onClose, alt, stats, requirements, minDamage, maxDamage, icon }: LightboxProps) {
     const [mounted, setMounted] = useState(false)
     const formatSigned = (value: number) => (value >= 0 ? `+${value}` : `${value}`)
     const optimizedSrc = getOptimizedAssetSrc(src)
@@ -35,7 +38,11 @@ export default function Lightbox({ src, isOpen, onClose, alt, stats, requirement
         }
     }, [isOpen])
 
-    if (!isOpen || !optimizedSrc || !mounted) return null
+    if (!isOpen || !mounted) return null
+
+    const hasStats = (stats && Object.keys(stats).length > 0) || 
+                   (requirements && Object.keys(requirements).length > 0) || 
+                   (typeof minDamage === 'number' && typeof maxDamage === 'number');
 
     const content = (
         <div
@@ -54,13 +61,21 @@ export default function Lightbox({ src, isOpen, onClose, alt, stats, requirement
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex flex-col md:flex-row items-center gap-8">
-                    {/* Imagem Principal */}
+                    {/* Imagem Principal ou Ícone */}
                     <div className="relative western-border p-1 bg-black shadow-2xl overflow-hidden group">
-                        <img
-                            src={optimizedSrc}
-                            alt={alt || "View Image"}
-                            className="max-w-[80vw] md:max-w-md max-h-[60vh] md:max-h-[80vh] object-contain rounded-sm select-none animate-in zoom-in-95 duration-300"
-                        />
+                        {optimizedSrc ? (
+                            <img
+                                src={optimizedSrc}
+                                alt={alt || "View Image"}
+                                className="max-w-[80vw] md:max-w-md max-h-[60vh] md:max-h-[80vh] object-contain rounded-sm select-none animate-in zoom-in-95 duration-300"
+                            />
+                        ) : (
+                            <div className="w-48 h-48 md:w-64 md:h-64 flex items-center justify-center bg-[#1a110a] border border-[#d4af37]/20 rounded-sm">
+                                <span className="text-7xl md:text-8xl select-none" style={{ filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.2))' }}>
+                                    {icon || '📦'}
+                                </span>
+                            </div>
+                        )}
                         {/* Decorative corner accents */}
                         <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-gold/40 pointer-events-none" />
                         <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-gold/40 pointer-events-none" />
@@ -68,8 +83,8 @@ export default function Lightbox({ src, isOpen, onClose, alt, stats, requirement
                         <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-gold/40 pointer-events-none" />
                     </div>
 
-                    {/* Painel Lateral de Stats (Condicional) */}
-                    {((stats && Object.keys(stats).length > 0) || (requirements && Object.keys(requirements).length > 0)) && (
+                    {/* Painel Lateral de Stats */}
+                    {hasStats && (
                         <div className="w-full md:w-72 western-border bg-black/90 p-5 flex flex-col gap-4 animate-in slide-in-from-right-4 duration-500 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
                             {requirements && Object.keys(requirements).length > 0 && (
                                 <>
@@ -85,6 +100,20 @@ export default function Lightbox({ src, isOpen, onClose, alt, stats, requirement
                                                 <span className="text-red-400 font-black text-sm">{needed}</span>
                                             </div>
                                         ))}
+                                    </div>
+                                </>
+                            )}
+                            
+                            {/* ... Rest of stats logic stays the same ... */}
+
+                            {typeof minDamage === 'number' && typeof maxDamage === 'number' && (
+                                <>
+                                    <h4 className="text-[10px] text-gold/80 font-black uppercase tracking-widest text-center border-b border-gold/20 pb-1">
+                                        Dano Base
+                                    </h4>
+                                    <div className="flex justify-between items-center bg-gold/5 border border-gold/10 p-2 rounded-sm">
+                                        <span className="text-[10px] text-gray-400 uppercase tracking-wider">Range</span>
+                                        <span className="text-gold font-bold text-sm">{minDamage}-{maxDamage}</span>
                                     </div>
                                 </>
                             )}

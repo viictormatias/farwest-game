@@ -48,12 +48,14 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
     const [lightboxAlt, setLightboxAlt] = useState<string | null>(null)
     const [lightboxStats, setLightboxStats] = useState<Record<string, number> | undefined>(undefined)
     const [lightboxRequirements, setLightboxRequirements] = useState<Record<string, number> | undefined>(undefined)
+    const [lightboxMinDamage, setLightboxMinDamage] = useState<number | undefined>(undefined)
+    const [lightboxMaxDamage, setLightboxMaxDamage] = useState<number | undefined>(undefined)
     const [activeBagIndex, setActiveBagIndex] = useState<number>(0)
 
     const FILTER_LABELS: Record<'all' | ItemType, string> = {
         all: 'Tudo',
         weapon: 'Armas',
-        shield: 'Acessório Extra',
+        mask: 'Máscaras',
         helmet: 'Chapéus',
         chest: 'Casacos',
         gloves: 'Luvas',
@@ -65,7 +67,7 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
 
     const ITEM_TYPE_LABELS: Record<ItemType, string> = {
         weapon: 'Arma',
-        shield: 'Acessório Extra',
+        mask: 'Máscara',
         helmet: 'Chapéu',
         chest: 'Casaco',
         gloves: 'Luvas',
@@ -142,7 +144,7 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
     const equippedLegs = equippedItems.find(i => i.type === 'legs')
     const equippedBoots = equippedItems.find(i => i.type === 'boots')
     const equippedWeapon = equippedItems.find(i => i.type === 'weapon')
-    const equippedShield = equippedItems.find(i => i.type === 'shield')
+    const equippedMask = equippedItems.find(i => i.type === 'mask')
     const equippedRelics = equippedItems.filter(i => i.type === 'relic')
     const soulsStats = deriveSoulsStats(profile, equippedItems)
 
@@ -194,6 +196,8 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
                 setLightboxAlt(item.name)
                 setLightboxStats(item.stats)
                 setLightboxRequirements(item.requirements)
+                setLightboxMinDamage(item.min_damage)
+                setLightboxMaxDamage(item.max_damage)
             } else if (req?.meets) {
                 // Only auto-equip if requirements are met and there's no image to show
                 handleToggleEquip(item.inventory_id)
@@ -214,7 +218,7 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
 
         return (
             <div
-                className="group relative w-16 h-16 bg-black/40 border-2 transition-all flex items-center justify-center rounded-sm hover:z-50"
+                className="group relative w-16 h-16 bg-black/40 border-4 transition-all flex items-center justify-center rounded-sm hover:z-50"
                 style={{
                     borderColor: item ? (req?.meets ? rc?.border : '#8b0000') : '#423020',
                     boxShadow: item ? `0 0 10px ${req?.meets ? rc?.glow : 'rgba(139,0,0,0.3)'}` : 'none'
@@ -222,16 +226,18 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDropOnPaperdoll(e, slotType)}
                 onClick={() => {
-                    if (item) {
-                        if (item.image_url) {
-                            setLightboxSrc(item.image_url)
-                            setLightboxAlt(item.name)
-                            setLightboxStats(item.stats)
-                            setLightboxRequirements(item.requirements)
-                        } else {
-                            handleToggleEquip(item.inventory_id)
-                        }
+                if (item) {
+                    if (item.image_url) {
+                        setLightboxSrc(item.image_url)
+                        setLightboxAlt(item.name)
+                        setLightboxStats(item.stats)
+                        setLightboxRequirements(item.requirements)
+                        setLightboxMinDamage(item.min_damage)
+                        setLightboxMaxDamage(item.max_damage)
+                    } else {
+                        handleToggleEquip(item.inventory_id)
                     }
+                }
                 }}
             >
                 {item ? (
@@ -287,6 +293,12 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
                                     <span className="text-gold font-bold">{formatSigned(Number(v))}</span>
                                 </div>
                             ))}
+                            {item.type === 'weapon' && typeof item.min_damage === 'number' && typeof item.max_damage === 'number' && (
+                                <div className="flex justify-between text-base mt-1.5">
+                                    <span className="text-gray-400 capitalize flex items-center gap-1">🔫 Dano Base</span>
+                                    <span className="text-gold font-bold">{item.min_damage}-{item.max_damage}</span>
+                                </div>
+                            )}
                             {relicEffectsForDisplay(item).map((effect) => (
                                 <div key={effect} className="flex justify-between text-base mt-1.5">
                                     <span className="text-gray-300">{effect}</span>
@@ -325,7 +337,7 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
                         Bolsa de Viagem
                     </h2>
                     <div className="flex flex-wrap justify-center gap-1">
-                        {['all', 'weapon', 'chest', 'helmet', 'relic', 'consumable'].map(f => (
+                        {['all', 'weapon', 'mask', 'chest', 'helmet', 'relic', 'consumable'].map(f => (
                             <button
                                 key={f}
                                 onClick={() => setFilter(f as any)}
@@ -352,7 +364,7 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
                                 draggable={!!item}
                                 onDragStart={(e) => item && handleDragStart(e, item.inventory_id)}
                                 onClick={() => item && handleItemClick(item, req)}
-                                className="aspect-square bg-black/60 border border-white/5 relative group transition-all hover:border-gold/30 hover:bg-white/5 flex items-center justify-center cursor-pointer hover:z-[100]"
+                                className="aspect-square bg-black/60 border-2 border-white/5 relative group transition-all hover:border-gold/30 hover:bg-white/5 flex items-center justify-center cursor-pointer hover:z-[100]"
                                 style={{
                                     borderColor: item ? (req?.meets ? rc?.border : '#8b0000') : '',
                                     boxShadow: item ? `inset 0 0 10px ${req?.meets ? rc?.glow : 'rgba(139,0,0,0.2)'}` : ''
@@ -424,6 +436,12 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
                                                             </div>
                                                         );
                                                     })}
+                                                    {item.type === 'weapon' && typeof item.min_damage === 'number' && typeof item.max_damage === 'number' && (
+                                                        <div className="flex justify-between text-xs items-center">
+                                                            <span className="text-gray-400 capitalize flex items-center gap-1">🔫 Dano Base</span>
+                                                            <span className="text-gold font-bold">{item.min_damage}-{item.max_damage}</span>
+                                                        </div>
+                                                    )}
                                                     {relicEffectsForDisplay(item).map((effect) => (
                                                         <div key={effect} className="flex justify-between text-xs items-center">
                                                             <span className="text-gold font-black uppercase">{effect}</span>
@@ -485,7 +503,7 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
                 {/* Background Decor */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-sm">
                     <div className="absolute inset-0 opacity-5 flex items-center justify-center">
-                        <img src={getOptimizedAssetSrc('/images/logo-semfundo.png') || '/images/logo-semfundo.png'} className="w-[80%] grayscale invert" alt="" />
+                        <img src={getOptimizedAssetSrc('/images/logo-semfundo.webp') || '/images/logo-semfundo.webp'} className="w-[80%] grayscale invert" alt="" />
                     </div>
                 </div>
 
@@ -501,7 +519,7 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
                         <div className="flex gap-4 items-center">
                             <EquipmentSlot item={equippedWeapon} slotType="weapon" icon="🔫" label="Mão Principal" tooltipSide="left" />
                             <EquipmentSlot item={equippedChest} slotType="chest" icon="🧥" label="Tronco" tooltipSide="left" />
-                            <EquipmentSlot item={equippedShield} slotType="shield" icon="🔰" label="Acessório Defensivo" tooltipSide="left" />
+                            <EquipmentSlot item={equippedMask} slotType="mask" icon="🎭" label="Máscara" tooltipSide="left" />
                         </div>
 
                         <div className="flex gap-8 md:gap-12">
@@ -551,6 +569,14 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
                             </div>
 
                             <div className="space-y-2 md:space-y-4">
+                                {equippedWeapon?.min_damage !== undefined && equippedWeapon?.max_damage !== undefined && (
+                                    <div className="flex flex-col items-center">
+                                        <span className="text-[8px] md:text-[9px] text-gray-500 uppercase">Dano Base da Arma</span>
+                                        <span className="text-base md:text-xl font-black text-gold title-western tracking-tight">
+                                            {equippedWeapon.min_damage}-{equippedWeapon.max_damage}
+                                        </span>
+                                    </div>
+                                )}
                                 <div className="flex flex-col items-center">
                                     <span className="text-[8px] md:text-[9px] text-gray-500 uppercase">Dano Total</span>
                                     <span className="text-lg md:text-2xl font-black text-white title-western tracking-tight">
@@ -601,10 +627,14 @@ export default function InventoryTab({ profile, onRefresh, inventory, isActive }
                     setLightboxSrc(null)
                     setLightboxStats(undefined)
                     setLightboxRequirements(undefined)
+                    setLightboxMinDamage(undefined)
+                    setLightboxMaxDamage(undefined)
                 }}
                 alt={lightboxAlt || undefined}
                 stats={lightboxStats}
                 requirements={lightboxRequirements}
+                minDamage={lightboxMinDamage}
+                maxDamage={lightboxMaxDamage}
             />
         </div>
 

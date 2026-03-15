@@ -14,7 +14,7 @@ const PAGE_SIZE = 50
 const DOWNLOAD_ALL_HISTORY = true
 
 const RARITIES = ['common', 'uncommon', 'rare', 'epic', 'legendary']
-const TYPES = ['weapon', 'helmet', 'chest', 'gloves', 'legs', 'boots', 'shield']
+const TYPES = ['weapon', 'helmet', 'chest', 'gloves', 'legs', 'boots', 'shield', 'mask']
 const TYPE_TOKENS = {
   weapon: ['arma', 'weapon', 'rifle', 'revolver', 'escopeta', 'carabina'],
   helmet: ['chapeu', 'hat', 'helmet', 'cabeca'],
@@ -22,7 +22,8 @@ const TYPE_TOKENS = {
   gloves: ['luvas', 'gloves'],
   legs: ['perneiras', 'calcas', 'pants', 'legs', 'chaps'],
   boots: ['botas', 'boots'],
-  shield: ['bracadeira', 'shield', 'arm', 'guard', 'buckler', 'bandolier']
+  shield: ['mascara', 'tapa-olho', 'tapa olho', 'lenco', 'bandana', 'mask', 'eyepatch', 'face'],
+  mask: ['mascara', 'tapa-olho', 'tapa olho', 'lenco', 'bandana', 'mask', 'eyepatch', 'face'],
 }
 
 const SET_KEY_TO_NAME = {

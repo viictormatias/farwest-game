@@ -160,7 +160,7 @@ export default function Dashboard() {
       <div className="flex flex-col items-center justify-center min-h-screen bg-black text-gold font-serif pb-20 relative overflow-hidden">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 scale-105"
-          style={{ backgroundImage: `url("${getOptimizedAssetSrc('/images/loading2.jpeg')}")`, filter: 'grayscale(0.3) brightness(0.5)' }}
+          style={{ backgroundImage: `url("${getOptimizedAssetSrc('/images/loading2.webp')}")`, filter: 'grayscale(0.3) brightness(0.5)' }}
         />
         <div
           className="absolute inset-0 z-1 pointer-events-none"
@@ -170,7 +170,7 @@ export default function Dashboard() {
         <div className="relative z-10 flex flex-col items-center">
           <div className="relative mb-8 md:mb-10">
             <img
-              src={getOptimizedAssetSrc('/images/logo-pequena-semfundo.png') || '/images/logo-pequena-semfundo.png'}
+              src={getOptimizedAssetSrc('/images/logo-pequena-semfundo.webp') || '/images/logo-pequena-semfundo.webp'}
               alt="Loading"
               className="w-40 h-40 md:w-52 md:h-52 object-contain opacity-95 animate-pulse"
             />
@@ -200,11 +200,11 @@ export default function Dashboard() {
   ]
 
   const tabBackgrounds: Record<TabId, string> = {
-    camp: '/images/loading1.jpeg',
-    arena: '/images/duelo1.jpeg',
-    shop: '/images/mercador.jpeg',
-    inventory: '/images/arma2.jpeg',
-    status: '/images/cacador-de-recompensas.jpeg',
+    camp: '/images/loading1.webp',
+    arena: '/images/duelo1.webp',
+    shop: '/images/mercador.webp',
+    inventory: '/images/arma2.webp',
+    status: '/images/cacador-de-recompensas.webp',
   }
 
   return (

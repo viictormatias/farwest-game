@@ -48,11 +48,13 @@ export default function ShopTab({ profile, onRefresh, initialInventory = [] }: S
     const [lightboxAlt, setLightboxAlt] = useState<string | null>(null)
     const [lightboxStats, setLightboxStats] = useState<Record<string, number> | undefined>(undefined)
     const [lightboxRequirements, setLightboxRequirements] = useState<Record<string, number> | undefined>(undefined)
+    const [lightboxMinDamage, setLightboxMinDamage] = useState<number | undefined>(undefined)
+    const [lightboxMaxDamage, setLightboxMaxDamage] = useState<number | undefined>(undefined)
 
     const FILTER_LABELS: Record<'all' | ItemType, string> = {
         all: 'Tudo',
         weapon: 'Armas',
-        shield: 'Acessório Extra',
+        mask: 'Máscaras',
         helmet: 'Chapeus',
         chest: 'Casacos',
         gloves: 'Luvas',
@@ -64,7 +66,7 @@ export default function ShopTab({ profile, onRefresh, initialInventory = [] }: S
 
     const ITEM_TYPE_LABELS: Record<ItemType, string> = {
         weapon: 'Arma',
-        shield: 'Acessório Extra',
+        mask: 'Máscara',
         helmet: 'Chapéu',
         chest: 'Casaco',
         gloves: 'Luvas',
@@ -166,7 +168,7 @@ export default function ShopTab({ profile, onRefresh, initialInventory = [] }: S
                     </div>
                 </div>
                 <div className="flex flex-wrap gap-1.5 justify-center bg-[#1a120c] p-1.5 md:p-2 rounded-sm border border-[#2b1f14]">
-                    {(['all', 'weapon', 'shield', 'helmet', 'chest', 'gloves', 'legs', 'boots', 'consumable'] as Array<'all' | ItemType>).map((f) => (
+                    {(['all', 'weapon', 'mask', 'helmet', 'chest', 'gloves', 'legs', 'boots', 'consumable'] as Array<'all' | ItemType>).map((f) => (
                         <button
                             key={f}
                             onClick={() => setFilter(f)}
@@ -207,7 +209,7 @@ export default function ShopTab({ profile, onRefresh, initialInventory = [] }: S
                                 <div className="flex flex-col items-center gap-2 z-10">
                                     <div className="relative group">
                                         <div
-                                            className={`w-14 h-14 md:w-16 md:h-16 bg-[#2b1f14] border-2 flex items-center justify-center text-2xl md:text-3xl rounded-sm shadow-inner overflow-hidden transition-all duration-300 ${item.image_url ? 'cursor-pointer hover:border-gold hover:shadow-[0_0_14px_rgba(212,175,55,0.35)]' : ''}`}
+                                            className={`w-14 h-14 md:w-16 md:h-16 bg-[#2b1f14] border-4 flex items-center justify-center text-2xl md:text-3xl rounded-sm shadow-inner overflow-hidden transition-all duration-300 ${item.image_url ? 'cursor-pointer hover:border-gold hover:shadow-[0_0_14px_rgba(212,175,55,0.35)]' : ''}`}
                                             style={{ borderColor: rarityColor.border }}
                                             onClick={() => {
                                                 if (item.image_url) {
@@ -215,6 +217,8 @@ export default function ShopTab({ profile, onRefresh, initialInventory = [] }: S
                                                     setLightboxAlt(item.name)
                                                     setLightboxStats(item.stats)
                                                     setLightboxRequirements(item.requirements)
+                                                    setLightboxMinDamage(item.min_damage)
+                                                    setLightboxMaxDamage(item.max_damage)
                                                 }
                                             }}
                                         >
@@ -244,6 +248,9 @@ export default function ShopTab({ profile, onRefresh, initialInventory = [] }: S
 
                                     <div className="text-[8px] md:text-[9px] text-gray-400 mb-2 flex gap-3 uppercase">
                                         {item.scaling && <span>Escalonamento: <span className="text-gold">{Object.entries(item.scaling).map(([k, v]) => `${(k === 'strength' ? '⚔️ FOR' : k === 'agility' ? '💨 AGI' : k === 'accuracy' ? '🎯 PON' : '💪 VIG')} ${v}`).join(' | ')}</span></span>}
+                                        {item.type === 'weapon' && typeof item.min_damage === 'number' && typeof item.max_damage === 'number' && (
+                                            <span>Dano: <span className="text-gold">{item.min_damage}-{item.max_damage}</span></span>
+                                        )}
                                     </div>
 
                                     {item.requirements && (
@@ -267,19 +274,25 @@ export default function ShopTab({ profile, onRefresh, initialInventory = [] }: S
                                         </div>
                                     )}
 
-                                    <div className="flex flex-wrap gap-1.5 md:gap-2.5 mb-4">
-                                        {item.stats && Object.entries(item.stats).map(([stat, val]) => (
-                                            <div key={stat} className="flex justify-between items-center bg-[#1a140f] p-1.5 md:p-2 rounded-sm border border-[#3a2a1a] min-w-[70px] md:min-w-[100px]">
-                                                <span className="text-[9px] md:text-xs text-gray-500 font-black uppercase flex items-center gap-1">{(stat === 'strength' ? 'FORÇA' : stat === 'agility' ? 'AGILIDADE' : stat === 'accuracy' ? 'PONTARIA' : stat === 'vigor' ? 'VIGOR' : stat === 'defense' ? 'DEFESA' : stat === 'hp_current' ? 'VIDA' : stat === 'energy' ? 'ENERGIA' : stat.toUpperCase())}</span>
-                                                <span className="text-gold font-black text-xs md:text-lg ml-2 md:ml-3">{formatSigned(Number(val))}</span>
-                                            </div>
-                                        ))}
-                                        {relicEffectsForDisplay(item).map(effect => (
-                                            <div key={effect} className="flex items-center bg-[#1a140f] p-1.5 md:p-2 rounded-sm border border-[#3a2a1a]">
-                                                <span className="text-[9px] md:text-xs text-gold font-black uppercase">{effect}</span>
-                                            </div>
-                                        ))}
-                                    </div>
+                                        <div className="flex flex-wrap gap-1.5 md:gap-2.5 mb-4">
+                                            {item.stats && Object.entries(item.stats).map(([stat, val]) => (
+                                                <div key={stat} className="flex justify-between items-center bg-[#1a140f] p-1.5 md:p-2 rounded-sm border border-[#3a2a1a] min-w-[70px] md:min-w-[100px]">
+                                                    <span className="text-[9px] md:text-xs text-gray-500 font-black uppercase flex items-center gap-1">{(stat === 'strength' ? 'FORÇA' : stat === 'agility' ? 'AGILIDADE' : stat === 'accuracy' ? 'PONTARIA' : stat === 'vigor' ? 'VIGOR' : stat === 'defense' ? 'DEFESA' : stat === 'hp_current' ? 'VIDA' : stat === 'energy' ? 'ENERGIA' : stat.toUpperCase())}</span>
+                                                    <span className="text-gold font-black text-xs md:text-lg ml-2 md:ml-3">{formatSigned(Number(val))}</span>
+                                                </div>
+                                            ))}
+                                            {item.type === 'weapon' && typeof item.min_damage === 'number' && typeof item.max_damage === 'number' && (
+                                                <div className="flex justify-between items-center bg-[#1a140f] p-1.5 md:p-2 rounded-sm border border-[#3a2a1a] min-w-[70px] md:min-w-[100px]">
+                                                    <span className="text-[9px] md:text-xs text-gray-500 font-black uppercase flex items-center gap-1">DANO</span>
+                                                    <span className="text-gold font-black text-xs md:text-lg ml-2 md:ml-3">{item.min_damage}-{item.max_damage}</span>
+                                                </div>
+                                            )}
+                                            {relicEffectsForDisplay(item).map(effect => (
+                                                <div key={effect} className="flex items-center bg-[#1a140f] p-1.5 md:p-2 rounded-sm border border-[#3a2a1a]">
+                                                    <span className="text-[9px] md:text-xs text-gold font-black uppercase">{effect}</span>
+                                                </div>
+                                            ))}
+                                        </div>
 
                                     <button
                                         onClick={() => handleBuy(item)}
@@ -331,7 +344,7 @@ export default function ShopTab({ profile, onRefresh, initialInventory = [] }: S
                                     <div className="flex flex-col items-center gap-2 z-10">
                                         <div className="relative group">
                                             <div
-                                                className={`w-14 h-14 md:w-16 md:h-16 bg-[#2b1f14] border-2 flex items-center justify-center text-2xl md:text-3xl rounded-sm shadow-inner overflow-hidden transition-all duration-300 ${item.image_url ? 'cursor-pointer hover:border-gold hover:shadow-[0_0_14px_rgba(212,175,55,0.35)]' : ''}`}
+                                                className={`w-14 h-14 md:w-16 md:h-16 bg-[#2b1f14] border-4 flex items-center justify-center text-2xl md:text-3xl rounded-sm shadow-inner overflow-hidden transition-all duration-300 ${item.image_url ? 'cursor-pointer hover:border-gold hover:shadow-[0_0_14px_rgba(212,175,55,0.35)]' : ''}`}
                                                 style={{ borderColor: rarityColor.border }}
                                                 onClick={() => {
                                                     if (item.image_url) {
@@ -339,6 +352,8 @@ export default function ShopTab({ profile, onRefresh, initialInventory = [] }: S
                                                         setLightboxAlt(item.name)
                                                         setLightboxStats(item.stats)
                                                         setLightboxRequirements(item.requirements)
+                                                        setLightboxMinDamage(item.min_damage)
+                                                        setLightboxMaxDamage(item.max_damage)
                                                     }
                                                 }}
                                             >
@@ -364,6 +379,9 @@ export default function ShopTab({ profile, onRefresh, initialInventory = [] }: S
 
                                         <div className="text-[8px] md:text-[9px] text-gray-400 mb-2 flex gap-3 uppercase">
                                             {item.scaling && <span>Escalonamento: <span className="text-gold">{Object.entries(item.scaling).map(([k, v]) => `${(k === 'strength' ? '⚔️ FOR' : k === 'agility' ? '💨 AGI' : k === 'accuracy' ? '🎯 PON' : '💪 VIG')} ${v}`).join(' | ')}</span></span>}
+                                            {item.type === 'weapon' && typeof item.min_damage === 'number' && typeof item.max_damage === 'number' && (
+                                                <span>Dano: <span className="text-gold">{item.min_damage}-{item.max_damage}</span></span>
+                                            )}
                                         </div>
 
                                         {item.requirements && (() => {
@@ -397,6 +415,12 @@ export default function ShopTab({ profile, onRefresh, initialInventory = [] }: S
                                                     <span className="text-gold font-black text-xs md:text-lg ml-2 md:ml-3">{formatSigned(Number(val))}</span>
                                                 </div>
                                             ))}
+                                            {item.type === 'weapon' && typeof item.min_damage === 'number' && typeof item.max_damage === 'number' && (
+                                                <div className="flex justify-between items-center bg-[#1a140f] p-1.5 md:p-2 rounded-sm border border-[#3a2a1a] min-w-[70px] md:min-w-[100px]">
+                                                    <span className="text-[9px] md:text-xs text-gray-500 font-black uppercase flex items-center gap-1">DANO</span>
+                                                    <span className="text-gold font-black text-xs md:text-lg ml-2 md:ml-3">{item.min_damage}-{item.max_damage}</span>
+                                                </div>
+                                            )}
                                             {relicEffectsForDisplay(item).map(effect => (
                                                 <div key={effect} className="flex items-center bg-[#1a140f] p-1.5 md:p-2 rounded-sm border border-[#3a2a1a]">
                                                     <span className="text-[9px] md:text-xs text-gold font-black uppercase">{effect}</span>
@@ -426,10 +450,14 @@ export default function ShopTab({ profile, onRefresh, initialInventory = [] }: S
                     setLightboxSrc(null)
                     setLightboxStats(undefined)
                     setLightboxRequirements(undefined)
+                    setLightboxMinDamage(undefined)
+                    setLightboxMaxDamage(undefined)
                 }}
                 alt={lightboxAlt || undefined}
                 stats={lightboxStats}
                 requirements={lightboxRequirements}
+                minDamage={lightboxMinDamage}
+                maxDamage={lightboxMaxDamage}
             />
         </div>
 

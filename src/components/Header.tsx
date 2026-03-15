@@ -6,7 +6,8 @@ import { isMaxLevel, xpForNextLevel } from '@/lib/progression'
 import StatBar from './StatBar'
 import CharacterPortrait from './CharacterPortrait'
 import { getStatBonuses } from '@/lib/stats'
-import { useState, useEffect, useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
+import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 
 function getPlayerClass(level: number): string {
@@ -18,13 +19,13 @@ function getPlayerClass(level: number): string {
 }
 
 const CLASS_PORTRAITS: Record<string, string> = {
-    'Xerife': '/images/xerife.jpeg',
-    'Pistoleiro': '/images/pistoleiro.jpeg',
-    'Forasteiro': '/images/forasteiro.jpeg',
-    'Pregador': '/images/pregador.jpeg',
-    'Nativo': '/images/nativo.jpeg',
-    'Vendedor': '/images/mercador.jpeg',
-    'CacadorDeRecompensas': '/images/cacador-de-recompensas.jpeg'
+    'Xerife': '/images/xerife.webp',
+    'Pistoleiro': '/images/pistoleiro.webp',
+    'Forasteiro': '/images/forasteiro.webp',
+    'Pregador': '/images/pregador.webp',
+    'Nativo': '/images/nativo.webp',
+    'Vendedor': '/images/mercador.webp',
+    'CacadorDeRecompensas': '/images/cacador-de-recompensas.webp'
 }
 
 export default function Header({ profile, onRefresh }: { profile: Profile; onRefresh: () => void }) {
@@ -160,7 +161,7 @@ export default function Header({ profile, onRefresh }: { profile: Profile; onRef
                 <div className="flex flex-row items-center gap-3 md:gap-4 flex-shrink-0">
                     <div className="flex-shrink-0">
                         <img
-                            src={getOptimizedAssetSrc('/images/logo-pequena-semfundo.png') || '/images/logo-pequena-semfundo.png'}
+                            src={getOptimizedAssetSrc('/images/logo-pequena-semfundo.webp') || '/images/logo-pequena-semfundo.webp'}
                             alt="Far West Logo"
                             className="h-14 md:h-20 w-auto drop-shadow-[0_0_10px_rgba(242,185,13,0.2)]"
                         />
@@ -202,9 +203,18 @@ export default function Header({ profile, onRefresh }: { profile: Profile; onRef
                                 {playerClass}
                             </span>
                         </div>
-                        <div className="flex items-center gap-1 bg-[#140d07] px-2 py-0.5 rounded-sm border border-[#2b1f14] w-fit mt-1">
-                            <span className="text-[10px] text-[#d4af37]">💰</span>
-                            <span className="text-[10px] text-[#d4af37] font-bold font-mono">{profile.gold}</span>
+                        <div className="flex flex-wrap items-center gap-2 mt-1">
+                            <div className="flex items-center gap-1 bg-[#140d07] px-2 py-0.5 rounded-sm border border-[#2b1f14] w-fit">
+                                <span className="text-[10px] text-[#d4af37]">💰</span>
+                                <span className="text-[10px] text-[#d4af37] font-bold font-mono">{profile.gold}</span>
+                            </div>
+                            <Link 
+                                href="/gallery" 
+                                className="flex items-center gap-1 bg-[#2a1c11] hover:bg-[#3a2c21] px-2 py-0.5 rounded-sm border border-[#5a3a1a] w-fit transition-all group"
+                            >
+                                <span className="text-[10px] group-hover:scale-110 transition-transform">🖼️</span>
+                                <span className="text-[10px] text-[#a18262] font-bold uppercase tracking-tighter">Galeria</span>
+                            </Link>
                         </div>
                     </div>
                 </div>

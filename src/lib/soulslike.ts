@@ -84,6 +84,29 @@ export function getWeaponScalingBonus(
     return Math.floor(total)
 }
 
+export function computeWeaponDamageRange(params: {
+    minBase: number
+    maxBase: number
+    strengthTotal: number
+    scalingBonus?: number
+    requirementPenalty?: number
+}) {
+    const {
+        minBase,
+        maxBase,
+        strengthTotal,
+        scalingBonus = 0,
+        requirementPenalty = 1
+    } = params
+
+    // Damage bonus from strength (kept smaller to preserve weapon identity)
+    const strBonus = strengthTotal * 0.2
+    const minDamage = Math.floor((minBase + scalingBonus + strBonus) * requirementPenalty)
+    const maxDamage = Math.floor((maxBase + scalingBonus + strBonus) * requirementPenalty)
+
+    return { minDamage, maxDamage }
+}
+
 export function deriveSoulsStats(profile: Profile, equippedItems: EquippedItemEntry[]): SoulsDerivedStats {
     const bonuses: Record<CoreStat, number> = {
         strength: 0,
@@ -115,11 +138,14 @@ export function deriveSoulsStats(profile: Profile, equippedItems: EquippedItemEn
     const minBase = equippedWeapon?.min_damage || 1
     const maxBase = equippedWeapon?.max_damage || 5
 
-    // Scale damage by strength (30% efficiency)
-    const strBonus = (profile.strength + bonuses.strength) * 0.3
-
-    const minDamage = Math.floor((minBase + scalingBonus + strBonus) * requirementPenalty)
-    const maxDamage = Math.floor((maxBase + scalingBonus + strBonus) * requirementPenalty)
+    const strengthTotal = profile.strength + bonuses.strength
+    const { minDamage, maxDamage } = computeWeaponDamageRange({
+        minBase,
+        maxBase,
+        strengthTotal,
+        scalingBonus,
+        requirementPenalty
+    })
     const attackRating = Math.floor((minDamage + maxDamage) / 2)
 
     return {

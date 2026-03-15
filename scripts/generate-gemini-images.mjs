@@ -30,7 +30,7 @@ const NEGATIVE_PROMPT = [
 
 const TYPE_CONTEXT = {
   weapon: 'Hero prop shot of a western weapon, gunmetal and oiled wood emphasized.',
-  shield: 'Standalone defensive accessory only, mounted on mannequin torso or display stand, no person visible.',
+  mask: 'Standalone face accessory only, mounted on mannequin bust or display stand, no person visible.',
   chest: 'Western garment as the main subject, fabric and stitching in focus.',
   helmet: 'Standalone headgear only on neutral wooden stand, no human face visible.',
   gloves: 'Close-up on hands wearing the gloves, leather grain and seams highly detailed.',
@@ -45,21 +45,21 @@ const ITEMS = [
   { id: 'lobo_tempestade_legendary_gloves', name: 'Luvas do Lobo da Tempestade', type: 'gloves', description: 'Luvas de couro grosso com protetores metalicos.' },
   { id: 'lobo_tempestade_legendary_legs', name: 'Perneiras do Lobo da Tempestade', type: 'legs', description: 'Perneiras pesadas com reforco de metal escovado.' },
   { id: 'lobo_tempestade_legendary_boots', name: 'Botas do Lobo da Tempestade', type: 'boots', description: 'Botas ferradas para terrenos crueis.' },
-  { id: 'lobo_tempestade_legendary_shield', name: 'Bracadeira do Lobo da Tempestade', type: 'shield', description: 'Escudo de braco feito de metal de naufragio.' },
+  { id: 'lobo_tempestade_legendary_shield', name: 'Mascara do Lobo da Tempestade', type: 'mask', description: 'Mascara robusta de couro e metal, pensada para tempestades de sal.' },
   { id: 'xama_tormenta_epic_weapon', name: 'Carabina do Xama da Tormenta', type: 'weapon', description: 'Rifle mistico com entalhes rituais e penas.' },
   { id: 'xama_tormenta_epic_helmet', name: 'Chapeu do Xama da Tormenta', type: 'helmet', description: 'Chapeu com amuletos e penas de corvo penduradas.' },
   { id: 'xama_tormenta_epic_chest', name: 'Casaco do Xama da Tormenta', type: 'chest', description: 'Casaco de couro gravado com simbolos de protecao.' },
   { id: 'xama_tormenta_epic_gloves', name: 'Luvas do Xama da Tormenta', type: 'gloves', description: 'Luvas finas para precisao ritual.' },
   { id: 'xama_tormenta_epic_legs', name: 'Perneiras do Xama da Tormenta', type: 'legs', description: 'Calcas de tecido mistico e couro leve.' },
   { id: 'xama_tormenta_epic_boots', name: 'Botas do Xama da Tormenta', type: 'boots', description: 'Botas silenciosas e leves.' },
-  { id: 'xama_tormenta_epic_shield', name: 'Bracadeira do Xama da Tormenta', type: 'shield', description: 'Bracadeira com pedras rituais incrustadas.' },
+  { id: 'xama_tormenta_epic_shield', name: 'Tapa-Olho do Xama da Tormenta', type: 'mask', description: 'Tapa-olho ritual com amuletos, focado em precisao e foco.' },
   { id: 'fantasma_deserto_legendary_weapon', name: 'Revolver do Fantasma do Deserto', type: 'weapon', description: 'Pistola envolta em panos de camuflagem, rastro de areia.' },
   { id: 'fantasma_deserto_legendary_helmet', name: 'Chapeu do Fantasma do Deserto', type: 'helmet', description: 'Chapeu com veu parcial para esconder o rosto.' },
   { id: 'fantasma_deserto_legendary_chest', name: 'Casaco do Fantasma do Deserto', type: 'chest', description: 'Capa esvoacante que se mistura com a areia.' },
   { id: 'fantasma_deserto_legendary_gloves', name: 'Luvas do Fantasma do Deserto', type: 'gloves', description: 'Luvas leves envoltas em tecido arenoso para saques silenciosos.' },
   { id: 'fantasma_deserto_legendary_legs', name: 'Perneiras do Fantasma do Deserto', type: 'legs', description: 'Perneiras de couro leve e tecido do deserto para mobilidade extrema.' },
   { id: 'fantasma_deserto_legendary_boots', name: 'Botas do Fantasma do Deserto', type: 'boots', description: 'Botas foscas feitas para correr sobre a areia sem deixar rastro.' },
-  { id: 'fantasma_deserto_legendary_shield', name: 'Bracadeira do Fantasma do Deserto', type: 'shield', description: 'Protecao leve e fosca para nao refletir a luz.' },
+  { id: 'fantasma_deserto_legendary_shield', name: 'Lenco do Fantasma do Deserto', type: 'mask', description: 'Lenco leve e fosco para ocultar o rosto e nao refletir a luz.' },
 ]
 
 async function loadEnvLocal() {

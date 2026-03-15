@@ -14,43 +14,43 @@ const SETS_BY_RARITY = {
   legendary: ['xerife_lendario', 'fantasma_deserto', 'lobo_tempestade'],
 }
 
-const TYPES = ['weapon', 'helmet', 'chest', 'gloves', 'legs', 'boots', 'shield']
+const TYPES = ['weapon', 'helmet', 'chest', 'gloves', 'legs', 'boots', 'mask']
 
 const TYPE_TEMPLATE_CANDIDATES = {
   weapon: [
-    'lobo_tempestade_legendary_weapon_realistic.png',
-    'xama_tormenta_epic_weapon_realistic.png',
-    'fantasma_deserto_legendary_weapon_realistic.png',
+    'duelist_gloves_realistic.webp',    // best stand-in with visible detail
+    'raven_boots_realistic.webp',
   ],
   helmet: [
-    'lobo_tempestade_legendary_helmet_realistic.png',
-    'xama_tormenta_epic_helmet_realistic.png',
-    'fantasma_deserto_legendary_helmet_realistic.png',
+    'duelist_gloves_realistic.webp',
+    'cloth_boots_realistic.webp',
+    'raven_boots_realistic.webp',
   ],
   chest: [
-    'lobo_tempestade_legendary_chest_realistic.png',
-    'xama_tormenta_epic_chest_realistic.png',
-    'fantasma_deserto_legendary_chest_realistic.png',
+    'lined_pants_realistic.webp',
+    'ranger_boots_realistic.webp',
+    'raven_boots_realistic.webp',
   ],
   gloves: [
-    'lobo_tempestade_legendary_gloves_realistic.png',
-    'xama_tormenta_epic_gloves_realistic.png',
-    'marshal_gloves_realistic.jpg',
+    'duelist_gloves_realistic.webp',
+    'mercenary_boots_realistic.webp',
   ],
   legs: [
-    'lobo_tempestade_legendary_legs_realistic.png',
-    'xama_tormenta_epic_legs_realistic.png',
-    'ghost_step_pants_realistic.jpg',
+    'lined_pants_realistic.webp',
+    'cloth_boots_realistic.webp',
+    'ranger_boots_realistic.webp',
   ],
   boots: [
-    'xama_tormenta_epic_boots_realistic.png',
-    'raven_boots_realistic.jpg',
-    'ranger_boots_realistic.jpg',
+    'raven_boots_realistic.webp',
+    'ranger_boots_realistic.webp',
+    'mercenary_boots_realistic.webp',
+    'iron_boots_realistic.webp',
+    'cloth_boots_realistic.webp',
   ],
-  shield: [
-    'lobo_tempestade_legendary_shield_realistic.png',
-    'xama_tormenta_epic_shield_realistic.png',
-    'fantasma_deserto_legendary_shield_realistic.png',
+  mask: [
+    'duelist_gloves_realistic.webp',
+    'raven_boots_realistic.webp',
+    'lined_pants_realistic.webp',
   ],
 }
 
@@ -85,24 +85,64 @@ function buildExpectedIds() {
   for (const [rarity, keys] of Object.entries(SETS_BY_RARITY)) {
     for (const key of keys) {
       for (const type of TYPES) {
-        ids.push(`${key}_${rarity}_${type}`)
+        const idSuffix = type === 'mask' ? 'shield' : type
+        ids.push(`${key}_${rarity}_${idSuffix}`)
       }
     }
   }
   return ids
 }
 
-async function makeVariant({ templatePath, outputPath, seed }) {
-  const hueShift = (seed % 41) - 20
-  const sat = 0.9 + ((seed % 13) / 100)
-  const bright = 0.93 + ((seed % 9) / 100)
-  const sharpenSigma = 0.6 + ((seed % 4) * 0.2)
+/**
+ * Each set gets a distinct hue identity spaced evenly across the color wheel,
+ * plus per-slot tweaks so within the same set the silhouette differs slightly.
+ */
+const SET_PALETTES = {
+  // Common
+  pistoleiro_estrada:    { hue:   0, sat: 0.85, bright: 0.90 },  // warm brown/red
+  forasteiro_po:         { hue:  30, sat: 0.70, bright: 1.05 },  // dusty sand
+  garimpeiro_cobre:      { hue:  20, sat: 1.10, bright: 0.85 },  // copper orange
+  // Uncommon
+  rastreador_canyon:     { hue:  10, sat: 0.80, bright: 0.88 },  // red canyon
+  mercenario_fronteira:  { hue: 200, sat: 0.75, bright: 0.85 },  // steel blue
+  pregador_cinzento:     { hue: 220, sat: 0.35, bright: 0.78 },  // grey/dark
+  // Rare
+  cacador_recompensas:   { hue:  60, sat: 0.95, bright: 0.90 },  // amber gold
+  bandoleiro_sombrio:    { hue: 240, sat: 0.80, bright: 0.72 },  // dark indigo
+  guarda_velha:          { hue: 180, sat: 0.55, bright: 0.80 },  // teal/army
+  // Epic
+  duelista_carmesim:     { hue: 350, sat: 1.20, bright: 0.88 },  // crimson red
+  guardiao_aco:          { hue: 210, sat: 0.60, bright: 0.80 },  // iron blue-grey
+  xama_tormenta:         { hue: 270, sat: 1.10, bright: 0.92 },  // purple storm
+  // Legendary
+  xerife_lendario:       { hue:  45, sat: 1.30, bright: 1.00 },  // gleaming gold
+  fantasma_deserto:      { hue: 190, sat: 0.50, bright: 1.10 },  // pale ghost teal
+  lobo_tempestade:       { hue: 230, sat: 0.90, bright: 0.75 },  // midnight navy
+}
+
+const TYPE_HUE_OFFSET = {
+  weapon:  0,
+  helmet:  5,
+  chest:  -5,
+  gloves: 10,
+  legs:   -8,
+  boots:  12,
+  mask: -3,
+}
+
+async function makeVariant({ templatePath, outputPath, setKey, type }) {
+  const palette = SET_PALETTES[setKey] || { hue: 0, sat: 1.0, bright: 1.0 }
+  const typeOffset = TYPE_HUE_OFFSET[type] || 0
 
   await sharp(templatePath)
     .rotate()
-    .modulate({ hue: hueShift, saturation: sat, brightness: bright })
-    .sharpen(sharpenSigma)
-    .png({ compressionLevel: 9, palette: true })
+    .modulate({
+      hue: palette.hue + typeOffset,
+      saturation: palette.sat,
+      brightness: palette.bright,
+    })
+    .sharpen(0.8)
+    .webp({ quality: 90 })
     .toFile(outputPath)
 }
 
@@ -115,13 +155,19 @@ async function main() {
   let missingTemplates = 0
 
   for (const id of expected) {
-    const outputPath = path.join(ITEMS_DIR, `${id}_realistic.png`)
+    const outputPath = path.join(ITEMS_DIR, `${id}_realistic.webp`)
     if (await fileIsValid(outputPath)) {
       kept += 1
       continue
     }
 
-    const type = id.split('_').at(-1)
+    // id format: setKey_rarity_type  e.g. pistoleiro_estrada_common_helmet
+    const parts = id.split('_')
+    const rawType = parts.at(-1)
+    const type = rawType === 'shield' ? 'mask' : rawType
+    // setKey is everything before the last two segments (rarity + type)
+    const setKey = parts.slice(0, -2).join('_')
+
     const templatePath = await findTemplate(type)
     if (!templatePath) {
       console.warn(`[fill-missing-item-images] Missing template for type: ${type} (${id})`)
@@ -129,8 +175,7 @@ async function main() {
       continue
     }
 
-    const seed = hashString(id)
-    await makeVariant({ templatePath, outputPath, seed })
+    await makeVariant({ templatePath, outputPath, setKey, type })
     created += 1
     console.log(`[fill-missing-item-images] Created ${path.relative(ROOT, outputPath)}`)
   }

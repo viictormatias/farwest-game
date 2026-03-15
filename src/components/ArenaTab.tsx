@@ -5,7 +5,7 @@ import { Profile, Enemy, COMBAT_ENERGY_COST, beginArenaCombat, getEnemies, getUs
 import { simulateCombat, Fighter, NarrativeTurn } from '@/combat'
 import { getOptimizedAssetSrc } from '@/lib/assets'
 import { ITEMS as CATALOG_ITEMS, Item, ItemRarity, getItemById } from '@/lib/items'
-import { deriveSoulsStats, SoulsDerivedStats } from '@/lib/soulslike'
+import { computeWeaponDamageRange, deriveSoulsStats, SoulsDerivedStats } from '@/lib/soulslike'
 import CharacterPortrait from './CharacterPortrait'
 import StatBar from './StatBar'
 import Lightbox from './Lightbox'
@@ -19,18 +19,18 @@ const RARITY_COLORS: Record<string, { border: string; glow: string; label: strin
 }
 
 const CLASS_PORTRAITS: Record<string, string> = {
-    'Xerife': '/images/xerife.jpeg',
-    'Pistoleiro': '/images/pistoleiro.jpeg',
-    'Forasteiro': '/images/forasteiro.jpeg',
-    'Pregador': '/images/pregador.jpeg',
-    'Nativo': '/images/nativo.jpeg',
-    'Vendedor': '/images/mercador.jpeg',
-    'CacadorDeRecompensas': '/images/cacador-de-recompensas.jpeg'
+    'Xerife': '/images/xerife.webp',
+    'Pistoleiro': '/images/pistoleiro.webp',
+    'Forasteiro': '/images/forasteiro.webp',
+    'Pregador': '/images/pregador.webp',
+    'Nativo': '/images/nativo.webp',
+    'Vendedor': '/images/mercador.webp',
+    'CacadorDeRecompensas': '/images/cacador-de-recompensas.webp'
 }
 
 function getEnemyPortraitSrc(enemyId?: string | null) {
     if (!enemyId) return null
-    return `/images/enemies/${enemyId}.png`
+    return `/images/enemies/${enemyId}.webp`
 }
 
 const BASE_CLASS_STAT_SUM = 10
@@ -134,60 +134,60 @@ function getEnemyRarityForLevel(level: number): ItemRarity {
 }
 
 function getEnemyEquipment(enemy: Enemy, catalog: Item[]) {
-    const fixedGear: Record<string, { weapon?: string, helmet?: string, chest?: string, gloves?: string, legs?: string, boots?: string, shield?: string }> = {
+    const fixedGear: Record<string, { weapon?: string, helmet?: string, chest?: string, gloves?: string, legs?: string, boots?: string, mask?: string }> = {
         'Saqueador Ardil': {
             weapon: 'rusty_dagger', chest: 'dusty_poncho', helmet: 'cloth_hat',
             gloves: 'leather_gloves', legs: 'traveler_pants', boots: 'cloth_boots'
         },
         'Bandoleiro Novato': {
             weapon: 'short_revolver', chest: 'reinforced_poncho', helmet: 'leather_hat',
-            gloves: 'reinforced_gloves', legs: 'leather_chaps', boots: 'mercenary_boots', shield: 'reinforced_sling'
+            gloves: 'reinforced_gloves', legs: 'leather_chaps', boots: 'mercenary_boots', mask: 'reinforced_sling'
         },
         'Caçador Furtivo': {
             weapon: 'sawed_off', chest: 'steel_lined_coat', helmet: 'bandit_mask',
-            gloves: 'duelist_gloves', legs: 'lined_pants', boots: 'iron_boots', shield: 'reinforced_bandolier'
+            gloves: 'duelist_gloves', legs: 'lined_pants', boots: 'iron_boots', mask: 'reinforced_bandolier'
         },
         'Atirador de Elite': {
             weapon: 'precision_rifle', chest: 'marshal_trenchcoat', helmet: 'trigger_king_hat',
-            gloves: 'marshal_gloves', legs: 'sheriff_greaves', boots: 'ranger_boots', shield: 'sheriff_arm_shield'
+            gloves: 'marshal_gloves', legs: 'sheriff_greaves', boots: 'ranger_boots', mask: 'sheriff_arm_shield'
         },
         'Chefe Rufião': {
             weapon: 'duelist_revolver', chest: 'sheriff_coat', helmet: 'sheriff_hat',
-            gloves: 'nightfang_grips', legs: 'ghost_step_pants', boots: 'raven_boots', shield: 'iron_star_buckler'
+            gloves: 'nightfang_grips', legs: 'ghost_step_pants', boots: 'raven_boots', mask: 'iron_star_buckler'
         },
     }
 
     fixedGear['Billy the Kid, O Relampago'] = {
         weapon: 'fantasma_deserto_legendary_weapon', chest: 'fantasma_deserto_legendary_chest', helmet: 'fantasma_deserto_legendary_helmet',
-        gloves: 'fantasma_deserto_legendary_gloves', legs: 'fantasma_deserto_legendary_legs', boots: 'fantasma_deserto_legendary_boots', shield: 'fantasma_deserto_legendary_shield'
+        gloves: 'fantasma_deserto_legendary_gloves', legs: 'fantasma_deserto_legendary_legs', boots: 'fantasma_deserto_legendary_boots', mask: 'fantasma_deserto_legendary_shield'
     }
     fixedGear['Wyatt Earp, Lei de Ferro'] = {
         weapon: 'xerife_lendario_legendary_weapon', chest: 'xerife_lendario_legendary_chest', helmet: 'xerife_lendario_legendary_helmet',
-        gloves: 'xerife_lendario_legendary_gloves', legs: 'xerife_lendario_legendary_legs', boots: 'xerife_lendario_legendary_boots', shield: 'xerife_lendario_legendary_shield'
+        gloves: 'xerife_lendario_legendary_gloves', legs: 'xerife_lendario_legendary_legs', boots: 'xerife_lendario_legendary_boots', mask: 'xerife_lendario_legendary_shield'
     }
     fixedGear['Jesse James, Sombra do Trem'] = {
         weapon: 'duelista_carmesim_epic_weapon', chest: 'duelista_carmesim_epic_chest', helmet: 'duelista_carmesim_epic_helmet',
-        gloves: 'duelista_carmesim_epic_gloves', legs: 'duelista_carmesim_epic_legs', boots: 'duelista_carmesim_epic_boots', shield: 'duelista_carmesim_epic_shield'
+        gloves: 'duelista_carmesim_epic_gloves', legs: 'duelista_carmesim_epic_legs', boots: 'duelista_carmesim_epic_boots', mask: 'duelista_carmesim_epic_shield'
     }
     fixedGear['Doc Holliday, As de Sangue'] = {
         weapon: 'xama_tormenta_epic_weapon', chest: 'xama_tormenta_epic_chest', helmet: 'xama_tormenta_epic_helmet',
-        gloves: 'xama_tormenta_epic_gloves', legs: 'xama_tormenta_epic_legs', boots: 'xama_tormenta_epic_boots', shield: 'xama_tormenta_epic_shield'
+        gloves: 'xama_tormenta_epic_gloves', legs: 'xama_tormenta_epic_legs', boots: 'xama_tormenta_epic_boots', mask: 'xama_tormenta_epic_shield'
     }
     fixedGear['Annie Oakley, Mira Implacavel'] = {
         weapon: 'xerife_lendario_legendary_weapon', chest: 'xama_tormenta_epic_chest', helmet: 'xama_tormenta_epic_helmet',
-        gloves: 'xama_tormenta_epic_gloves', legs: 'xama_tormenta_epic_legs', boots: 'xama_tormenta_epic_boots', shield: 'xama_tormenta_epic_shield'
+        gloves: 'xama_tormenta_epic_gloves', legs: 'xama_tormenta_epic_legs', boots: 'xama_tormenta_epic_boots', mask: 'xama_tormenta_epic_shield'
     }
     fixedGear['Butch Cassidy, Rei do Assalto'] = {
         weapon: 'lobo_tempestade_legendary_weapon', chest: 'lobo_tempestade_legendary_chest', helmet: 'lobo_tempestade_legendary_helmet',
-        gloves: 'lobo_tempestade_legendary_gloves', legs: 'lobo_tempestade_legendary_legs', boots: 'lobo_tempestade_legendary_boots', shield: 'lobo_tempestade_legendary_shield'
+        gloves: 'lobo_tempestade_legendary_gloves', legs: 'lobo_tempestade_legendary_legs', boots: 'lobo_tempestade_legendary_boots', mask: 'lobo_tempestade_legendary_shield'
     }
     fixedGear['Sundance Kid, Passo Fantasma'] = {
         weapon: 'fantasma_deserto_legendary_weapon', chest: 'fantasma_deserto_legendary_chest', helmet: 'fantasma_deserto_legendary_helmet',
-        gloves: 'fantasma_deserto_legendary_gloves', legs: 'fantasma_deserto_legendary_legs', boots: 'fantasma_deserto_legendary_boots', shield: 'fantasma_deserto_legendary_shield'
+        gloves: 'fantasma_deserto_legendary_gloves', legs: 'fantasma_deserto_legendary_legs', boots: 'fantasma_deserto_legendary_boots', mask: 'fantasma_deserto_legendary_shield'
     }
     fixedGear['Calamity Jane, Tempestade Escarlate'] = {
         weapon: 'xama_tormenta_epic_weapon', chest: 'guardiao_aco_epic_chest', helmet: 'guardiao_aco_epic_helmet',
-        gloves: 'guardiao_aco_epic_gloves', legs: 'guardiao_aco_epic_legs', boots: 'guardiao_aco_epic_boots', shield: 'guardiao_aco_epic_shield'
+        gloves: 'guardiao_aco_epic_gloves', legs: 'guardiao_aco_epic_legs', boots: 'guardiao_aco_epic_boots', mask: 'guardiao_aco_epic_shield'
     }
 
     const gearMap = fixedGear[enemy.name];
@@ -200,7 +200,7 @@ function getEnemyEquipment(enemy: Enemy, catalog: Item[]) {
                 catalog.find(i => i.id === gearMap.gloves),
                 catalog.find(i => i.id === gearMap.legs),
                 catalog.find(i => i.id === gearMap.boots),
-                catalog.find(i => i.id === gearMap.shield)
+                catalog.find(i => i.id === gearMap.mask)
             ].filter(Boolean) as Item[]
         }
     }
@@ -311,6 +311,8 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
     const [lightboxAlt, setLightboxAlt] = useState<string | null>(null)
     const [lightboxStats, setLightboxStats] = useState<Record<string, number> | undefined>(undefined)
     const [lightboxRequirements, setLightboxRequirements] = useState<Record<string, number> | undefined>(undefined)
+    const [lightboxMinDamage, setLightboxMinDamage] = useState<number | undefined>(undefined)
+    const [lightboxMaxDamage, setLightboxMaxDamage] = useState<number | undefined>(undefined)
     const [soulsSnapshot, setSoulsSnapshot] = useState<SoulsDerivedStats | null>(null)
     const [playerEquipment, setPlayerEquipment] = useState<{ weapon: Item | null, armor: Item[] }>({ weapon: null, armor: [] })
     const logEndRef = useRef<HTMLDivElement>(null)
@@ -401,6 +403,8 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
         setLightboxAlt(item.name)
         setLightboxStats(item.stats || undefined)
         setLightboxRequirements(item.requirements || undefined)
+        setLightboxMinDamage(item.min_damage)
+        setLightboxMaxDamage(item.max_damage)
     }
 
     const handleFight = async () => {
@@ -467,8 +471,16 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
         }, { strength: 0, defense: 0, agility: 0, accuracy: 0, vigor: 0 })
 
         const enemyWeapon = enemyEq.weapon as any
-        const enemyWeaponMin = enemyWeapon?.stats?.minDamage || Math.floor(baseEnemyStats.strength * 0.8)
-        const enemyWeaponMax = enemyWeapon?.stats?.maxDamage || Math.floor(baseEnemyStats.strength * 1.2)
+        const enemyWeaponMinBase = enemyWeapon?.min_damage || Math.floor(baseEnemyStats.strength * 0.8)
+        const enemyWeaponMaxBase = enemyWeapon?.max_damage || Math.floor(baseEnemyStats.strength * 1.2)
+        const enemyStrengthTotal = baseEnemyStats.strength + enemyBonuses.strength
+        const enemyRange = computeWeaponDamageRange({
+            minBase: enemyWeaponMinBase,
+            maxBase: enemyWeaponMaxBase,
+            strengthTotal: enemyStrengthTotal,
+            scalingBonus: 0,
+            requirementPenalty: 1
+        })
 
         const enemyMaxHp = baseEnemyStats.hp_max + (enemyBonuses.vigor * 10)
         setEnemyHp(enemyMaxHp)
@@ -480,8 +492,8 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
             defense: baseEnemyStats.defense + enemyBonuses.defense,
             agility: baseEnemyStats.agility + enemyBonuses.agility,
             accuracy: baseEnemyStats.accuracy + enemyBonuses.accuracy,
-            minDamage: enemyWeaponMin,
-            maxDamage: enemyWeaponMax,
+            minDamage: enemyRange.minDamage,
+            maxDamage: enemyRange.maxDamage,
             weaponName: enemyWeapon?.name || 'Punhos'
         }
 
@@ -653,7 +665,7 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
     return (
         <div className="relative flex flex-col gap-3 h-[min(100vh,calc(100vh-110px))] max-h-[100vh] p-3 md:p-4 rounded-sm overflow-hidden"
             style={{
-                backgroundImage: `linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('${getOptimizedAssetSrc('/images/duelo1.jpeg')}')`,
+                backgroundImage: `linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('${getOptimizedAssetSrc('/images/duelo1.webp')}')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundAttachment: 'fixed'
@@ -944,10 +956,14 @@ export default function ArenaTab({ profile, onRefresh }: { profile: Profile; onR
                     setLightboxAlt(null)
                     setLightboxStats(undefined)
                     setLightboxRequirements(undefined)
+                    setLightboxMinDamage(undefined)
+                    setLightboxMaxDamage(undefined)
                 }}
                 alt={lightboxAlt || undefined}
                 stats={lightboxStats}
                 requirements={lightboxRequirements}
+                minDamage={lightboxMinDamage}
+                maxDamage={lightboxMaxDamage}
             />
         </div>
     )

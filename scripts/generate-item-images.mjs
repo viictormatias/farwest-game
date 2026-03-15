@@ -13,7 +13,7 @@ const STYLE_BIBLE = [
   'Super realistic Wild West visual language, grounded and gritty.',
   'Natural skin/leather/linen/metal/wood textures, visible wear, dust, scratches and micro-details.',
   'Dramatic low-key cinematic lighting with deep contrast and controlled highlights.',
-  'Studio black background with very subtle texture and no scenery pollution.',
+  'Studio pure black background, completely dark.',
   'Consistent art direction with the original project assets.',
   'Photorealistic rendering, HDR, filmic color grade, fine film grain, ultra-detailed, 8k quality.',
   'No fantasy ornaments, no sci-fi shapes, no cartoon look, no stylized painterly brushwork.',
@@ -30,7 +30,7 @@ const NEGATIVE_PROMPT = [
 
 const TYPE_CONTEXT = {
   weapon: 'Hero prop shot of a western weapon, gunmetal and oiled wood emphasized, battle-worn.',
-  shield: 'Standalone defensive accessory only, mounted on mannequin torso or display stand, no person visible.',
+  mask: 'Standalone face accessory only, mounted on mannequin bust or display stand, no person visible.',
   chest: 'Western garment as the main subject, fabric and stitching in focus, hung on a rustic wooden stand.',
   helmet: 'Standalone headgear only on neutral wooden stand, no human face visible.',
   gloves: 'Close-up on hands wearing the gloves, leather grain and seams highly detailed.',
@@ -39,27 +39,27 @@ const TYPE_CONTEXT = {
 }
 
 const ITEMS = [
-  { id: 'lobo_tempestade_legendary_weapon', name: 'Escopeta do Lobo da Tempestade', type: 'weapon', description: 'Arma forjada nas tormentas de sal, metal corroido e madeira pesada.' },
-  { id: 'lobo_tempestade_legendary_helmet', name: 'Chapeu do Lobo da Tempestade', type: 'helmet', description: 'Chapeu pesado com marcas de sal e vento.' },
-  { id: 'lobo_tempestade_legendary_chest', name: 'Casaco do Lobo da Tempestade', type: 'chest', description: 'Casaco reforcado para aguentar tempestades e chumbo.' },
-  { id: 'lobo_tempestade_legendary_gloves', name: 'Luvas do Lobo da Tempestade', type: 'gloves', description: 'Luvas de couro grosso com protetores metalicos.' },
-  { id: 'lobo_tempestade_legendary_legs', name: 'Perneiras do Lobo da Tempestade', type: 'legs', description: 'Perneiras pesadas com reforco de metal escovado.' },
-  { id: 'lobo_tempestade_legendary_boots', name: 'Botas do Lobo da Tempestade', type: 'boots', description: 'Botas ferradas para terrenos crueis.' },
-  { id: 'lobo_tempestade_legendary_shield', name: 'Bracadeira do Lobo da Tempestade', type: 'shield', description: 'Escudo de braco feito de metal de naufragio.' },
+  { id: 'lobo_tempestade_legendary_weapon', name: 'Escopeta do Lobo da Tempestade', type: 'weapon', description: 'Arma forjada nas tormentas de sal, estetica indigena americana ancestral, metal corroido e madeira pesada.' },
+  { id: 'lobo_tempestade_legendary_helmet', name: 'Chapeu do Lobo da Tempestade', type: 'helmet', description: 'Chapeu pesado com marcas de sal e vento, estilo indigena nativo americano.' },
+  { id: 'lobo_tempestade_legendary_chest', name: 'Casaco do Lobo da Tempestade', type: 'chest', description: 'Casaco reforcado indigena para aguentar tempestades, detalhes de tribos americanas.' },
+  { id: 'lobo_tempestade_legendary_gloves', name: 'Luvas do Lobo da Tempestade', type: 'gloves', description: 'Luvas de couro grosso com amarracoes indigenas tradicionais.' },
+  { id: 'lobo_tempestade_legendary_legs', name: 'Perneiras do Lobo da Tempestade', type: 'legs', description: 'Perneiras pesadas com padroes nativo-americanos.' },
+  { id: 'lobo_tempestade_legendary_boots', name: 'Botas do Lobo da Tempestade', type: 'boots', description: 'Botas de pele e couro cru, design indigena.' },
+  { id: 'lobo_tempestade_legendary_shield', name: 'Mascara do Lobo da Tempestade', type: 'mask', description: 'Mascara robusta de couro e metal estilo tribal indigena, pensada para tempestades de sal.' },
   { id: 'xama_tormenta_epic_weapon', name: 'Carabina do Xama da Tormenta', type: 'weapon', description: 'Rifle mistico com entalhes rituais e penas.' },
   { id: 'xama_tormenta_epic_helmet', name: 'Chapeu do Xama da Tormenta', type: 'helmet', description: 'Chapeu com amuletos e penas de corvo penduradas.' },
   { id: 'xama_tormenta_epic_chest', name: 'Casaco do Xama da Tormenta', type: 'chest', description: 'Casaco de couro gravado com simbolos de protecao.' },
   { id: 'xama_tormenta_epic_gloves', name: 'Luvas do Xama da Tormenta', type: 'gloves', description: 'Luvas finas para precisao ritual.' },
   { id: 'xama_tormenta_epic_legs', name: 'Perneiras do Xama da Tormenta', type: 'legs', description: 'Calcas de tecido mistico e couro leve.' },
   { id: 'xama_tormenta_epic_boots', name: 'Botas do Xama da Tormenta', type: 'boots', description: 'Botas silenciosas e leves.' },
-  { id: 'xama_tormenta_epic_shield', name: 'Bracadeira do Xama da Tormenta', type: 'shield', description: 'Bracadeira com pedras rituais incrustadas.' },
+  { id: 'xama_tormenta_epic_shield', name: 'Tapa-Olho do Xama da Tormenta', type: 'mask', description: 'Tapa-olho ritual com amuletos, focado em precisao e foco.' },
   { id: 'fantasma_deserto_legendary_weapon', name: 'Revolver do Fantasma do Deserto', type: 'weapon', description: 'Pistola envolta em panos de camuflagem foscos, rastro de areia.' },
   { id: 'fantasma_deserto_legendary_helmet', name: 'Chapeu do Fantasma do Deserto', type: 'helmet', description: 'Chapeu com veu parcial para esconder o rosto.' },
   { id: 'fantasma_deserto_legendary_chest', name: 'Casaco do Fantasma do Deserto', type: 'chest', description: 'Capa esvoacante que se mistura com a areia.' },
   { id: 'fantasma_deserto_legendary_gloves', name: 'Luvas do Fantasma do Deserto', type: 'gloves', description: 'Luvas leves envoltas em tecido arenoso para saques silenciosos.' },
   { id: 'fantasma_deserto_legendary_legs', name: 'Perneiras do Fantasma do Deserto', type: 'legs', description: 'Perneiras de couro leve e tecido do deserto para mobilidade extrema.' },
   { id: 'fantasma_deserto_legendary_boots', name: 'Botas do Fantasma do Deserto', type: 'boots', description: 'Botas foscas feitas para correr sobre a areia sem deixar rastro.' },
-  { id: 'fantasma_deserto_legendary_shield', name: 'Bracadeira do Fantasma do Deserto', type: 'shield', description: 'Protecao leve e fosca para nao refletir a luz.' },
+  { id: 'fantasma_deserto_legendary_shield', name: 'Lenco do Fantasma do Deserto', type: 'mask', description: 'Lenco leve e fosco para ocultar o rosto e nao refletir a luz.' },
 ]
 
 async function loadEnvLocal() {
@@ -84,66 +84,38 @@ function buildRealisticPrompt(item) {
     'The subject is centered, dominant in frame, physically plausible and battle-worn.',
     'Lighting: key light from left, soft rim light from right, deep shadows shaping form.',
     'Material fidelity: worn leather, heavy linen, tarnished steel, aged wood, dust and trail grime.',
-    'Background: deep black with subtle texture, no distracting elements.',
+    item.id.includes('legendary') 
+      ? 'Background: cinematic and atmospheric western background, matching the item vibe.'
+      : 'Background: pure pitch black background, absolute darkness, #000000, no scenery or elements.',
     STYLE_BIBLE,
   ].join(' ')
 }
 
-async function generateImage({ apiKey, prompt, width = 512, height = 512 }) {
-  const submitRes = await fetch('https://cloud.leonardo.ai/api/rest/v1/generations', {
+async function generateImage({ apiKey, prompt }) {
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`, {
     method: 'POST',
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      authorization: `Bearer ${apiKey}`,
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      height,
-      width,
-      modelId: '5c232a9e-9061-4777-980a-ddc8e65647c6',
-      prompt,
-      negative_prompt: NEGATIVE_PROMPT,
-      num_images: 1,
-      alchemy: false,
-      photoReal: false,
+      instances: [{ prompt: `${prompt}. Negative prompt: ${NEGATIVE_PROMPT}` }],
+      parameters: { sampleCount: 1, aspectRatio: '1:1', outputMimeType: 'image/png' },
     }),
   })
 
-  if (!submitRes.ok) {
-    const body = await submitRes.text()
-    throw new Error(`Leonardo Submission Error ${submitRes.status}: ${body}`)
+  if (!response.ok) {
+    const errorBody = await response.text()
+    throw new Error(`Gemini (Nano Banana) API Error ${response.status}: ${errorBody}`)
   }
 
-  const submitJson = await submitRes.json()
-  const generationId = submitJson.sdGenerationJob.generationId
-  const pollUrl = `https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`
-
-  let imageUrl = null
-  let attempts = 0
-  while (!imageUrl && attempts < 30) {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    attempts++
-    const pollRes = await fetch(pollUrl, {
-      headers: { accept: 'application/json', authorization: `Bearer ${apiKey}` },
-    })
-    if (!pollRes.ok) continue
-    const pollJson = await pollRes.json()
-    const generation = pollJson.generations_by_pk
-    if (generation.status === 'COMPLETE') imageUrl = generation.generated_images[0].url
-    else if (generation.status === 'FAILED') throw new Error(`Leonardo Generation failed for ID: ${generationId}`)
-  }
-
-  if (!imageUrl) throw new Error(`Timeout waiting for Leonardo generation: ${generationId}`)
-  const imgDataRes = await fetch(imageUrl)
-  if (!imgDataRes.ok) throw new Error(`Failed to download image from ${imageUrl}`)
-  const arrayBuffer = await imgDataRes.arrayBuffer()
-  return Buffer.from(arrayBuffer)
+  const data = await response.json()
+  const bytesBase64 = data.predictions?.[0]?.bytesBase64
+  if (!bytesBase64) throw new Error('No image bytes returned from Gemini API')
+  return Buffer.from(bytesBase64, 'base64')
 }
 
 async function main() {
   await loadEnvLocal()
-  const apiKey = process.env.LEONARDO_API_KEY
-  if (!apiKey) throw new Error('LEONARDO_API_KEY not found in .env.local')
+  const apiKey = process.env.GOOGLE_AI_API_KEY
+  if (!apiKey) throw new Error('GOOGLE_AI_API_KEY not found in .env.local')
 
   await fs.mkdir(OUT_DIR, { recursive: true })
   const queue = ONLY_IDS ? ITEMS.filter((item) => ONLY_IDS.has(item.id)) : ITEMS

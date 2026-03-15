@@ -26,8 +26,8 @@ const JOB_ICONS: Record<string, string> = {
 
 function getJobIcon(title: string): string {
     const lower = title.toLowerCase()
-    if (lower.includes('banco') || lower.includes('assalto')) return JOB_ICONS.bank
     if (lower.includes('trem') || lower.includes('express')) return JOB_ICONS.train
+    if (lower.includes('banco') || lower.includes('assalto') || lower.includes('assalta')) return JOB_ICONS.bank
     if (lower.includes('recompensa') || lower.includes('fugitivo')) return JOB_ICONS.bounty
     for (const [key, icon] of Object.entries(JOB_ICONS)) {
         if (lower.includes(key)) return icon
@@ -44,7 +44,7 @@ const JOB_CARD_IMAGES: Array<{ keywords: string[]; image: string }> = [
     { keywords: ['diligência', 'diligencia', 'escolta de diligencia'], image: '/images/jobs/stagecoach_escort.webp' },
     { keywords: ['caravana', 'sal', 'deserto'], image: '/images/jobs/salt_caravan.webp' },
     { keywords: ['trem', 'express'], image: '/images/jobs/train_heist.webp' },
-    { keywords: ['banco', 'assalto'], image: '/images/jobs/bank_heist.webp' },
+    { keywords: ['banco', 'assalto', 'assalta'], image: '/images/jobs/bank_heist.webp' },
     { keywords: ['forte', 'vigilia'], image: '/images/jobs/fort_vigil.webp' },
     { keywords: ['contrabando', 'rota longa'], image: '/images/jobs/contraband_route.webp' },
     { keywords: ['expedicao', 'expedição', 'canyon'], image: '/images/jobs/forgotten_canyon.webp' },
