@@ -304,6 +304,7 @@ function buildArmorStats(rarity: ItemRarity, archetype: Archetype, type: Exclude
 
 function weaponNameForTheme(theme: SetTheme) {
     if (theme.key === 'guardiao_aco') return `Rifle do ${theme.name}`
+    if (theme.key === 'rastreador_canyon') return `Pacificador do ${theme.name}`
     if (theme.archetype === 'agile') return `Revólver do ${theme.name}`
     if (theme.archetype === 'tank') return `Escopeta do ${theme.name}`
     return `Carabina do ${theme.name}`
@@ -332,22 +333,28 @@ function createSetItems(rarity: ItemRarity, theme: SetTheme): Item[] {
 
         // Apply visual cleanup filters - 2026-03-15
         if (type === 'helmet') {
-            const keepHelmets = ['lobo_tempestade_legendary_helmet', 'pistoleiro_estrada_common_helmet', 'pregador_cinzento_uncommon_helmet'];
+            const keepHelmets = [
+                'lobo_tempestade_legendary_helmet', 'pistoleiro_estrada_common_helmet', 
+                'pregador_cinzento_uncommon_helmet', 'guardiao_aco_epic_helmet', 'xerife_lendario_legendary_helmet'
+            ];
             if (!keepHelmets.includes(item_id)) image_url = undefined;
         } else if (type === 'mask') {
-            if (item_id !== 'forasteiro_po_common_shield') image_url = undefined;
+            const keepMasks = ['forasteiro_po_common_shield', 'pregador_cinzento_uncommon_shield'];
+            if (!keepMasks.includes(item_id)) image_url = undefined;
         } else if (type === 'gloves') {
+            const keepGloves = [
+                'lobo_tempestade_legendary_gloves', 'xerife_lendario_legendary_gloves', 'mercenario_fronteira_uncommon_gloves'
+            ];
             if (item_id === 'lobo_tempestade_legendary_gloves') {
                 image_url = '/images/items/lobo_tempestade_legendary_shield_realistic.webp';
             } else if (item_id === 'xerife_lendario_legendary_gloves') {
                 image_url = '/images/items/xerife_lendario_legendary_shield_realistic.webp';
-            } else {
+            } else if (!keepGloves.includes(item_id)) {
                 image_url = undefined;
             }
         } else if (type === 'chest') {
             const coatsToRemove = [
                 'forasteiro_po_common_chest', 'mercenario_fronteira_uncommon_chest',
-                'pregador_cinzento_uncommon_chest', 'cacador_recompensas_rare_chest', 'xama_tormenta_epic_chest',
                 'duelista_carmesim_epic_chest', 'guarda_velha_rare_chest', 'xerife_lendario_legendary_chest',
                 'fantasma_deserto_legendary_chest'
             ];
@@ -358,17 +365,16 @@ function createSetItems(rarity: ItemRarity, theme: SetTheme): Item[] {
             const keepBoots = [
                 'pistoleiro_estrada_common_boots', 'cacador_recompensas_rare_boots', 'mercenario_fronteira_uncommon_boots',
                 'guardiao_aco_epic_boots', 'xama_tormenta_epic_boots', 'xerife_lendario_legendary_boots',
-                'lobo_tempestade_legendary_boots', 'iron_boots'
+                'lobo_tempestade_legendary_boots', 'iron_boots', 'garimpeiro_cobre_common_boots',
+                'fantasma_deserto_legendary_boots', 'duelista_carmesim_epic_boots', 'pregador_cinzento_uncommon_boots',
+                'rastreador_canyon_uncommon_boots', 'forasteiro_po_common_boots'
             ];
             if (!keepBoots.includes(item_id)) image_url = undefined;
         } else if (type === 'weapon') {
             const weaponsToRemove = [
                 'pistoleiro_estrada_common_weapon',
-                'garimpeiro_cobre_common_weapon',
                 'pregador_cinzento_uncommon_weapon',
-                'cacador_recompensas_rare_weapon',
-                'rastreador_canyon_uncommon_weapon',
-                'guarda_velha_rare_weapon'
+                'cacador_recompensas_rare_weapon'
             ];
             if (weaponsToRemove.includes(item_id)) {
                 image_url = undefined;
@@ -612,8 +618,8 @@ const BASE_ITEMS: Item[] = [
     // Boots
     { id: 'cloth_boots', name: 'Botas de Pano', type: 'boots', price: 70, rarity: 'common', description: 'Leves para iniciar na trilha.', stats: { agility: 1 }, icon: '🥾' },
     { id: 'mercenary_boots', name: 'Botas de Mercenário', type: 'boots', price: 300, rarity: 'uncommon', description: 'Firmes para duelo em rua de terra.', requirements: { agility: 8 }, stats: { agility: 2, defense: 6 }, image_url: '/images/items/mercenary_boots.webp', icon: '🥾' },
-    { id: 'iron_boots', name: 'Botas Ferradas', type: 'boots', price: 700, rarity: 'rare', description: 'Passada pesada, difícil derrubar.', requirements: { strength: 10 }, stats: { defense: 11 }, icon: '👞' },
-    { id: 'ranger_boots', name: 'Botas do Ranger', type: 'boots', price: 1350, rarity: 'epic', description: 'Resistentes para vigia da fronteira.', requirements: { strength: 14, vigor: 8 }, stats: { defense: 16, vigor: 4 }, icon: '👞' },
+    { id: 'iron_boots', name: 'Botas Ferradas', type: 'boots', price: 700, rarity: 'rare', description: 'Passada pesada, difícil derrubar.', requirements: { strength: 10 }, stats: { defense: 11 }, image_url: '/images/items/iron_boots_realistic.webp', icon: '👞' },
+    { id: 'ranger_boots', name: 'Botas do Ranger', type: 'boots', price: 1350, rarity: 'epic', description: 'Resistentes para vigia da fronteira.', requirements: { strength: 14, vigor: 8 }, stats: { defense: 16, vigor: 4 }, image_url: '/images/items/ranger_boots_realistic.webp', icon: '👞' },
     { id: 'raven_boots', name: 'Botas do Corvo', type: 'boots', price: 2200, rarity: 'legendary', description: 'Mobilidade extrema para emboscadas.', requirements: { agility: 18, accuracy: 12 }, stats: { agility: 7, accuracy: 5 }, icon: '🐦‍⬛' },
 
     // Relics
@@ -671,12 +677,21 @@ const BASE_ITEMS: Item[] = [
         relic_effect: { gold_per_duel_pct: 25 },
         image_url: '/images/items/wooden_star_chest_relic.webp', 
         icon: '🪙' 
+    },
+    {
+        id: 'canyon_symbol',
+        name: 'Símbolo do Canyon',
+        type: 'relic',
+        price: 2800,
+        rarity: 'rare',
+        description: 'Um escudo cerimonial antigo encontrado nas profundezas do canyon.',
+        relic_effect: { item_drop_per_duel_pct: 15 },
+        image_url: '/images/items/rastreador_canyon_relic.webp',
+        icon: '🛡️'
     }
 ]
 
 const LEGACY_ITEM_ID_ALIASES: Record<string, string> = {
-    short_revolver: 'pregador_cinzento_uncommon_weapon',
-    sawed_off: 'bandoleiro_sombrio_rare_weapon',
     duelist_revolver: 'duelista_carmesim_epic_weapon',
     precision_rifle: 'xerife_lendario_legendary_weapon',
 

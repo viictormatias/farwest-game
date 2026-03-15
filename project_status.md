@@ -13,15 +13,17 @@ O projeto acaba de passar por uma restauração completa de ativos visuais. Recu
     - Removidas artes de carabinas e escopetas específicas (Pistoleiro, Garimpeiro, Pregador, etc) conforme solicitado.
     - Renomeado "Escopeta do Guardião de Aço" para "Rifle do Guardião de Aço".
     - A imagem do "Revólver do Caçador de Recompensas" foi transferida para o novo "Rifle do Guardião de Aço".
-9. **Reaproveitamento de Ativos**:
-    - Recuperadas imagens da pasta de "não usados" e atribuídas a itens específicos.
-    - Adicionados novos itens genéricos à `BASE_ITEMS`: **Chapéu Simples**, **Chapéu de Cowboy**, **Casaco Simples** e **Botas Pesadas**.
-    - O **Lenço do Forasteiro do Pó** agora possui arte própria recuperada.
-    - Corrigidas artes das **Luvas de Couro** e **Botas de Mercenário**.
+9. **Reaproveitamento de Ativos (Fase 2)**:
+    - Realizada uma atribuição massiva de imagens recuperadas de pastas de backup para preencher itens sem arte.
+    - **Armas**: A escopeta do garimpeiro e o revólver do rastreador (renomeado para "Pacificador") agora possuem artes de alta qualidade.
+    - **Armas Específicas**: Restaurada a arte da Carabina do Guarda Velha.
+    - **Equipamentos**: Diversas botas (Ranger, Mercenário, Duelista, etc), casacos (Caçador de Recompensas, Xamã) e chapéus (Xerife Lendário, Guardião de Aço) agora possuem imagens.
+    - **Relíquias**: Adicionado o **Símbolo do Canyon** como uma nova relíquia com arte recuperada.
+    - **Máscaras**: O Pregador Cinzento agora possui uma "máscara" (usando a arte do chapéu recuperada).
 
 ## Pendências Imediatas
-1. **Auditoria Visual**: Verificar se os novos itens genéricos e o lenço do forasteiro aparecem corretamente na Galeria.
-2. **Novas Gerações**: Planejar novas gerações para suprir os itens agora sem imagem.
+1. **Auditoria Visual Final**: Navegar por toda a Galeria para verificar se as novas atribuições de imagens ficaram coerentes com os nomes dos itens.
+2. **Sincronização GitHub**: Garantir que todos os binários de imagem foram subidos.
 
 ## Erros ou Bloqueios Conhecidos
 - Nenhuma falha crítica após a reorganização dos recursos.
