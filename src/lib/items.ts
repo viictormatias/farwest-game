@@ -398,7 +398,6 @@ function createSetItems(rarity: ItemRarity, theme: SetTheme): Item[] {
         } else if (type === 'weapon') {
             const weaponsToRemove = [
                 'pistoleiro_estrada_common_weapon',
-                'pregador_cinzento_uncommon_weapon',
                 'cacador_recompensas_rare_weapon',
                 'rastreador_canyon_uncommon_weapon',
                 'guarda_velha_rare_weapon'
