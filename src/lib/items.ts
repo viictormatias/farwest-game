@@ -359,7 +359,8 @@ function createSetItems(rarity: ItemRarity, theme: SetTheme): Item[] {
         } else if (type === 'mask') {
             const keepMasks = [
                 'forasteiro_po_common_shield', 'pregador_cinzento_uncommon_shield',
-                'duelista_carmesim_epic_shield', 'fantasma_deserto_legendary_shield'
+                'duelista_carmesim_epic_shield', 'fantasma_deserto_legendary_shield',
+                'guardiao_aco_epic_shield'
             ];
             if (!keepMasks.includes(item_id)) image_url = undefined;
         } else if (type === 'gloves') {
