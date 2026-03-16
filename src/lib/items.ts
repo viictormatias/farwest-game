@@ -365,7 +365,7 @@ function createSetItems(rarity: ItemRarity, theme: SetTheme): Item[] {
         } else if (type === 'gloves') {
             const keepGloves = [
                 'lobo_tempestade_legendary_gloves', 'xerife_lendario_legendary_gloves', 'mercenario_fronteira_uncommon_gloves',
-                'duelista_carmesim_epic_gloves', 'fantasma_deserto_legendary_gloves'
+                'duelista_carmesim_epic_gloves', 'fantasma_deserto_legendary_gloves', 'forasteiro_po_common_gloves'
             ];
             if (item_id === 'lobo_tempestade_legendary_gloves') {
                 image_url = '/images/items/lobo_tempestade_legendary_shield_realistic.webp';
