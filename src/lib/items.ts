@@ -352,18 +352,20 @@ function createSetItems(rarity: ItemRarity, theme: SetTheme): Item[] {
         if (type === 'helmet') {
             const keepHelmets = [
                 'lobo_tempestade_legendary_helmet', 'pistoleiro_estrada_common_helmet', 
-                'pregador_cinzento_uncommon_helmet', 'guardiao_aco_epic_helmet', 'xerife_lendario_legendary_helmet'
+                'pregador_cinzento_uncommon_helmet', 'guardiao_aco_epic_helmet', 'xerife_lendario_legendary_helmet',
+                'duelista_carmesim_epic_helmet', 'fantasma_deserto_legendary_helmet'
             ];
             if (!keepHelmets.includes(item_id)) image_url = undefined;
         } else if (type === 'mask') {
             const keepMasks = [
-                'forasteiro_po_common_shield', 'pregador_cinzento_uncommon_shield'
+                'forasteiro_po_common_shield', 'pregador_cinzento_uncommon_shield',
+                'duelista_carmesim_epic_shield', 'fantasma_deserto_legendary_shield'
             ];
             if (!keepMasks.includes(item_id)) image_url = undefined;
         } else if (type === 'gloves') {
             const keepGloves = [
                 'lobo_tempestade_legendary_gloves', 'xerife_lendario_legendary_gloves', 'mercenario_fronteira_uncommon_gloves',
-                'fantasma_deserto_legendary_gloves'
+                'duelista_carmesim_epic_gloves', 'fantasma_deserto_legendary_gloves'
             ];
             if (item_id === 'lobo_tempestade_legendary_gloves') {
                 image_url = '/images/items/lobo_tempestade_legendary_shield_realistic.webp';
@@ -375,13 +377,12 @@ function createSetItems(rarity: ItemRarity, theme: SetTheme): Item[] {
         } else if (type === 'chest') {
             const coatsToRemove = [
                 'forasteiro_po_common_chest', 'mercenario_fronteira_uncommon_chest',
-                'guarda_velha_rare_chest', 'xerife_lendario_legendary_chest',
-                'duelista_carmesim_epic_chest', 'fantasma_deserto_legendary_chest'
+                'guarda_velha_rare_chest', 'xerife_lendario_legendary_chest'
             ];
             if (coatsToRemove.includes(item_id)) image_url = undefined;
         } else if (type === 'legs') {
             const keepLegs = [
-                'forasteiro_po_common_legs'
+                'forasteiro_po_common_legs', 'duelista_carmesim_epic_legs', 'fantasma_deserto_legendary_legs'
             ];
             if (!keepLegs.includes(item_id)) image_url = undefined;
         } else if (type === 'boots') {
@@ -396,13 +397,10 @@ function createSetItems(rarity: ItemRarity, theme: SetTheme): Item[] {
         } else if (type === 'weapon') {
             const weaponsToRemove = [
                 'pistoleiro_estrada_common_weapon',
-                'garimpeiro_cobre_common_weapon',
                 'pregador_cinzento_uncommon_weapon',
                 'cacador_recompensas_rare_weapon',
                 'rastreador_canyon_uncommon_weapon',
-                'guarda_velha_rare_weapon',
-                'mercenario_fronteira_uncommon_weapon',
-                'bandoleiro_sombrio_rare_weapon'
+                'guarda_velha_rare_weapon'
             ];
             if (weaponsToRemove.includes(item_id)) {
                 image_url = undefined;
@@ -666,7 +664,7 @@ const BASE_ITEMS: Item[] = [
         rarity: 'rare', 
         description: 'Fragmento de corda antiga usada em enforcamentos na fronteira.', 
         relic_effect: { item_drop_per_duel_pct: 10 },
-        image_url: undefined, 
+        image_url: '/images/items/corda_do_carrasco.webp', 
         icon: '🪢' 
     },
     { 
